@@ -1,0 +1,41 @@
+.bg-c-yellow {
+  background: -webkit-gradient(linear, left top, right top, from(#fe9365), to(#feb798));
+  background: linear-gradient(to right, #fe9365, #feb798);
+}
+
+.bg-simple-c-yellow {
+  background: rgb(254, 147, 101);
+}
+
+.bg-c-pink {
+  background: -webkit-gradient(linear, left top, right top, from(#fe9365), to(#feb798));
+  background: linear-gradient(to right, #FF5BAE, #f79ac8);
+}
+
+.bg-simple-c-pink {
+  background: rgb(254, 93, 112);
+}
+
+.bg-c-green {
+  background: -webkit-gradient(linear, left top, right top, from(#0ac282), to(#0df3a3));
+  background: linear-gradient(to right, #0ac282, #0df3a3);
+}
+
+.bg-simple-c-green {
+  background: rgb(10, 194, 130);
+}
+
+.bg-c-red {
+  background: -webkit-gradient(linear, left top, right top, from(#fe5d70), to(#fe909d));
+  background: linear-gradient(to right, #fe5d70, #fe909d);
+}
+
+.bg-c-blue {
+  background: -webkit-gradient(linear, left top, right top, from(#01a9ac), to(#01dbdf));
+  background: linear-gradient(to right, #01a9ac, #01dbdf);
+}
+
+.bg-c-purple {
+  background: -webkit-gradient(linear, left top, right top, from(#01a9ac), to(#01dbdf));
+  background: linear-gradient(to right, #d280f5, #e2bef1);
+}

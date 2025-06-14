@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="assets/img/logo128.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List of hardware users</title>
+  <link rel="stylesheet" href="assets/css/font-awesome/all.min.css"/>
+  <link rel="stylesheet" href="assets/css/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/sass.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/daterangepicker.css">
+  <link rel="stylesheet" href="assets/css/tabler-icons.css">
+  <style>
+    /* @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300&display=swap'); */
+    
+    *{
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    
+    html {
+      height: -webkit-fill-available;
+      font-size: 14px;
+    }
+    
+    .bg-purple {
+      background: rgb(235,59,142);
+      background: linear-gradient(180deg, rgba(235,59,142,1) 0%, rgba(235,59,142,1) 100%);
+    }
+    
+    .text-purple {
+      background: rgb(248,2,55);
+      background: linear-gradient(90deg, rgba(248,2,55,1) 0%, rgba(248,2,156,1) 100%);
+    }   
+  </style>
+</head>
+<body class="d-flex flex-column h-100">
+  <header>
+    <div class="container-fluid fixed-top p-2 bg-purple text-white ">
+      <div class="d-flex justify-content-between">
+        <div class="align-self-center fw-bold"><span class="fas fa-warehouse ms-2 me-2"></span> List of hardware users</div>
+        <div class="align-self-center">
+          <!-- <a id="nav-nav-list" href="index.html" class="btn btn-sm btn-outline-secondary"><span class="fas fa-angle-left"> Back</span></a> -->
+          <a id="nav-men-list" href="index.html" class="btn btn-sm btn-light fw-bold"><span class="fas fa-angle-left"></span> Back</a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main role="main" class="flex-shrink-0 pt-5">
+    <div class="container-fluid">
+      <!-- Prod list -->
+      <div id="filter-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-2 ">
+        <div class="col">
+          <div class="input-group">
+            <span class="input-group-text w-25">Departement</span>
+            <select name="dept" id="dept" class="form-select">
+              <option>ALL</option>              
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="input-group">
+            <span class="input-group-text w-25">Category</span>
+            <select name="cat" id="cat" class="form-select">
+              <option>ALL</option>              
+            </select>            
+          </div>
+        </div>
+        <div class="col">
+          <div class="input-group">
+            <span class="input-group-text w-25">Name/Spec.</span>
+            <input id="dname" name="dname" type="text" class="form-control">
+            <button type="button" id="upload" class="btn btn-success">
+              <span class="fas fa-user-plus"></span>
+              <span>Add</span>
+            </button>
+            <button type="button" id="refresh" class="btn btn-outline-secondary">
+              <span class="fa fa-refresh"></span>
+            </button>
+          </div>
+        </div>      
+      </div>
+      <div id="detail-list" class="row mt-3">
+        <div class="col">
+          <table class="table mb-0">
+            <tbody>
+              <tr class="table-primary fw-bold">
+                <td>Detail list of hardware users</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped">
+            <thead>
+              <tr class="text-center align-middle">
+                <th>No</th>
+                <th>Dep.</th>
+                <th>Cat.</th>
+                <th>Name/Spec.</th>
+                <th>User</th>
+                <th>Date add</th>
+                <th>Act</th>
+              </tr>
+              <tr class="text-end align-middle table-warning">
+                <th colspan="6">Total hardware :</th>                
+                <th id="th-tot" class="text-center"></th>
+              </tr>
+            </thead>
+            <tbody id="row-list">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- loader -->
+      <div id="lot-loader" class="row mt-2 d-none">
+        <div class="col">
+          <div id="loader" class="mt-3 text-center">
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- modal dialog -->
+  <div class="modal fade" id="modalDialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Delete current lot ?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Footer -->
+  <footer class="footer mt-auto py-3">
+    <div class="container-fluid fixed-bottom p-1 bg-purple text-white">
+      <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center">
+          <span class="small">SUI APPS V2.0 &copy; 2024 PT. Sahabat Unggul International </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap/popper.min.js"></script>
+  <script src="assets/js/bootstrap/bootstrap.min.js"></script>
+  <script src="assets/js/moment.min.js"></script>
+  <script src="assets/js/daterangepicker.js"></script>
+  <script src="assets/js/xlsx.full.min.js"></script>
+  <script type="module">
+    import {setCookie, getCookie} from 'assets/js/main.js';
+    $(document).ready(function(){
+      
+      let path = window.location.pathname;
+      let page = path.split("/").pop();
+      setCookie('pagex', page, 7);
+
+      let G_STR_DEP = `
+        <option>ALL</option>
+        <option>COMPLIANCE</option>
+        <option>EXIM</option>
+        <option>FINANCE & ACC</option>
+        <option>HRD & GA</option>
+        <option>IE / SGE</option>
+        <option>IT</option>
+        <option>MEKANIK</option>
+        <option>PACKING</option>
+        <option>PPIC</option>
+        <option>PRODUKSI</option>
+        <option>QUALITY</option>
+        <option>WARHOUSE</option>
+      `;
+      $('#dept').empty();
+      $('#dept').append(G_STR_DEP);
+
+      let G_STR_CAT = `
+        <option>ALL</option>
+        <option>PC</option>
+        <option>LAPTOP</option>
+        <option>TABLET</option>
+        <option>OTHER</option>
+      `;
+
+      $('#cat').empty();
+      $('#cat').append(G_STR_CAT);
+           
+      //set param
+      const setUrlParam = (section, data_id = '', defect_type = 'N', defect_data = '0#0') => {
+        let urlParam = "";
+        if (section == 1) {
+          urlParam = new URLSearchParams({
+            dep: ($("#dept").val() == 'ALL' ? '' : $("#dept").val()),
+            cat: ($("#cat").val() == 'ALL' ? '' :$("#cat").val()),
+            nam: $("#dname").val()
+          });
+        } 
+        return urlParam;
+      }
+      
+      const fetchData = async (section, urlParam) => {
+        try {
+          let apiSection = "";
+          if(section == 'view-hw'){
+            apiSection = "share.php?section=4&" + urlParam; 
+          } else if(section == 'add-hw'){
+            apiSection = "share.php?section=5"; 
+          } else if(section == 'del-hw'){
+            apiSection = "share.php?section=6"; 
+          } 
+
+          let res = '';
+          if (section == 'add-hw' || section == 'del-hw') {
+            res = await fetch("assets/api/"+ apiSection, {
+              method : "POST",
+              body : urlParam
+            });
+          } else {
+            res = await fetch("assets/api/"+ apiSection, {
+              method : "GET",
+              headers: {
+                "Content-Type": "application/json"
+              }
+            });
+          }
+
+          const output = await res.json();
+          //console.log(output.auth);
+          
+          if (output.auth == 'false') {
+            location.replace("login.html");
+            return;
+          } else {
+
+            if(output.auth_view == 'false') {
+              
+              let html_data = '<span class="text-danger">Anda tidak mempunyai izin untuk membuka halaman ini.</span>';
+              $('.modal-dialog').removeClass('modal-xl');
+              $('.modal-title').empty();
+              $('.modal-title').append('Error access');
+              $('.modal-body').empty();
+              $('.modal-body').append(html_data);
+              $('#btn-modal-yes').addClass('d-none');
+              $('#btn-modal-no').addClass('d-none');
+              $('.btn-close').addClass('d-none');
+              
+              $('#btn-modal-accs').remove();
+              $('.modal-footer').append('<button id="btn-modal-accs" type="button" class="btn btn-primary">Exit</button>');
+              $('#btn-modal-accs').click(function (e){
+                e.preventDefault;
+                location.replace("index.html");
+              });
+
+              $("#modalDialog").modal('show');
+
+              return;
+            }
+
+            if(output.auth_mod == 'false') {
+              
+              let html_data = '<span class="text-danger">Anda tidak mempunyai izin untuk melakukan modifikasi di halaman ini.</span>';
+              $('.modal-dialog').removeClass('modal-xl');
+
+              $('.modal-title').empty();
+              $('.modal-title').append('Invalid access');
+
+              $('.modal-body').empty();
+              $('.modal-body').append(html_data);
+
+              $('#btn-modal-yes').addClass('d-none');
+              $('#btn-modal-no').empty();
+              $('#btn-modal-no').append('Ok');
+              $('#btn-modal-no').removeClass('d-none');
+              $("#modalDialog").modal('show');
+              return;
+            }
+
+            if (section == 'view-hw') {           
+              setList(output);
+            } else if(section == 'add-hw'){
+              
+              if (output[0].actx == 'FALSE'){
+                let html_data = '<span class="text-danger">Error connection. try again later</span>';
+                $('.modal-dialog').removeClass('modal-xl');
+
+                $('.modal-title').empty();
+                $('.modal-title').append('Update error');
+
+                $('.modal-body').empty();
+                $('.modal-body').append(html_data);
+
+                $('#btn-modal-yes').addClass('d-none');
+                $('#btn-modal-no').empty();
+                $('#btn-modal-no').append('Ok');
+                $('#btn-modal-no').removeClass('d-none');
+                $("#modalDialog").modal('show');
+                return;
+              } else {
+                fetchData('view-hw', setUrlParam(1));
+              }
+
+            } else if(section == 'del-hw'){
+              if (output[0]['actx'] == 'TRUE') {
+                $('#row-data-' + output[0]['idx']).remove();                
+              }
+            }
+          }
+
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      //daily list
+      function setList(result){
+        let htmlData = '', incRow = 1;
+
+        if (result.empty == undefined) {
+          for (let key in result){
+            let fileName = result[key]['path'];
+            let fileExt = '';
+            let fileIcon = '';
+
+            if (fileExt == 'pdf'){
+              fileIcon = "far fa-file-pdf"
+            } else {
+              fileIcon = "far fa-image"
+            }
+
+            htmlData += `
+              <tr class="align-middle text-start" id="row-data-${result[key]['id']}">
+                <td class="text-center">${incRow}</td>
+                <td>${result[key]['dep']}</td>
+                <td>${result[key]['cat']}</td>
+                <td>${result[key]['merk']}</td>
+                <td>${result[key]['user']}</td>
+                <td class="text-center">${result[key]['add_date']}</td>
+                <td class="text-center">                  
+                  <button id="btn-del-${incRow}" 
+                    data-bs-id="${result[key]['id']}"
+                    data-bs-name="${result[key]['merk']}"
+                    class="btn btn-sm btn-outline-danger" >
+                    <span class="fas fa-trash"></span>
+                  </button> 
+                </td>
+              </tr>
+            `;
+            incRow++; 
+          }
+        }
+
+        $('#row-list').empty();
+        $('#row-list').append(htmlData);
+
+        $('#th-tot').empty();
+        $('#th-tot').append(incRow-1);
+
+        $('[id^=btn-prev-]').click(function(){
+          prevDoc($(this).attr('data-bs-name'), $(this).attr('data-bs-path'), $(this).attr('data-bs-type'));
+        });
+        
+        $('[id^=btn-del-]').click(function(){
+          let data_id = $(this).attr('data-bs-id');
+          let data_path = $(this).attr('data-bs-path');
+          let html_data = $(this).attr('data-bs-name');
+
+          $('.modal-dialog').removeClass('modal-xl');
+          $('.modal-dialog').removeClass('modal-fullscreen')
+          $('.modal-title').empty();
+          $('.modal-title').append('Delete current users ?');
+          $('.modal-body').empty();
+          $('.modal-body').append(html_data);
+          $('#btn-modal-yes').addClass('d-none');
+          $('#btn-modal-no').addClass('d-none');
+          $('#btn-save-yes').addClass('d-none');
+          $('#btn-save-no').addClass('d-none');
+          $('.btn-close').addClass('d-none');
+          let html_btn = `
+            <button id="btn-del-yes-${data_id}" type="button" class="btn btn-success">Yes</button>
+            <button id="btn-del-no-${data_id}" type="button" class="btn btn-danger">No</button>
+          `;
+          //$('.modal-footer').empty();
+          $('.modal-footer').append(html_btn);
+          $("#modalDialog").modal('show');
+
+          $('#btn-del-no-'+data_id).click(function(){
+            $("#modalDialog").modal('hide');
+            $('#btn-del-yes-'+data_id).remove();
+            $('#btn-del-no-'+data_id).remove();
+          });
+
+          $('#btn-del-yes-'+data_id).click(function(){
+            let urlPar = '';
+            urlPar = new URLSearchParams({
+              data_id: data_id,
+              data_path: data_path
+            });
+            fetchData('del-hw', urlPar);
+            $("#modalDialog").modal('hide');
+            $('#btn-del-yes-'+data_id).remove();
+            $('#btn-del-no-'+data_id).remove();
+          });
+        });
+      }
+      
+      function prevDoc(fileName, filePath, fileType){
+        let htmlData = '', htmlTitle = '';
+        htmlTitle = `Preview : ${fileName}`;
+        if (fileType != 'pdf') {
+          htmlData = `
+          <div class="text-center">
+            <img src="uploads/${filePath}" class="img-fluid shadow" alt="${fileName}">
+          </div>
+          `;
+        } else {
+          htmlData = `
+            <div class="border w-100 h-100">
+              <embed type="application/pdf" src="uploads/${filePath}" width="100%" height="100%"></embed>
+            </div>
+          `;
+        }
+        // <div class="embed-responsive">
+        //     <embed type="application/pdf" src="uploads/${filePath}"></embed>
+        //   </div>
+        $('.modal-dialog').removeClass('modal-xl');
+        $('.modal-dialog').addClass('modal-fullscreen');
+        $('.modal-title').empty();
+        $('.modal-title').append(htmlTitle);
+        $('.modal-body').empty();
+        $('.modal-body').append(htmlData);
+        $('.modal-footer').empty();
+        $('.btn-close').removeClass('d-none');
+        $("#modalDialog").modal('show');
+
+      }
+
+      $('#nav-cnt-header').click(function (e){
+        e.preventDefault();
+        $('#nav-men-list').removeClass('d-none');
+        $('#nav-cnt-header').addClass('d-none');
+        $('#div-data-detail').addClass('d-none');
+        $('#filter-list').removeClass('d-none');
+        $('#div-data-header').removeClass('d-none');
+      });
+      
+      $("#dept").change(function (e) { 
+        e.preventDefault();
+        $('#row-list').empty();
+        $('#div-list').addClass('d-none');
+        fetchData('view-hw', setUrlParam(1));
+      });
+
+      $("#cat").change(function (e) { 
+        e.preventDefault();
+        $('#row-list').empty();
+        $('#div-list').addClass('d-none');
+        fetchData('view-hw', setUrlParam(1));
+      });
+      
+      $("#dname").keyup(function (e) { 
+        e.preventDefault();
+        $('#div-list').addClass('d-none');
+        fetchData('view-hw', setUrlParam(1));
+      });
+
+      $("#upload").click(function (e) { 
+        e.preventDefault();
+        let html_data = `
+          <table class="table">
+            <tbody>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Department</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <select name="dept-add" id="dept-add" class="form-select">
+                    ${G_STR_DEP}
+                  </select>
+                </td>
+              </tr>
+              <tr class="align-middle text-start table-light">
+                <td class="table-primary">Category</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <select name="cat-add" id="cat-add" class="form-select">
+                    ${G_STR_CAT}
+                  </select>
+                </td>
+              </tr>
+              <tr class="align-middle text-start table-light">
+                <td class="table-primary">Name/spec.</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td id="row-hw-add-name">
+                  <input id="merk-add" name="merk-add" type="text" class="form-control">
+                </td>
+              </tr>
+              <tr class="align-middle text-start table-light">
+                <td class="table-primary">User/PIC</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td id="row-hw-add-user">
+                  <input id="user-add" name="user-add" type="text" class="form-control">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+
+        let html_button = `
+          <button id="btn-modal-yes" type="button" class="btn btn-warning">Save</button>
+          <button id="btn-modal-no" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+        `;
+        
+        $('.modal-dialog').removeClass('modal-fullscreen');
+        $('.modal-dialog').addClass('modal-xl');
+        $('.modal-title').empty();
+        $('.modal-title').append('Add harware user');
+        $('.modal-body').empty();
+        $('.modal-body').append(html_data);
+        $('.modal-footer').empty();
+        $('.modal-footer').append(html_button);
+
+        //action save
+        $('#btn-modal-yes').click(function(e){
+          let dep = $('#dept-add').val();
+          let cat = $('#cat-add').val();
+          let merk = $('#merk-add').val();
+          let user = $('#user-add').val();
+
+          //valid data
+          if (merk.trim() == ''){
+            $('#span-hw-add-name').remove();
+            let curRes = `
+              <span id="span-hw-add-name" class="text-danger">Merk/Spect. not allowed empty.</span>
+            `;
+            $('#row-hw-add-name').append(curRes);
+            return;
+          }
+          
+         
+          //valid image
+          if (user.trim() == ''){
+            $('#span-hw-add-user').remove();
+            let curRes = `
+              <span id="span-hw-add-user" class="text-danger">Users not allowed empty.</span>
+            `;
+            $('#row-hw-add-user').append(curRes);
+            return;
+          }
+
+          const urlParam = new FormData();
+          urlParam.append('dep', dep);
+          urlParam.append('cat', cat);
+          urlParam.append('merk', merk);
+          urlParam.append('user', user);
+          fetchData('add-hw', urlParam);
+          $('#modalDialog').modal('hide');
+        });
+
+        $('#modalDialog').modal('show');
+      });
+
+      $("#refresh").click(function (e) { 
+        e.preventDefault();
+        $('#div-list').addClass('d-none');
+        fetchData('view-hw', setUrlParam(1));
+      });
+            
+      function validFile(fileName){
+        let allowExt = new Array("jpg","png","pdf");
+        let fileExt = fileName.split('.').pop().toLowerCase();
+        for (let i=0; i <= allowExt.length; i++){
+          if(allowExt[i]==fileExt){
+            return true;
+          }
+        }
+        return false;
+      }
+
+      // ############################################ 
+      // General
+      // ############################################
+
+      //first load data
+      fetchData('view-hw', setUrlParam(1));
+      
+      setInterval(() => {
+        //$('#accepted-list').addClass('d-none');
+        //$('#lot-loader').removeClass('d-none');
+      //  fetchData('view-hw', setUrlParam(1));
+      }, 30000);
+
+    });
+  </script>
+</body>
+</html>

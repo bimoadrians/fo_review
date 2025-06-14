@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="assets/img/logo128.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capacity Analisys</title>
+  <link rel="stylesheet" href="assets/css/font-awesome/all.min.css"/>
+  <link rel="stylesheet" href="assets/css/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/sass.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/daterangepicker.css">
+  <link rel="stylesheet" href="assets/css/selectize.bootstrap5.css">
+  <link rel="stylesheet" href="assets/css/tabler-icons.css">
+  <style>
+    /* @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300&display=swap'); */
+    
+    *{
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    
+    html {
+      height: -webkit-fill-available;
+      font-size: 14px;
+    }
+    
+    .bg-purple {
+      background: rgb(235,59,142);
+      background: linear-gradient(180deg, rgba(235,59,142,1) 0%, rgba(235,59,142,1) 100%);
+    }
+    
+    .text-purple {
+      background: rgb(248,2,55);
+      background: linear-gradient(90deg, rgba(248,2,55,1) 0%, rgba(248,2,156,1) 100%);
+    }
+   
+  </style>
+</head>
+<body class="d-flex flex-column h-100">
+  <header>
+    <div class="container-fluid fixed-top p-2 bg-purple text-white ">
+      <div class="d-flex justify-content-between">
+        <div class="align-self-center fw-bold"><span class="fas fa-calculator ms-2 me-2"></span> Capacity Analisys</div>
+        <div class="align-self-center">
+          <!-- <a id="nav-nav-list" href="index.html" class="btn btn-sm btn-outline-secondary"><span class="fas fa-angle-left"> Back</span></a> -->
+          <a id="nav-men-list" href="index.html" class="btn btn-sm btn-light fw-bold"><span class="fas fa-angle-left"></span> Back</a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main role="main" class="flex-shrink-0 pt-5">
+    <div class="container-fluid">
+      <!-- Prod list -->
+      <div id="filter-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-2 ">
+        <div class="col">
+          <div class="input-group">
+            <span class="input-group-text w-25 fw-bold">Date</span>
+            <input id="date-his" name="date-his" type="text" class="form-control">
+          </div>
+        </div>
+        <div class="col">
+          <div class="input-group">
+            <span class="input-group-text w-25 fw-bold">Unit</span>
+            <select name="unit" id="unit" class="form-select">
+              <option value="ALL">ALL</option>
+              <option value="A">MATTEL A</option>
+              <option value="B">MATTEL B</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="input-group">
+            <span class="input-group-text w-25 fw-bold">Line</span>
+            <select name="line" id="line" class="form-select">
+              <option value="ALL">ALL</option>
+              <option value="1">MATTEL A</option>
+              <option value="2">MATTEL B</option>
+            </select>
+            <button type="button" id="add-anali" class="btn btn-success">
+              <span class="fas fa-plus"></span>
+              <span>Add new analisys</span>
+            </button>
+            <button type="button" id="refresh" class="btn btn-outline-secondary">
+              <span class="fa fa-refresh"></span>
+            </button>
+          </div>
+        </div>      
+      </div>
+      <div id="detail-list" class="row mt-3">
+        <div class="col">
+          <table class="table mb-0">
+            <tbody>
+              <tr class="table-primary fw-bold">
+                <td>Daily history</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped">
+            <thead>
+              <tr class="text-center align-middle">
+                <th>No</th>
+                <th>Unit</th>
+                <th>Line</th>
+                <th>Group</th>
+                <th>Style</th>
+                <th>Desc</th>
+                <th>Time Bln (m)</th>
+                <th>By</th>
+                <th>Act</th>
+              </tr>
+            </thead>
+            <tbody id="row-list">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- loader -->
+      <div id="lot-loader" class="row mt-2 d-none">
+        <div class="col">
+          <div id="loader" class="mt-3 text-center">
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- modal dialog -->
+  <div class="modal fade" id="modalDialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Delete current lot ?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Footer -->
+  <footer class="footer mt-auto py-3">
+    <div class="container-fluid fixed-bottom p-1 bg-purple text-white">
+      <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center">
+          <span class="small">SUI APPS V2.0 &copy; 2024 PT. Sahabat Unggul International </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap/popper.min.js"></script>
+  <script src="assets/js/bootstrap/bootstrap.min.js"></script>
+  <script src="assets/js/moment.min.js"></script>
+  <script src="assets/js/daterangepicker.js"></script>
+  <script src="assets/js/xlsx.full.min.js"></script>
+  <script src="assets/js/selectize.min.js"></script>
+  <script type="module">
+    import {setCookie, getCookie} from './assets/js/main.js';
+    $(document).ready(function(){
+      
+      let path = window.location.pathname;
+      let page = path.split("/").pop();
+      setCookie('pagex', page, 7);
+
+      let linex = getCookie('linex');
+      const lineArrays = linex.split("|");
+      //console.log(lineArray);
+      
+      let G_PRD_LINE = "'"+"XX"+"'";
+      let G_ADD_LINE = '';
+      let G_ADD_PART = '';
+
+      let i = 0;
+      let line_html = ''; let strArray = '';
+      while (i < lineArrays.length) {
+        strArray = lineArrays[i];
+        if (strArray != '') {
+        let lineAarray = strArray.split("=");
+          line_html = line_html +`
+          <option value="${lineAarray[0]}">${lineAarray[1]}</option>`;
+          G_PRD_LINE += ",'"+ lineAarray[0]+"'";
+        }
+        //console.log(strArray);
+        //console.log(lineAarray[1]);
+        i++;
+      }
+
+      G_ADD_LINE = line_html;
+      // apend line data
+      $('#line').empty();
+      $('#line').append(line_html);
+      //console.log(line_html);
+
+      let unitx = getCookie('unitx');
+      let html_unit = '';
+      //console.log(unitx);
+      if (unitx == 'A') {
+        html_unit = `
+          <option value="ALL">ALL</option>
+          <option value="A" selected>MATTEL A</option>
+          <option value="B">MATTEL B</option>
+        `;
+      } else if (unitx == 'B') {
+        html_unit = `
+          <option value="ALL">ALL</option>
+          <option value="A">MATTEL A</option>
+          <option value="B" selected>MATTEL B</option>
+        `;
+      } else {
+        html_unit = `
+          <option value="ALL" selected>ALL</option>
+          <option value="A">MATTEL A</option>
+          <option value="B">MATTEL B</option>
+        `;
+      }
+      $('#unit').empty();
+      $('#unit').append(html_unit);
+                 
+      //set param
+      const setUrlParam = (section, data_id = '', defect_type = 'N', defect_data = '0#0') => {
+        let urlParam = "";
+        if (section == 1) {
+          urlParam = new URLSearchParams({
+            date: $("#date-his").val(),
+            unit: $("#unit").val(),
+            line: $("#line").val()
+          });
+        } 
+        return urlParam;
+      }
+      
+      const fetchData = async (section, urlParam) => {
+        try {
+          let apiSection = "";
+          if(section == 'view-list'){
+            apiSection = "ie.php?section=1&" + urlParam; 
+          } else if(section == 'view-list-det'){
+            apiSection = "ie.php?section=2&" + urlParam; 
+          } else if(section == 'add-list'){
+            apiSection = "ie.php?section=3"; 
+          }else if(section == 'upd-list-det'){
+            apiSection = "ie.php?section=4";           
+          } else if(section == 'del-list'){
+            apiSection = "ie.php?section=5"; 
+          } else if (section == 'view-part-list'){
+            apiSection = "prod.php?section=90&" + urlParam; 
+          }
+
+          let res = '';
+          if (section == 'add-list' || section == 'upd-list-det' || section == 'del-list') {
+            res = await fetch("assets/api/"+ apiSection, {
+              method : "POST",
+              body : urlParam
+            });
+          } else {
+            res = await fetch("assets/api/"+ apiSection, {
+              method : "GET",
+              headers: {
+                "Content-Type": "application/json"
+              }
+            });
+          }
+
+          const output = await res.json();
+          //console.log(output.auth);
+          
+          if (output.auth == 'false') {
+            location.replace("login.html");
+            return;
+          } else {
+
+            if(output.auth_view == 'false') {
+              
+              let html_data = '<span class="text-danger">Anda tidak mempunyai izin untuk membuka halaman ini.</span>';
+              $('.modal-dialog').removeClass('modal-xl');
+              $('.modal-title').empty();
+              $('.modal-title').append('Error access');
+              $('.modal-body').empty();
+              $('.modal-body').append(html_data);
+              $('#btn-modal-yes').addClass('d-none');
+              $('#btn-modal-no').addClass('d-none');
+              $('.btn-close').addClass('d-none');
+              
+              $('#btn-modal-accs').remove();
+              $('.modal-footer').append('<button id="btn-modal-accs" type="button" class="btn btn-primary">Exit</button>');
+              $('#btn-modal-accs').click(function (e){
+                e.preventDefault;
+                location.replace("index.html");
+              });
+
+              $("#modalDialog").modal('show');
+
+              return;
+            }
+
+            if(output.auth_mod == 'false') {
+              
+              let html_data = '<span class="text-danger">Anda tidak mempunyai izin untuk melakukan modifikasi di halaman ini.</span>';
+              $('.modal-dialog').removeClass('modal-xl');
+
+              $('.modal-title').empty();
+              $('.modal-title').append('Invalid access');
+
+              $('.modal-body').empty();
+              $('.modal-body').append(html_data);
+
+              $('#btn-modal-yes').addClass('d-none');
+              $('#btn-modal-no').empty();
+              $('#btn-modal-no').append('Ok');
+              $('#btn-modal-no').removeClass('d-none');
+              $("#modalDialog").modal('show');
+              return;
+            }
+
+            if (section == 'view-list') {           
+              setList(output);
+            } else if (section == 'view-list-det') {           
+              setListDet(output);
+            } else if (section == 'updlist-det'){
+              console.log(output);
+            } else if (section == 'add-list'){
+              
+              if (output[0].actx == 'FALSE'){
+                $('#tr-msg-add').removeClass('d-none');
+                $('#td-msg-add').empty();
+                $('#td-msg-add').append('Error or duplicate data.');
+                return;
+              } else {
+                $('#modalDialog').modal('hide');
+                fetchData('view-list', setUrlParam(1));
+              }
+
+            } else if(section == 'del-list'){
+              if (output[0]['actx'] == 'TRUE') {
+                $('#row-data-' + output[0]['idx']).remove();                
+              }
+            } else if (section == 'view-part-list'){
+              setPartList(output);
+            }
+          }
+
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      //daily list
+      function setList(result){
+        let htmlData = '', incRow = 1;
+
+        if (result.empty == undefined) {
+          for (let key in result){      
+            
+            let blstyle = '';
+            if (Number(result[key]['timex']) < 0 ) {
+              blstyle = 'text-danger fw-bold';
+            } else {
+              blstyle = 'fw-bold';
+            }
+            
+            htmlData += `
+              <tr class="align-middle text-start" id="row-data-${result[key]['idx']}">
+                <td class="text-center">${incRow}</td>
+                <td class="text-center">${result[key]['unitx']}</td>
+                <td>${result[key]['linedx']}</td>
+                <td class="text-center">${result[key]['groupx']}</td>
+                <td>${result[key]['partx']}</td>
+                <td>${result[key]['partdx']}</td>
+                <td class="text-center ${blstyle}">${result[key]['timex']}</td>
+                <td>${result[key]['byx']}</td>
+                <td class="text-center">                  
+                  <button id="btn-det-${incRow}" 
+                    data-bs-id="${result[key]['idx']}"
+                    class="btn btn-sm btn-outline-success" >
+                    <span class="fas fa-search"></span>
+                  </button> 
+                  <button id="btn-del-${incRow}" 
+                    data-bs-id="${result[key]['idx']}"
+                    class="btn btn-sm btn-outline-danger" >
+                    <span class="fas fa-trash"></span>
+                  </button> 
+                </td>
+              </tr>
+            `;
+            incRow++; 
+          }
+        }
+
+        $('#row-list').empty();
+        $('#row-list').append(htmlData);
+
+        $('#th-tot').empty();
+        $('#th-tot').append(incRow-1);
+
+        $('[id^=btn-det-]').click(function(){
+          let data_id = $(this).attr('data-bs-id');
+          let urlPar = '';
+          urlPar = new URLSearchParams({
+            id: data_id
+          });
+          fetchData('view-list-det', urlPar);
+        });
+        
+        $('[id^=btn-del-]').click(function(){
+          let data_id = $(this).attr('data-bs-id');
+          let html_data = '';
+          $('.modal-dialog').removeClass('modal-xl');
+          $('.modal-dialog').removeClass('modal-fullscreen')
+          $('.modal-title').empty();
+          $('.modal-title').append('Delete current analisys ?');
+          $('.modal-body').empty();
+          $('.modal-body').append(html_data);
+          $('#btn-modal-yes').addClass('d-none');
+          $('#btn-modal-no').addClass('d-none');
+          $('#btn-save-yes').addClass('d-none');
+          $('#btn-save-no').addClass('d-none');
+          $('.btn-close').addClass('d-none');
+          let html_btn = `
+            <button id="btn-del-yes-${data_id}" type="button" class="btn btn-success">Yes</button>
+            <button id="btn-del-no-${data_id}" type="button" class="btn btn-danger">No</button>
+          `;
+          //$('.modal-footer').empty();
+          $('.modal-footer').append(html_btn);
+          $("#modalDialog").modal('show');
+
+          $('#btn-del-no-'+data_id).click(function(){
+            $("#modalDialog").modal('hide');
+            $('#btn-del-yes-'+data_id).remove();
+            $('#btn-del-no-'+data_id).remove();
+          });
+
+          $('#btn-del-yes-'+data_id).click(function(){
+            let urlPar = '';
+            urlPar = new URLSearchParams({
+              data_id: data_id
+            });
+            fetchData('del-list', urlPar);
+            $("#modalDialog").modal('hide');
+            $('#btn-del-yes-'+data_id).remove();
+            $('#btn-del-no-'+data_id).remove();
+          });
+        });
+      }
+
+      function setListDet(result){
+        let htmlData = '', htmlHead = '', htmlForm = '', incRow = 1;
+        let ctdDate='', ctdPart='', ctdPartd='', ctdLine='', ctdLined='', ctdFch='', ctdEff='', ctdHc='', ctdWh='', ctdTar='', ctdTt='', ctdTh;
+        let ctdLead = '', ctdGroup='', ctdId = '', curFlag = '';
+        let totBlTime = 0;
+        htmlHead += `
+        <div class="d-flex">
+          <table class="table me-3">
+            <tbody class="align-middle">
+              <tr>
+                <td class="w-25 table-primary">Date</td>
+                <td class="table-primary" style="width:10px">:</td>
+                <td id="tdh-date">3</td>
+              </tr>
+              <tr>
+                <td class="table-primary">Part desc</td>
+                <td class="table-primary">:</td>
+                <td id="tdh-part">3</td>
+              </tr>
+              <tr>
+                <td class="table-primary">Line desc</td>
+                <td class="table-primary">:</td>
+                <td id="tdh-line">3</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table">
+            <tbody class="align-middle text-center">
+              <tr>
+                <td colspan="7" class="text-start table-primary">SIMULASI</td>
+              </tr>
+              <tr class="table-light">
+                <td>FCH</td>
+                <td>EFF</td>
+                <td>HC</td>
+                <td>WH</td>
+                <td>TARGET</td>
+                <td>TT</td>
+                <td>T/H</td>
+              </tr>
+              <tr>
+                <td id="tdh-fch" data-bs-id="">1</td>
+                <td><input type="number" class="form-control form-control-sm text-center" id="txt-sim-eff" name="txt-sim-eff" min="1" max="200" value=""></td>
+                <td><input type="number" class="form-control form-control-sm text-center" id="txt-sim-hc" name="txt-sim-hc" min="1" max="200" value=""></td>
+                <td><input type="number" class="form-control form-control-sm text-center" id="txt-sim-wh" name="txt-sim-wh" min="1" max="200" value=""></td>
+                <td id="tdh-tar">5</td>
+                <td id="tdh-tt">6</td>
+                <td id="tdh-th">7</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        `;
+
+        htmlData += `
+          <table class="table table-sm">
+            <thead>
+              <tr class="align-middle text-center table-success">
+                <th rowspan="2">Process</th>
+                <th rowspan="2">FCH</th>
+                <th colspan="2">CBS</th>
+                <th colspan="2">Target EFF(<span id="span-eff">100%</span>)</th>
+                <th rowspan="2">Operator name</th>
+                <th colspan="2">Actual CT</th>
+                <th colspan="3">Pot. Capacity</th>
+                <th rowspan="2">Bln. Qty</th>
+                <th rowspan="2">Opr. Need</th>
+                <th rowspan="2">Bln. Time(m)</th>
+              </tr>
+              <tr class="align-middle text-center table-success">
+                <th>Tar</th>
+                <th>CT</th>
+                <th>Jam</th>
+                <th>CT</th>
+                <th>OPT 1</th>
+                <th>OPT 2</th>
+                <th>OPT 1</th>
+                <th>OPT 2</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        
+        if (result.empty == undefined) {
+          for (let key in result){  
+            
+            if (key == 0) {
+              ctdId=result[key]['idx'];
+              ctdDate = result[key]['datex'];
+              ctdPart = result[key]['partx'];
+              ctdPartd = result[key]['partdx'];
+              ctdLine = result[key]['linex'];
+              ctdLined = result[key]['linedx'];
+              ctdFch = result[key]['pfchx'];
+              ctdEff = result[key]['effx'];
+              ctdHc = result[key]['hcx'];
+              ctdWh = result[key]['whx'];
+              ctdTar = result[key]['tqtyx'];
+              ctdTt = result[key]['ttx'];
+              ctdTh = result[key]['thx'];
+              ctdLead = result[key]['leadx'];
+              ctdGroup = result[key]['groupx'];
+            }
+
+            if (curFlag != result[key]['pflagx']){
+              if (result[key]['pflagx'] == 'CBS'){
+                htmlData += `
+                  <tr class="align-middle text-start">
+                    <td colspan="17" class="table-warning">CBS process</td>
+                  </tr>
+                `;
+              } else {
+                htmlData += `
+                  <tr class="align-middle text-start">
+                    <td colspan="17" class="table-warning">Additional process</td>
+                  </tr>
+                `;
+              }
+              
+            }
+            
+            let tdSumColor = '';
+            if (Number(result[key]['tpoprct']) < Number(result[key]['thx'])) {
+              if (Number(result[key]['oprct1x']) > 0 ) {
+                tdSumColor = 'table-danger';
+              }
+            }
+
+            let tdSumColorBl = '';
+            if (Number(result[key]['oprblx']) < 0) {
+              if (Number(result[key]['oprct1x']) > 0 ) {
+                tdSumColorBl = 'table-danger';
+              }
+            }
+            
+
+            if (result[key]['pflagx'] == 'CBS') {
+
+              htmlData += `
+                <tr class="align-middle text-start" id="row-data-${result[key]['id']}">
+                  <td class="">${result[key]['procdx']}<br><span class="small">M/C: ${result[key]['mcx']}</span></td>
+                  <td class="text-end" id="td-det-fch-${result[key]['procx']}" data-bs-proc="${result[key]['procx']}">${result[key]['fchx']}</td>
+                  <td class="text-end" id="td-det-cbt-${result[key]['procx']}" data-bs-proc="${result[key]['procx']}">${result[key]['cbstx']}</td>
+                  <td class="text-end" id="td-det-cbc-${result[key]['procx']}">${result[key]['cbsctx']}</td>
+                  <td class="text-end table-light" id="td-det-eft-${result[key]['procx']}">${result[key]['efftjx']}</td>
+                  <td class="text-end table-light" id="td-det-efc-${result[key]['procx']}">${result[key]['effctx']}</td>
+                  <td class="">
+                    <input type="text" class="form-control form-control-sm" 
+                      data-bs-fl="D"
+                      data-bs-tt="${result[key]['ttx']}" 
+                      data-bs-th="${result[key]['thx']}" 
+                      data-bs-proc="${result[key]['procx']}" 
+                      name="txtopr-${result[key]['procx']}" id="txtopr-${result[key]['procx']}" value="${result[key]['oprx']}">                
+                  </td>
+                  <td class="text-end">
+                    <input type="number" class="form-control form-control-sm text-end"
+                    data-bs-fl="D" 
+                    data-bs-tt="${result[key]['ttx']}" 
+                    data-bs-th="${result[key]['thx']}"
+                    data-bs-proc="${result[key]['procx']}" 
+                    id="txtopra1-${result[key]['procx']}" name="txtopra1-${result[key]['procx']}" min="1" max="9999" value="${result[key]['oprct1x']}">
+                  </td>
+                  <td class="text-end">
+                    <input type="number" class="form-control form-control-sm text-end"
+                    data-bs-fl="D" 
+                    data-bs-tt="${result[key]['ttx']}" 
+                    data-bs-th="${result[key]['thx']}"
+                    data-bs-proc="${result[key]['procx']}" 
+                    id="txtopra2-${result[key]['procx']}" name="txtopra2-${result[key]['procx']}" min="1" max="9999" value="${result[key]['oprct2x']}">
+                  </td>
+                  <td class="text-end" id="td-pot-op1-${result[key]['procx']}">${(Number(result[key]['poprct1x'])).toFixed(0)}</td>
+                  <td class="text-end" id="td-pot-op2-${result[key]['procx']}">${(Number(result[key]['poprct2x'])).toFixed(0)}</td>
+                  <td class="text-end ${tdSumColor}" id="td-pot-opt-${result[key]['procx']}">${(Number(result[key]['tpoprct'])).toFixed(0)}</td>
+                  <td class="text-end ${tdSumColorBl}" id="td-pot-opb-${result[key]['procx']}">${(Number(result[key]['oprblx'])).toFixed(0)}</td>
+                  <td class="text-end" id="td-pot-opn-${result[key]['procx']}">${result[key]['oprnedx']}</td>
+                  <td class="text-end" id="td-pot-blt-${result[key]['procx']}">${result[key]['bltmx']}</td>
+                </tr>
+              `;
+            } else {
+              // <input type="number" class="form-control form-control-sm text-end" 
+              //       data-bs-tt="${result[key]['ttx']}" 
+              //       data-bs-th="${result[key]['thx']}"
+              //       data-bs-proc="${result[key]['procx']}" 
+              //       id="txtafch-${result[key]['procx']}" name="txtafch-${result[key]['procx']}" min="1" max="9999" value="${result[key]['fchx']}">
+
+              htmlData += `
+                <tr class="align-middle text-start" id="row-data-${result[key]['id']}">
+                  <td class="">
+                    <input type="text" name="txtaprc-${result[key]['procx']}" 
+                    id="txtaprc-${result[key]['procx']}"
+                    data-bs-fl="E"
+                    data-bs-tt="${result[key]['ttx']}" 
+                    data-bs-th="${result[key]['thx']}"
+                    data-bs-proc="${result[key]['procx']}"
+                    class="form-control" value="${result[key]['procdx']}">
+                  </td>
+                  <td class="text-end" id="td-det-fch-${result[key]['procx']}" data-bs-proc="${result[key]['procx']}">
+                    ${result[key]['fchx']}
+                  </td>
+                  <td class="text-end" id="td-det-cbt-${result[key]['procx']}" data-bs-proc="${result[key]['procx']}">${result[key]['cbstx']}</td>
+                  <td class="text-end" id="td-det-cbc-${result[key]['procx']}">${result[key]['cbsctx']}</td>
+                  <td class="text-end table-light" id="td-det-eft-${result[key]['procx']}">${result[key]['efftjx']}</td>
+                  <td class="text-end table-light" id="td-det-efc-${result[key]['procx']}">${result[key]['effctx']}</td>
+                  <td class="">
+                    <input type="text" class="form-control form-control-sm" 
+                      data-bs-fl="E"
+                      data-bs-tt="${result[key]['ttx']}" 
+                      data-bs-th="${result[key]['thx']}" 
+                      data-bs-proc="${result[key]['procx']}" 
+                      name="txtopr-${result[key]['procx']}" id="txtopr-${result[key]['procx']}" value="${result[key]['oprx']}">                
+                  </td>
+                  <td class="text-end">
+                    <input type="number" class="form-control form-control-sm text-end" 
+                    data-bs-fl="E"
+                    data-bs-tt="${result[key]['ttx']}" 
+                    data-bs-th="${result[key]['thx']}"
+                    data-bs-proc="${result[key]['procx']}" 
+                    id="txtopra1-${result[key]['procx']}" name="txtopra1-${result[key]['procx']}" min="1" max="9999" value="${result[key]['oprct1x']}">
+                  </td>
+                  <td class="text-end">
+                    <input type="number" class="form-control form-control-sm text-end"
+                    data-bs-fl="E" 
+                    data-bs-tt="${result[key]['ttx']}" 
+                    data-bs-th="${result[key]['thx']}"
+                    data-bs-proc="${result[key]['procx']}" 
+                    id="txtopra2-${result[key]['procx']}" name="txtopra2-${result[key]['procx']}" min="1" max="9999" value="${result[key]['oprct2x']}">
+                  </td>
+                  <td class="text-end" id="td-pot-op1-${result[key]['procx']}">${(Number(result[key]['poprct1x'])).toFixed(0)}</td>
+                  <td class="text-end" id="td-pot-op2-${result[key]['procx']}">${(Number(result[key]['poprct2x'])).toFixed(0)}</td>
+                  <td class="text-end ${tdSumColor}" id="td-pot-opt-${result[key]['procx']}">${(Number(result[key]['tpoprct'])).toFixed(0)}</td>
+                  <td class="text-end ${tdSumColorBl}" id="td-pot-opb-${result[key]['procx']}">${(Number(result[key]['oprblx'])).toFixed(0)}</td>
+                  <td class="text-end" id="td-pot-opn-${result[key]['procx']}">${result[key]['oprnedx']}</td>
+                  <td class="text-end" id="td-pot-blt-${result[key]['procx']}">${result[key]['bltmx']}</td>
+                </tr>
+              `;
+            }
+
+            incRow++; 
+            totBlTime += Number(result[key]['bltmx']);
+            curFlag = result[key]['pflagx'];
+          }
+        }
+
+        htmlData += `
+              <tr class="align-middle text-end table-warning fw-bold">
+                <td colspan="14" class="">Time balance (Minutes) :</td>
+                <td id="td-sum-timem"></td>
+              </tr>
+              <tr class="align-middle text-end table-warning fw-bold">
+                <td colspan="14" class="">Time balance (Hours) :</td>
+                <td id="td-sum-timeh"></td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+
+        $('.modal-dialog').removeClass('modal-xl');
+        $('.modal-dialog').addClass('modal-fullscreen')
+        $('.modal-title').empty();
+        $('.modal-title').append('Detail Capacity');
+        $('.modal-body').empty();
+        $('.modal-body').append(htmlHead + htmlData);
+        $('#btn-modal-yes').addClass('d-none');
+        $('#btn-modal-no').addClass('d-none');
+        $('#btn-save-yes').addClass('d-none');
+        $('#btn-save-no').addClass('d-none');
+        $("#modalDialog").modal('show');
+
+        //set header
+
+        let htmlPart = `
+          <div class="input-group text-start">
+            <span class="input-group-text">${ctdPart}</span>
+            <span class="input-group-text">${ctdPartd}</span>
+          </div>
+        `;
+
+        htmlPart = `
+          ${ctdPart} - ${ctdPartd}
+        `;
+
+        htmlForm +=`
+          <div class="input-group input-group-sm text-start">
+            <span class="input-group-text">${ctdLined}</span>
+            <span class="input-group-text">${ctdGroup}</span>
+            <span class="input-group-text">${ctdLead}</span>
+          </div>
+        `;
+        
+        $('#tdh-date').empty();
+        $('#tdh-date').append(ctdDate);
+        $('#tdh-part').empty();
+        $('#tdh-part').append(htmlPart);
+        $('#tdh-line').empty();
+        $('#tdh-line').append(htmlForm);
+        $('#tdh-fch').empty();
+        $('#tdh-fch').append(ctdFch);
+        $('#tdh-fch').attr('data-bs-id', ctdId);
+
+        $('#txt-sim-eff').val(Number(ctdEff)*100);
+        $('#txt-sim-hc').val(ctdHc);
+        $('#txt-sim-wh').val(ctdWh);
+
+        $('#tdh-tar').empty();
+        $('#tdh-tar').append(ctdTar);
+        $('#tdh-tt').empty();
+        $('#tdh-tt').append(ctdTt);
+        $('#tdh-th').empty();
+        $('#tdh-th').append(ctdTh);
+
+        let styleBl = '';
+        if (totBlTime < 0) {
+          styleBl="table-danger";
+        } else {
+          styleBl="table-warning";
+        }
+
+        $('#td-sum-timem').empty();
+        $('#td-sum-timem').append(totBlTime);
+        $('#td-sum-timeh').empty();
+        $('#td-sum-timeh').append((totBlTime/60).toFixed(2));
+        $('#td-sum-timem').addClass(styleBl);
+        $('#td-sum-timeh').addClass(styleBl);
+        $('#span-eff').empty();
+        $('#span-eff').append((ctdEff*100).toFixed(0) + '%');
+
+        //EFF
+        $('#txt-sim-eff').change(function (e){
+          e.preventDefault;
+          countDataSim();
+
+          let urlPar = '';
+          urlPar = new URLSearchParams({
+            rflag: 'H',
+            rId: $('#tdh-fch').attr('data-bs-id'),            
+            rIdProc: 0,
+            rEff: $('#txt-sim-eff').val(),
+            rHc: $('#txt-sim-hc').val(),
+            rWh: $('#txt-sim-wh').val(),
+            rProcOpn:'',
+            rProcOp1:'',
+            rProcOp2:''            
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        $('#txt-sim-hc').change(function (e){
+          e.preventDefault;
+          countDataSim();
+          let urlPar = '';
+          urlPar = new URLSearchParams({
+            rflag: 'H',
+            rId: $('#tdh-fch').attr('data-bs-id'),            
+            rIdProc: 0,
+            rEff: $('#txt-sim-eff').val(),
+            rHc: $('#txt-sim-hc').val(),
+            rWh: $('#txt-sim-wh').val(),
+            rProcOpn:'',
+            rProcOp1:'',
+            rProcOp2:''            
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        $('#txt-sim-wh').change(function (e){
+          e.preventDefault;
+          countDataSim();
+          let urlPar = '';
+          urlPar = new URLSearchParams({
+            rflag: 'H',
+            rId: $('#tdh-fch').attr('data-bs-id'),            
+            rIdProc: 0,
+            rEff: $('#txt-sim-eff').val(),
+            rHc: $('#txt-sim-hc').val(),
+            rWh: $('#txt-sim-wh').val(),
+            rProcOpn:'',
+            rProcOp1:'',
+            rProcOp2:''            
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //formula
+        $('[id^=txtopr-]').change(function (e){
+          e.preventDefault;
+          let curProc = $(this).attr('data-bs-proc');
+          let curFlag = $(this).attr('data-bs-fl');
+          let curProcd = '';
+          if (curFlag == 'E'){
+            curProcd = $('#txtaprc-' + curProc).val();
+          }
+          countData(curProc);
+          let urlPar = '';
+          urlPar = new URLSearchParams({
+            rflag: curFlag,
+            rId: $('#tdh-fch').attr('data-bs-id'),            
+            rIdProc: curProc,
+            rEff: $('#txt-sim-eff').val(),
+            rHc: $('#txt-sim-hc').val(),
+            rWh: $('#txt-sim-wh').val(),
+            rProc: curProcd,
+            rProcOpn: $('#txtopr-' + curProc).val(),
+            rProcOp1: $('#txtopra1-' + curProc).val(),
+            rProcOp2: $('#txtopra2-' + curProc).val()            
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        $('[id^=txtopra1-]').change(function (e){
+          e.preventDefault;
+          let curProc = $(this).attr('data-bs-proc');
+          let curFlag = $(this).attr('data-bs-fl');
+          let curProcd = '';
+          if (curFlag == 'E'){
+            curProcd = $('#txtaprc-' + curProc).val();
+          }
+
+          countData(curProc);
+          let urlPar = '';
+          urlPar = new URLSearchParams({
+            rflag: curFlag,
+            rId: $('#tdh-fch').attr('data-bs-id'),            
+            rIdProc: curProc,
+            rEff: $('#txt-sim-eff').val(),
+            rHc: $('#txt-sim-hc').val(),
+            rWh: $('#txt-sim-wh').val(),
+            rProc: curProcd,
+            rProcOpn: $('#txtopr-' + curProc).val(),
+            rProcOp1: $('#txtopra1-' + curProc).val(),
+            rProcOp2: $('#txtopra2-' + curProc).val()            
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        $('[id^=txtopra2-]').change(function (e){
+          e.preventDefault;
+          let curProc = $(this).attr('data-bs-proc');
+          let curFlag = $(this).attr('data-bs-fl');
+          let curProcd = '';
+          if (curFlag == 'E'){
+            curProcd = $('#txtaprc-' + curProc).val();
+          }
+          countData(curProc);
+          let urlPar = '';
+          urlPar = new URLSearchParams({
+            rflag: curFlag,
+            rId: $('#tdh-fch').attr('data-bs-id'),            
+            rIdProc: curProc,
+            rEff: $('#txt-sim-eff').val(),
+            rHc: $('#txt-sim-hc').val(),
+            rWh: $('#txt-sim-wh').val(),
+            rProc: curProcd,
+            rProcOpn: $('#txtopr-' + curProc).val(),
+            rProcOp1: $('#txtopra1-' + curProc).val(),
+            rProcOp2: $('#txtopra2-' + curProc).val()            
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        // additional
+        $('[id^=txtaprc-]').change(function (e){
+          e.preventDefault;
+          let curProc = $(this).html('data-bs-proc');
+          let urlPar = '';
+          urlPar = new URLSearchParams({
+            rflag: 'E',
+            rId: $('#tdh-fch').attr('data-bs-id'),            
+            rIdProc: curProc,
+            rEff: $('#txt-sim-eff').val(),
+            rHc: $('#txt-sim-hc').val(),
+            rWh: $('#txt-sim-wh').val(),
+            rProc: $(this).val(),
+            rProcOpn: $('#txtopr-' + curProc).val(),
+            rProcOp1: $('#txtopra1-' + curProc).val(),
+            rProcOp2: $('#txtopra2-' + curProc).val()            
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        function countData(procId){
+          let curProc = procId;
+          let curValOp1 = Number($('#txtopra1-'+curProc).val());
+          let curValOp2 = Number($('#txtopra2-'+curProc).val());
+          let curTime = 3600;
+          let curTt = Number($('#tdh-tt').html());
+          let curTh = Number($('#tdh-th').html());
+          let curPop1 = (curValOp1 == 0 ? 0 : Number(curTime/curValOp1));
+          let curPop2 = (curValOp2 == 0 ? 0 : Number(curTime/curValOp2));
+
+          //console.log(curProc + "|" + curValOp1 + "|" + curValOp2 + "|" + curTt + "|" + curTh);
+
+          //pot op1
+          $('#td-pot-op1-'+curProc).empty();
+          $('#td-pot-op1-'+curProc).append((curPop1).toFixed(0));
+
+          //pot op2
+          $('#td-pot-op2-'+curProc).empty();
+          $('#td-pot-op2-'+curProc).append((curPop2).toFixed(0));
+
+          //pot sum
+          $('#td-pot-opt-'+curProc).empty();
+          $('#td-pot-opt-'+curProc).append((curPop1+curPop2).toFixed(0));
+
+          //ot total
+          if ((Number(curPop1)+Number(curPop2)) < curTh ) {
+            $('#td-pot-opt-'+curProc).removeClass('table-danger');
+            if ((Number(curPop1)+Number(curPop2)) != 0) {              
+              $('#td-pot-opt-'+curProc).addClass('table-danger');
+            }
+          }else{
+            $('#td-pot-opt-'+curProc).removeClass('table-danger');
+          }
+
+          //op balance
+          let curOpb = (curPop1+curPop2)-curTh;
+          $('#td-pot-opb-'+curProc).empty();
+          $('#td-pot-opb-'+curProc).append((curOpb).toFixed(0));
+          if (curOpb < 0 ) {
+            $('#td-pot-opb-'+curProc).removeClass('table-danger');
+            if ((Number(curPop1)+Number(curPop2)) != 0) {   
+              $('#td-pot-opb-'+curProc).addClass('table-danger');
+            }
+          } else {
+            $('#td-pot-opb-'+curProc).removeClass('table-danger');
+          }
+          
+          //op need
+          let curOpn = (curValOp1/curTt);
+          $('#td-pot-opn-'+curProc).empty();
+          $('#td-pot-opn-'+curProc).append((curOpn).toFixed(2));
+
+          //bln time
+          let curTimeBln = (curOpb*curValOp1)/60;
+          $('#td-pot-blt-'+curProc).empty();
+          $('#td-pot-blt-'+curProc).append((curTimeBln).toFixed(0));
+
+          countDataTot();
+        }
+
+        function countDataTot(){
+          let curTot = 0;
+          $('[id^=td-pot-blt-]').each(function (e){
+            e.preventDefault;            
+            //console.log(Number($(this).html()));
+            curTot += Number($(this).html());            
+          });
+          $('#td-sum-timem').empty();
+          $('#td-sum-timem').append(curTot);
+
+          $('#td-sum-timeh').empty();
+          $('#td-sum-timeh').append((curTot/60).toFixed(2));
+        }
+
+        function countDataSim(){
+          let curFc = Number($('#tdh-fch').html());
+          let curEf = Number($('#txt-sim-eff').val());
+          let curHc = Number($('#txt-sim-hc').val());
+          let curWh = Number($('#txt-sim-wh').val());
+          let curTr = curHc*curWh/curFc*1000*curEf/100;
+          let curTt = 3600*curWh/curTr;
+          let curTh = curTr/curWh;
+          //console.log(curTr + '-' + curTt + '-' + curTh);
+
+          //set value
+          $('#span-eff').empty();
+          $('#span-eff').append(curEf + '%');
+
+          $('#tdh-tar').empty();
+          $('#tdh-tar').append(curTr.toFixed(0));
+          $('#tdh-tt').empty();
+          $('#tdh-tt').append(curTt.toFixed(0));
+          $('#tdh-th').empty();
+          $('#tdh-th').append(curTh.toFixed(0));
+          
+          $('[id^=td-det-cbt-]').each(function (){
+            let curPrc = $(this).attr('data-bs-proc');
+            let curCbt = Number($(this).html());
+            let curEfc = 3600/(curCbt*(curEf/100));
+            let curEft = 3600/curEfc;
+
+            $('#td-det-efc-' + curPrc).empty();
+            $('#td-det-efc-' + curPrc).append(curEfc.toFixed(0));
+            $('#td-det-eft-' + curPrc).empty();
+            $('#td-det-eft-' + curPrc).append(curEft.toFixed(0));
+            //console.log(curEfc +'-'+ curEft);
+            countData(curPrc);
+          });
+        }
+        //console.log(htmlData);
+      }
+      
+      //part list
+      function setPartList(result){
+        //console.log(result);
+        G_ADD_PART = '<option value=""></option>';
+        if (result.empty == undefined) {
+          for (let key in result){
+            G_ADD_PART += `<option value="${result[key]['partx']}">${result[key]['part_namex']}</option>`;
+          }
+        }
+      }
+
+      $('input[name="date-his"]').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'YYYY-MM-DD'
+          }
+      });
+
+      $("#date-his").change(function (e) { 
+        e.preventDefault();
+        fetchData('view-list', setUrlParam(1));
+      });
+
+      $("#unit").change(function (e) { 
+        e.preventDefault();
+        fetchData('view-list', setUrlParam(1));
+      });
+
+      $("#line").change(function (e) { 
+        e.preventDefault();
+        fetchData('view-list', setUrlParam(1));
+      });
+      
+      $('#nav-cnt-header').click(function (e){
+        e.preventDefault();
+        $('#nav-men-list').removeClass('d-none');
+        $('#nav-cnt-header').addClass('d-none');
+        $('#div-data-detail').addClass('d-none');
+        $('#filter-list').removeClass('d-none');
+        $('#div-data-header').removeClass('d-none');
+      });      
+            
+      $("#add-anali").click(function (e) { 
+        e.preventDefault();
+        let html_data = `
+          <table class="table">
+            <tbody>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Date</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <input id="date-add" name="date-add" type="text" class="form-control">
+                </td>
+              </tr>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Line &amp; Group</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <div class="input-group">
+                    <select name="line-add" id="line-add" class="form-select w-50">
+                      ${G_ADD_LINE}
+                    </select>
+                    <select name="group-add" id="group-add" class="form-select w-25">
+                      <option value=""></option>
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                      <option value="F">F</option>
+                      <option value="G">G</option>
+                      <option value="H">H</option>
+                      <option value="I">I</option>
+                      <option value="J">J</option>
+                      <option value="K">K</option>
+                      <option value="L">L</option>
+                      <option value="M">M</option>
+                      <option value="N">N</option>
+                      <option value="O">O</option>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+              <tr class="align-middle text-start table-light">
+                <td class="table-primary">Part / Style</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <select name="part-add" id="part-add" class="form-select" autocomplete="on">
+                    ${G_ADD_PART}
+                  </select>
+                </td>
+              </tr>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Study time by</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <input id="by-add" name="by-add" type="text" class="form-control">
+                </td>
+              </tr>
+              <tr id="tr-msg-add" class="d-none table-danger">
+                <td id="td-msg-add" colspan="3"></td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+
+        let html_button = `
+          <button id="btn-modal-yes" type="button" class="btn btn-warning">Save</button>
+          <button id="btn-modal-no" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+        `;
+        
+        $('.modal-dialog').removeClass('modal-fullscreen');
+        $('.modal-dialog').addClass('modal-xl');
+        $('.modal-title').empty();
+        $('.modal-title').append('Add new analisys');
+        $('.modal-body').empty();
+        $('.modal-body').append(html_data);
+        $('.modal-footer').empty();
+        $('.modal-footer').append(html_button);
+                
+        $('input[name="date-add"]').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'YYYY-MM-DD'
+          }
+        });
+
+        $("#part-add").selectize({
+          plugins: ['remove_button'],
+	        sortField: 'text'
+        });
+
+        //action save
+        $('#btn-modal-yes').click(function(e){
+          
+          let req_date = $('#date-add').val();
+          let req_line = $('#line-add').val();
+          let req_group = $('#group-add').val();
+          let req_part = $('#part-add').val();
+          let req_by = $('#by-add').val();
+
+          //valid data
+          if (req_part.trim() == ''){
+            $('#tr-msg-add').removeClass('d-none');
+            $('#td-msg-add').empty();
+            $('#td-msg-add').append('Part/Style not allowed empty.');
+            return;
+          }
+
+          const urlParam = new FormData();
+          urlParam.append('req_date', req_date);
+          urlParam.append('req_line', req_line);
+          urlParam.append('req_group', req_group);
+          urlParam.append('req_part', req_part);
+          urlParam.append('req_by', req_by);
+
+          fetchData('add-list', urlParam);
+        });
+
+        $('#modalDialog').modal('show');
+      });
+
+      $("#refresh").click(function (e) { 
+        e.preventDefault();
+        $('#div-list').addClass('d-none');
+        fetchData('view-list', setUrlParam(1));
+      });
+            
+      // ############################################ 
+      // General
+      // ############################################
+
+      //first load data
+      fetchData('view-list', setUrlParam(1));
+      fetchData('view-part-list', setUrlParam(0));
+
+      setInterval(() => {
+        //$('#accepted-list').addClass('d-none');
+        //$('#lot-loader').removeClass('d-none');
+      //  fetchData('view-list', setUrlParam(1));
+      }, 30000);
+
+    });
+  </script>
+</body>
+</html>

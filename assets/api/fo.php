@@ -439,8 +439,8 @@ if ($auth != false) {
 
         // INSERT CBS
         $strSql = "
-        INSERT INTO `fo_review_d` (`rev_id`, `rev_proc_id`, `rev_ss`, `rev_rej`, `add_date`, `add_id`) 
-        SELECT '$idx' aidx, a.CBSD_ID procx, '0' ss, '0' rej, NOW() addx, '$useridx' adux   
+        INSERT INTO `fo_review_d` (`rev_id`, `rev_proc_id`, `rev_ss`, `rev_rej`, `rev_seam`, `rev_spi`, `rev_dim`, `rev_oth`, `rev_act`, `add_date`, `add_id`) 
+        SELECT '$idx' aidx, a.CBSD_ID procx, '0' ss, '0' rej, '' seam, '' spi, '' dim, '' oth, '' act, NOW() addx, '$useridx' adux   
         FROM toy_part_cbsd a 
         LEFT JOIN toy_part_cbsh b ON a.CBSD_PART_NUM = b.CBSH_PART_NUM
         WHERE a.CBSD_PART_NUM = '$rev_part';
@@ -454,12 +454,12 @@ if ($auth != false) {
 
         // INSERT CUSTOME
         $strSql = "
-        INSERT INTO `fo_review_dc` (`rev_id`, `rev_proc_id`, `rev_proc`, `add_date`, `add_id`) 
-        SELECT '$idx' aidx, 'DC1' procx, '' procdx, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC2' procx, '' procdx, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC3' procx, '' procdx, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC4' procx, '' procdx, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC5' procx, '' procdx, NOW() addx, '$useridx' adux
+        INSERT INTO `fo_review_dc` (`rev_id`, `rev_proc_id`, `rev_proc`, `rev_c_aes`, `rev_c_func`, `rev_c_dim`, `rev_c_stat`, `add_date`, `add_id`) 
+        SELECT '$idx' aidx, 'DC1' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC2' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC3' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC4' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC5' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux
         ;";
         
         if (mysqli_query($conn, $strSql)) {
@@ -481,7 +481,6 @@ if ($auth != false) {
     ";
   
   } else if ($section == 9){ //update list detail
-    
     if ($menu_mod == 0) {
       $rows["auth_mod"] = "false";
       echo json_encode($rows);
@@ -490,7 +489,21 @@ if ($auth != false) {
     
     $rflag = $_POST['rflag'];
     $rId = $_POST['rId'];
+    
     $rIdProc = $_POST['rIdProc'];
+
+    $rSs = $_POST['rSs'];
+    $rRej = $_POST['rRej'];
+    $rSeam = $_POST['rSeam'];
+    $rSpi = $_POST['rSpi'];
+    $rDim = $_POST['rDim'];
+    $rOth = $_POST['rOth'];
+    $rAct = $_POST['rAct'];
+
+    $rAes = $_POST['rAes'];
+    $rFunc = $_POST['rFunc'];
+    $rC_dim = $_POST['rC_dim'];
+    $rStat = $_POST['rStat'];
 
     $rEff = floatval($_POST['rEff'])/100;
     $rHc = $_POST['rHc']; 
@@ -509,15 +522,15 @@ if ($auth != false) {
       ";
     } else if ($rflag == 'D') {
       $strSql ="
-      UPDATE ie_capacity_analid 
-      SET anali_opr='$rProcOpn', anali_act_ct1='$rProcOp1', anali_act_ct2='$rProcOp2', mod_date=NOW(), mod_id='$useridx' 
-      WHERE anali_id='$rId' AND anali_proc_id='$rIdProc';
+      UPDATE fo_review_d 
+      SET rev_ss='$rSs', rev_rej='$rRej', rev_seam='$rSeam', rev_spi='$rSpi', rev_dim='$rDim', rev_oth='$rOth', rev_act='$rAct', mod_date=NOW(), mod_id='$useridx' 
+      WHERE rev_id='$rId' AND rev_proc_id='$rIdProc';
       ";
-    } else if ($rflag == 'E') {
+    } else if ($rflag == 'DC') {
       $strSql ="
-      UPDATE ie_capacity_analidc
-      SET anali_proc='$rProc', anali_opr='$rProcOpn', anali_act_ct1='$rProcOp1', anali_act_ct2='$rProcOp2', mod_date=NOW(), mod_id='$useridx' 
-      WHERE anali_id='$rId' AND anali_proc_id='$rIdProc';
+      UPDATE fo_review_dc
+      SET rev_c_aes='$rAes', rev_c_func='$rFunc', rev_c_dim='$rC_dim', rev_c_stat='$rStat', mod_date=NOW(), mod_id='$useridx' 
+      WHERE rev_id='$rId' AND rev_proc_id='$rIdProc';
       ";
     }
 

@@ -383,7 +383,7 @@
                   <td class="text-center">${result[key]['groupx']}</td>
                   <td class="text-center">${result[key]['partx']}</td>
                   <td class="text-center">${result[key]['partdx']}</td>
-                  <td class="text-center ${blstyle}">-</td>
+                  <td id="td-avgh-${result[key]['idx']}" class="text-center ${blstyle}">-</td>
                   <td class="text-center">${result[key]['byx']}</td>
                   <td class="text-center">                  
                     <button id="btn-det-${incRow}" 
@@ -408,7 +408,7 @@
                   <td class="text-center">${result[key]['groupx']}</td>
                   <td class="text-center">${result[key]['partx']}</td>
                   <td class="text-center">${result[key]['partdx']}</td>
-                  <td class="text-center ${blstyle}">${result[key]['avgppm']}k</td>
+                  <td id="td-avgh-${result[key]['idx']}" class="text-center ${blstyle}">${result[key]['avgppm']}K</td>
                   <td class="text-center">${result[key]['byx']}</td>
                   <td class="text-center">                  
                     <button id="btn-det-${incRow}" 
@@ -551,12 +551,17 @@
               ctdDim = result[key]['dim'];
               ctdOth = result[key]['oth'];
               ctdAct = result[key]['act'];
-              ctdAvg = result[key]['avgppm'];
               ctdGroup = result[key]['groupx'];
               ctdPart = result[key]['partx'];
               ctdPartd = result[key]['partdx'];
             }
-            totAvg += Number(result[key]['avgppm']);
+            totSs += Number(result[key]['ss']);
+            totRej += Number(result[key]['rej']);
+            
+            // console.log(totSs);
+            // console.log(totRej);
+            // console.log(ctdAvg);
+            // console.log(totAvg);
 
             if (curFlag != result[key]['pflagx']){
               if (result[key]['pflagx'] == 'CBS'){
@@ -614,6 +619,11 @@
             // }
 
             if (result[key]['pflagx'] == 'CBS') {
+              if (result[key]['ss'] == null || result[key]['ss'] == 0 || result[key]['rej'] == null || result[key]['rej'] == 0) {
+                ctdAvg = 0;
+              } else {
+                ctdAvg += Number(result[key]['avgppm']);
+              }
               htmlData += `
                 <tr class="align-middle text-start" id="row-data-${result[key]['id']}">
                   <td class="">${result[key]['procdx']}<br><span class="small">M/C: ${result[key]['mcx']}</span></td>
@@ -621,12 +631,14 @@
                     <input type="number" class="form-control form-control text-center"
                     data-bs-fl="D"
                     data-bs-proc="${result[key]['procx']}"
+                    data-bs-idh="${result[key]['idx']}"
                     id="ss-${result[key]['procx']}" name="ss-${result[key]['procx']}" min="1" max="9999" value="${result[key]['ss']}">
                   </td>
                   <td class="text-end">
                     <input type="number" class="form-control form-control text-center"
                     data-bs-fl="D"
                     data-bs-proc="${result[key]['procx']}"
+                    data-bs-idh="${result[key]['idx']}"
                     id="rej-${result[key]['procx']}" name="rej-${result[key]['procx']}" min="1" max="9999" value="${result[key]['rej']}">
                   </td>
                   <td class="">
@@ -760,19 +772,34 @@
         $('#tdh-line').append(htmlForm);
 
         let avgstyle = '';
-        if (totAvg > 50 ) {
+        if (ctdAvg > 50 ) {
           avgstyle = 'text-danger fw-bold';
         } else {
           avgstyle = 'text-success fw-bold';
         }
 
-        if (totAvg == null || totAvg == 0) {
+        let curIdh = 0;
+        $('[id^=ss-]').each(function (e){
+          e.preventDefault;
+          curIdh = $(this).attr('data-bs-idh');
+        });
+
+        if (ctdAvg == null || ctdAvg == 0) {
           $('#tdh-avg').empty();
+          $('#tdh-avg').removeClass(avgstyle);
           $('#tdh-avg').append("-");
+
+          $('#td-avgh-' + curIdh).empty();
+          $('#td-avgh-' + curIdh).removeClass(avgstyle);
+          $('#td-avgh-' + curIdh).append("-");
         } else {
           $('#tdh-avg').empty();
-          $('#tdh-avg').append(totAvg,"K");
+          $('#tdh-avg').append(((ctdAvg/3).toFixed(0)),"K");
           $('#tdh-avg').addClass(avgstyle);
+
+          $('#td-avgh-' + curIdh).empty();
+          $('#td-avgh-' + curIdh).append(((ctdAvg/3).toFixed(0)),"K");
+          $('#td-avgh-' + curIdh).addClass(avgstyle);
         }
 
         $('#ss-').val(ctdSs);
@@ -1006,36 +1033,11 @@
           let curProc = procId;
           let curValOp1 = Number($('#txtopra1-'+curProc).val());
           let curValOp2 = Number($('#txtopra2-'+curProc).val());
-          let curSs = Number($('#ss-' + curProc).val());
-          let curRej = Number($('#rej-' + curProc).val());
-          let curTotavg = 0;
-          if (curSs == '0' || curRej == '0') {
-            curTotavg = 0;
-          } else {
-            curTotavg = Number((curRej/curSs)*1000);
-          }
           let curTime = 3600;
           let curTt = Number($('#tdh-tt').html());
           let curTh = Number($('#tdh-th').html());
           let curPop1 = (curValOp1 == 0 ? 0 : Number(curTime/curValOp1));
           let curPop2 = (curValOp2 == 0 ? 0 : Number(curTime/curValOp2));
-
-          //Avg PPM
-          let avgstyle = '';
-          if (curTotavg > 50 ) {
-            avgstyle = 'text-danger fw-bold';
-          } else {
-            avgstyle = 'text-success fw-bold';
-          }
-
-          if (curTotavg == null || curTotavg == 0) {
-            $('#tdh-avg').empty();
-            $('#tdh-avg').append("-");
-          } else {
-            $('#tdh-avg').empty();
-            $('#tdh-avg').append((curTotavg).toFixed(0),"K");
-            $('#tdh-avg').addClass(avgstyle);
-          }
 
           //console.log(curProc + "|" + curValOp1 + "|" + curValOp2 + "|" + curTt + "|" + curTh);
 
@@ -1088,12 +1090,63 @@
         }
 
         function countDataTot(){
+          let curTotss = 0;
+          let curTotrej = 0;
+          let curIdh = 0;
+          let curTotppm = 0;
+          $('[id^=ss-]').each(function (e){
+            e.preventDefault;
+            // console.log($(this).val());
+            curTotss += Number($(this).val());
+
+            let curSs = 0;
+            let curRej = 0;
+            let curTot = 0;
+            curSs = $('#ss-' + $(this).attr('data-bs-proc')).val();
+            curRej = $('#rej-' + $(this).attr('data-bs-proc')).val();
+            if (curSs == null || curSs == 0 || curRej == null || curRej == 0) {
+              curTot = 0;
+              curTotppm = 0;
+            } else {
+              curTot = (curRej/curSs)*1000;
+              curTotppm += Number(curTot);
+            }
+            // console.log(curTot);
+            curIdh = $(this).attr('data-bs-idh');
+          });
+          
+          let avgstyle = '';
+          if (curTotppm > 50 ) {
+            avgstyle = 'text-danger fw-bold';
+          } else {
+            avgstyle = 'text-success fw-bold';
+          }
+
+          if (curTotppm == null || curTotppm == 0) {
+            $('#tdh-avg').empty();
+            $('#tdh-avg').removeClass(avgstyle);
+            $('#tdh-avg').append("-");
+
+            $('#td-avgh-' + curIdh).empty();
+            $('#td-avgh-' + curIdh).removeClass(avgstyle);
+            $('#td-avgh-' + curIdh).append("-");
+          } else {
+            $('#tdh-avg').empty();
+            $('#tdh-avg').append(((curTotppm/3).toFixed(0)),"K");
+            $('#tdh-avg').addClass(avgstyle);
+
+            $('#td-avgh-' + curIdh).empty();
+            $('#td-avgh-' + curIdh).append(((curTotppm/3).toFixed(0)),"K");
+            $('#td-avgh-' + curIdh).addClass(avgstyle);
+          }
+
           let curTot = 0;
           $('[id^=td-pot-blt-]').each(function (e){
             e.preventDefault;            
             //console.log(Number($(this).html()));
             curTot += Number($(this).html());            
           });
+          
           $('#td-sum-timem').empty();
           $('#td-sum-timem').append(curTot);
 

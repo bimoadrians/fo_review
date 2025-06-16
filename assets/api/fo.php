@@ -311,19 +311,19 @@ if ($auth != false) {
     //  .(($line !="" && $line != "ALL") ? " AND sb.LINE_CODE ='$line' " : "")."";//Untuk daily history
 
     $strSql = "
-    SELECT sa.*, sc.PART_NAME partdx, sb.LINE_DESC linedx, sb.LINE_PREF unitx
-    FROM (
-      SELECT sa.idx, sa.partx, sa.linex, sa.groupx, sa.byx, SUM(avgppm) avgppm
-      FROM (        
-        SELECT a.rev_id idx, a.rev_part partx, a.rev_line linex, a.rev_group groupx, IFNULL(a.rev_by, '') byx, (ROUND(((b.rev_rej/b.rev_ss)*1000),0)) avgppm
-        FROM fo_review_h a
-          LEFT JOIN fo_review_d b ON a.rev_id = b.rev_id
-          WHERE a.rev_date ='$date'
-      ) sa GROUP BY sa.idx, sa.partx, sa.linex, sa.groupx
-    ) sa 
-    LEFT JOIN line sb ON sa.linex = sb.LINE_CODE
-    LEFT JOIN toy_part sc ON sa.partx = sc.PART_NUM
-    WHERE 1=1;
+    	SELECT sa.*, sc.PART_NAME partdx, sb.LINE_DESC linedx, sb.LINE_PREF unitx
+      FROM (
+        SELECT sa.idx, sa.partx, sa.linex, sa.groupx, sa.byx, sa.avgppm
+        FROM (        
+          SELECT a.rev_id idx, a.rev_part partx, a.rev_line linex, a.rev_group groupx, IFNULL(a.rev_by, '') byx, ROUND((a.rev_avgppm),0) avgppm
+          FROM fo_review_h a
+            LEFT JOIN fo_review_d b ON a.rev_id = b.rev_id
+            WHERE a.rev_date ='$date'
+        ) sa GROUP BY sa.idx, sa.partx, sa.linex, sa.groupx
+      ) sa 
+      LEFT JOIN line sb ON sa.linex = sb.LINE_CODE
+      LEFT JOIN toy_part sc ON sa.partx = sc.PART_NUM
+      WHERE 1=1;
     ".(($unit !="" && $unit != "ALL") ? " AND sb.LINE_PREF ='$unit' " : "").""
      .(($line !="" && $line != "ALL") ? " AND sb.LINE_CODE ='$line' " : "")."";//Untuk daily history
 
@@ -416,11 +416,11 @@ if ($auth != false) {
       
       $strSql = "
       INSERT INTO `fo_review_h` (
-        `rev_date`, `rev_line`, `rev_group`, 
+        `rev_avgppm`, `rev_date`, `rev_line`, `rev_group`, 
         `rev_part`, `rev_by`, `rev_stage`, 
         `add_date`, `add_id`
       ) VALUES (
-        '$rev_date', '$rev_line', '$rev_group',
+        '0', '$rev_date', '$rev_line', '$rev_group',
         '$rev_part', '$rev_by', '$rev_stage',
         NOW(), $useridx
       );";
@@ -467,7 +467,6 @@ if ($auth != false) {
         } else {
           $action = 'FALSE';
         }
-
       } else {
         $action = 'FALSE';
       }
@@ -489,11 +488,17 @@ if ($auth != false) {
     
     $rflag = $_POST['rflag'];
     $rId = $_POST['rId'];
-    
     $rIdProc = $_POST['rIdProc'];
 
     $rSs = $_POST['rSs'];
     $rRej = $_POST['rRej'];
+    if ($rRej == null || $rRej == 0 || $rSs == null || $rSs == 0) {
+      $rAvg = 0;
+      $rTotavg = 0;
+    } else {
+      $rAvg = round((($rRej/$rSs)*1000),0);
+    }
+
     $rSeam = $_POST['rSeam'];
     $rSpi = $_POST['rSpi'];
     $rDim = $_POST['rDim'];
@@ -505,27 +510,39 @@ if ($auth != false) {
     $rC_dim = $_POST['rC_dim'];
     $rStat = $_POST['rStat'];
 
-    $rEff = floatval($_POST['rEff'])/100;
-    $rHc = $_POST['rHc']; 
-    $rWh = $_POST['rWh'];
-
-    $rProc = $_POST['rProc'];
-    $rProcOpn = $_POST['rProcOpn'];
-    $rProcOp1 = (int)$_POST['rProcOp1'];
-    $rProcOp2 = (int)$_POST['rProcOp2'];
-
-    if ($rflag == 'H') {
+    if ($rflag == 'D') {
+      // $strSql ="
+      // UPDATE fo_review_d a INNER JOIN fo_review_h b ON (a.rev_id = b.rev_id)
+      // SET
+      //   a.rev_ss='$rSs', a.rev_rej='$rRej', a.rev_avgppm='$rAvg', a.rev_seam='$rSeam', a.rev_spi='$rSpi', a.rev_dim='$rDim', a.rev_oth='$rOth', a.rev_act='$rAct', a.mod_date=NOW(), a.mod_id='$useridx',
+      //   b.rev_avgppm='$rTotavg'
+      // WHERE a.rev_id = '$rId' AND a.rev_proc_id = '$rIdProc' AND b.rev_id = '$rId';
+      // ";
       $strSql ="
-      UPDATE ie_capacity_analih 
-      SET anali_eff='$rEff', anali_hc='$rHc', anali_wh='$rWh', mod_date=NOW(), mod_id='$useridx'
-      WHERE anali_id='$rId';
-      ";
-    } else if ($rflag == 'D') {
-      $strSql ="
-      UPDATE fo_review_d 
-      SET rev_ss='$rSs', rev_rej='$rRej', rev_seam='$rSeam', rev_spi='$rSpi', rev_dim='$rDim', rev_oth='$rOth', rev_act='$rAct', mod_date=NOW(), mod_id='$useridx' 
+      UPDATE fo_review_d
+      SET rev_ss='$rSs', rev_rej='$rRej', rev_avgppm='$rAvg', rev_seam='$rSeam', rev_spi='$rSpi', rev_dim='$rDim', rev_oth='$rOth', rev_act='$rAct', mod_date=NOW(), mod_id='$useridx' 
       WHERE rev_id='$rId' AND rev_proc_id='$rIdProc';
       ";
+
+      if (mysqli_query($conn, $strSql)) {
+        $strSql = "
+          SELECT (IFNULL(SUM(ROUND((rev_avgppm),0)),0) / IFNULL(COUNT(*),0)) avgppm
+	        FROM fo_review_d
+          WHERE rev_id='$rId';
+        ";
+
+        $res = mysqli_query($conn, $strSql);
+        $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
+        $rTotavg = round(($row['avgppm']),0);
+
+        $strSql ="
+        UPDATE fo_review_h
+        SET rev_avgppm='$rTotavg'
+        WHERE rev_id='$rId';
+        ";
+      } else {
+        $action = 'FALSE';
+      }
     } else if ($rflag == 'DC') {
       $strSql ="
       UPDATE fo_review_dc
@@ -540,7 +557,7 @@ if ($auth != false) {
     } else {
       $action = 'FALSE';
     }
-
+    
     $strSql = "
       SELECT '$action' actionx, '$msgx' msgx;
     ";

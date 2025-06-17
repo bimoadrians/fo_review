@@ -365,9 +365,11 @@
         let htmlData = '', incRow = 1;
 
         if (result.empty == undefined) {
-          for (let key in result){      
+          for (let key in result){
             
             let blstyle = '';
+            let avgppmh = '';
+            avgppmh = result[key]['avgppm'];
             if (Number(result[key]['avgppm']) > 50 ) {
               blstyle = 'text-danger fw-bold';
             } else {
@@ -488,7 +490,7 @@
       function setListDet(result){
         let htmlData = '', htmlHead = '', htmlForm = '', htmlPart = '', htmlStg = '', incRow = 1;
         let ctdDate='', ctdPart='', ctdPartd='', ctdLine='', ctdLined='';
-        let ctdAvg = 0, ctdSs = 0, ctdRej = 0, ctdSeam = '', ctdSpi = '', ctdDim = '', ctdOth = '', ctdAct = '';
+        let ctdAvg = 0, ctdTotavg = 0, ctdSs = 0, ctdRej = 0, ctdSeam = '', ctdSpi = '', ctdDim = '', ctdOth = '', ctdAct = '';
         let ctdByx = '', ctdStg = '', ctdGroup='', ctdId = '', curFlag = '';
         let totBlTime = 0, totRej = 0, totSs = 0, totAvg = 0;
         htmlHead += `
@@ -536,7 +538,6 @@
         
         if (result.empty == undefined) {
           for (let key in result){
-            
             if (key == 0) {
               ctdId = result[key]['idx'];
               ctdDate = result[key]['datex'];
@@ -621,17 +622,24 @@
             if (result[key]['pflagx'] == 'CBS') {
               if (result[key]['ss'] == null || result[key]['ss'] == 0 || result[key]['rej'] == null || result[key]['rej'] == 0) {
                 ctdAvg = 0;
+                if (ctdTotavg == null || ctdTotavg == 0) {
+                  ctdTotavg = 0;
+                } else {
+                  ctdTotavg = Number(result[key]['totavgppm']);
+                }
               } else {
                 ctdAvg += Number(result[key]['avgppm']);
+                ctdTotavg = Number(result[key]['totavgppm']);
               }
               htmlData += `
-                <tr class="align-middle text-start" id="row-data-${result[key]['id']}">
+                <tr class="align-middle text-start" id="row-data-${result[key]['idx']}">
                   <td class="">${result[key]['procdx']}<br><span class="small">M/C: ${result[key]['mcx']}</span></td>
                   <td class="text-end">
                     <input type="number" class="form-control form-control text-center"
                     data-bs-fl="D"
                     data-bs-proc="${result[key]['procx']}"
                     data-bs-idh="${result[key]['idx']}"
+                    data-bs-count="${incRow}"
                     id="ss-${result[key]['procx']}" name="ss-${result[key]['procx']}" min="1" max="9999" value="${result[key]['ss']}">
                   </td>
                   <td class="text-end">
@@ -639,6 +647,7 @@
                     data-bs-fl="D"
                     data-bs-proc="${result[key]['procx']}"
                     data-bs-idh="${result[key]['idx']}"
+                    data-bs-count="${incRow}"
                     id="rej-${result[key]['procx']}" name="rej-${result[key]['procx']}" min="1" max="9999" value="${result[key]['rej']}">
                   </td>
                   <td class="">
@@ -675,7 +684,7 @@
               `;
             } else {
               htmlData += `
-                <tr class="align-middle text-start" id="row-data-${result[key]['id']}">
+                <tr class="align-middle text-start" id="row-data-${result[key]['idx']}">
                   <td class="">
                     <input type="text" class="form-control form-control"
                       data-bs-fl="DC"
@@ -772,33 +781,45 @@
         $('#tdh-line').append(htmlForm);
 
         let avgstyle = '';
-        if (ctdAvg > 50 ) {
+        if (ctdTotavg > 50) {
           avgstyle = 'text-danger fw-bold';
         } else {
           avgstyle = 'text-success fw-bold';
         }
 
         let curIdh = 0;
+        let curCount = 0;
         $('[id^=ss-]').each(function (e){
           e.preventDefault;
           curIdh = $(this).attr('data-bs-idh');
+          curCount = $(this).attr('data-bs-count');
         });
 
         if (ctdAvg == null || ctdAvg == 0) {
-          $('#tdh-avg').empty();
-          $('#tdh-avg').removeClass(avgstyle);
-          $('#tdh-avg').append("-");
+          if (ctdTotavg == null || ctdTotavg == 0) {
+            $('#tdh-avg').empty();
+            $('#tdh-avg').removeClass('text-danger');
+            $('#tdh-avg').append("-");
 
-          $('#td-avgh-' + curIdh).empty();
-          $('#td-avgh-' + curIdh).removeClass(avgstyle);
-          $('#td-avgh-' + curIdh).append("-");
+            $('#td-avgh-' + curIdh).empty();
+            $('#td-avgh-' + curIdh).removeClass('text-danger');
+            $('#td-avgh-' + curIdh).append("-");
+          } else {
+            $('#tdh-avg').empty();
+            $('#tdh-avg').append(((ctdTotavg).toFixed(0)),"K");
+            $('#tdh-avg').addClass(avgstyle);
+
+            $('#td-avgh-' + curIdh).empty();
+            $('#td-avgh-' + curIdh).append(((ctdTotavg).toFixed(0)),"K");
+            $('#td-avgh-' + curIdh).addClass(avgstyle);
+          }
         } else {
           $('#tdh-avg').empty();
-          $('#tdh-avg').append(((ctdAvg/3).toFixed(0)),"K");
+          $('#tdh-avg').append(((ctdAvg/curCount).toFixed(0)),"K");
           $('#tdh-avg').addClass(avgstyle);
 
           $('#td-avgh-' + curIdh).empty();
-          $('#td-avgh-' + curIdh).append(((ctdAvg/3).toFixed(0)),"K");
+          $('#td-avgh-' + curIdh).append(((ctdAvg/curCount).toFixed(0)),"K");
           $('#td-avgh-' + curIdh).addClass(avgstyle);
         }
 
@@ -831,6 +852,16 @@
           fetchData('upd-list-det', urlPar);
         });
 
+        $('[name^=ss-]').change(function (e){
+          e.preventDefault;
+          let data_id = $(this).attr('data-bs-idh');
+          let urlPar = '';
+          urlPar = new URLSearchParams({
+            id: data_id
+          });
+          fetchData('view-list-det', urlPar);
+        });
+
         //Rej
         $('[id^=rej-]').change(function (e){
           e.preventDefault;
@@ -850,6 +881,16 @@
             rAct: $('#act-' + curProc).val()
           });
           fetchData('upd-list-det', urlPar);
+        });
+
+        $('[name^=rej-]').change(function (e){
+          e.preventDefault;
+          let data_id = $(this).attr('data-bs-idh');
+          let urlPar = '';
+          urlPar = new URLSearchParams({
+            id: data_id
+          });
+          fetchData('view-list-det', urlPar);
         });
 
         //SEAM
@@ -1093,6 +1134,7 @@
           let curTotss = 0;
           let curTotrej = 0;
           let curIdh = 0;
+          let curCount = 0;
           let curTotppm = 0;
           $('[id^=ss-]').each(function (e){
             e.preventDefault;
@@ -1111,8 +1153,8 @@
               curTot = (curRej/curSs)*1000;
               curTotppm += Number(curTot);
             }
-            // console.log(curTot);
             curIdh = $(this).attr('data-bs-idh');
+            curCount = $(this).attr('data-bs-count');
           });
           
           let avgstyle = '';
@@ -1123,20 +1165,30 @@
           }
 
           if (curTotppm == null || curTotppm == 0) {
-            $('#tdh-avg').empty();
-            $('#tdh-avg').removeClass(avgstyle);
-            $('#tdh-avg').append("-");
+            if (ctdTotavg == null || ctdTotavg == 0) {
+              $('#tdh-avg').empty();
+              $('#tdh-avg').removeClass('text-danger');
+              $('#tdh-avg').append("-");
 
-            $('#td-avgh-' + curIdh).empty();
-            $('#td-avgh-' + curIdh).removeClass(avgstyle);
-            $('#td-avgh-' + curIdh).append("-");
+              $('#td-avgh-' + curIdh).empty();
+              $('#td-avgh-' + curIdh).removeClass('text-danger');
+              $('#td-avgh-' + curIdh).append("-");
+            } else {
+              $('#tdh-avg').empty();
+              $('#tdh-avg').append(((ctdTotavg).toFixed(0)),"K");
+              $('#tdh-avg').addClass(avgstyle);
+
+              $('#td-avgh-' + curIdh).empty();
+              $('#td-avgh-' + curIdh).append(((ctdTotavg).toFixed(0)),"K");
+              $('#td-avgh-' + curIdh).addClass(avgstyle);
+            }
           } else {
             $('#tdh-avg').empty();
-            $('#tdh-avg').append(((curTotppm/3).toFixed(0)),"K");
+            $('#tdh-avg').append(((curTotppm/curCount).toFixed(0)),"K");
             $('#tdh-avg').addClass(avgstyle);
 
             $('#td-avgh-' + curIdh).empty();
-            $('#td-avgh-' + curIdh).append(((curTotppm/3).toFixed(0)),"K");
+            $('#td-avgh-' + curIdh).append(((curTotppm/curCount).toFixed(0)),"K");
             $('#td-avgh-' + curIdh).addClass(avgstyle);
           }
 

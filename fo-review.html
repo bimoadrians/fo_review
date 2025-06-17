@@ -1348,7 +1348,17 @@
           let rev_by = $('#by-add').val();
 
           //valid data
-          if (rev_part.trim() == ''){
+          if (rev_line.trim() == 'ALL'){
+            $('#tr-msg-add').removeClass('d-none');
+            $('#td-msg-add').empty();
+            $('#td-msg-add').append('Choose Line First.');
+            return;
+          } else if (rev_group.trim() == ''){
+            $('#tr-msg-add').removeClass('d-none');
+            $('#td-msg-add').empty();
+            $('#td-msg-add').append('Group not allowed empty.');
+            return;
+          } else if (rev_part.trim() == ''){
             $('#tr-msg-add').removeClass('d-none');
             $('#td-msg-add').empty();
             $('#td-msg-add').append('Part/Style not allowed empty.');

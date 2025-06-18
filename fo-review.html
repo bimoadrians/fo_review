@@ -487,8 +487,9 @@
         });
       }
 
+      //detail list
       function setListDet(result){
-        let htmlData = '', htmlHead = '', htmlForm = '', htmlPart = '', htmlStg = '', incRow = 1;
+        let htmlData = '', htmlHead = '', htmlForm = '', htmlPart = '', htmlStg = '', incRow = 1, incSs = 1;
         let ctdDate='', ctdPart='', ctdPartd='', ctdLine='', ctdLined='';
         let ctdAvg = 0, ctdTotavg = 0, ctdSs = 0, ctdRej = 0, ctdSeam = '', ctdSpi = '', ctdDim = '', ctdOth = '', ctdAct = '';
         let ctdByx = '', ctdStg = '', ctdGroup='', ctdId = '', curFlag = '';
@@ -572,8 +573,8 @@
                   <thead>
                     <tr class="align-middle text-center table-success">
                       <th rowspan="2">Process</th>
-                      <th rowspan="2">Sample Size</th>
-                      <th rowspan="2">Reject</th>
+                      <th rowspan="2" style="width:75px">Sample Size</th>
+                      <th rowspan="2" style="width:75px">Reject</th>
                       <th colspan="4">Result</th>
                       <th rowspan="2">Action</th>
                     </tr>
@@ -595,6 +596,7 @@
                   <span>Finished Costume (Endline)</span>
                   <thead>
                     <tr class="align-middle text-center table-success">
+                      <th>No</th>
                       <th>Aesthetic</th>
                       <th>Function</th>
                       <th>Dimention</th>
@@ -650,13 +652,13 @@
                     data-bs-count="${incRow}"
                     id="rej-${result[key]['procx']}" name="rej-${result[key]['procx']}" min="1" max="9999" value="${result[key]['rej']}">
                   </td>
-                  <td class="">
+                  <td class="" style="width:90px  ">
                     <input type="text" class="form-control form-control"
                     data-bs-fl="D"
                     data-bs-proc="${result[key]['procx']}"
                     name="seam-${result[key]['procx']}" id="seam-${result[key]['procx']}" value="${result[key]['seam']}">                
                   </td>
-                  <td class="">
+                  <td class="" style="width:90px  ">
                     <input type="text" class="form-control form-control"
                     data-bs-fl="D"
                     data-bs-proc="${result[key]['procx']}"
@@ -675,16 +677,18 @@
                     name="oth-${result[key]['procx']}" id="oth-${result[key]['procx']}" value="${result[key]['oth']}">                
                   </td>
                   <td class="">
-                    <input type="text" class="form-control form-control"
-                    data-bs-fl="D"
-                    data-bs-proc="${result[key]['procx']}"
-                    name="act-${result[key]['procx']}" id="act-${result[key]['procx']}" value="${result[key]['act']}">                
+                    <textarea type="text" class="form-control form-control"
+                      data-bs-fl="D"
+                      data-bs-proc="${result[key]['procx']}"
+                      name="act-${result[key]['procx']}" id="act-${result[key]['procx']}" value="${result[key]['act']}">
+                    </textarea>
                   </td>
                 </tr>
               `;
             } else {
               htmlData += `
                 <tr class="align-middle text-start" id="row-data-${result[key]['idx']}">
+                  <td class="text-center">${incSs}</td>
                   <td class="">
                     <input type="text" class="form-control form-control"
                       data-bs-fl="DC"
@@ -711,8 +715,9 @@
                   </td>
                 </tr>
               `;
+              incSs++;
             }
-            incRow++; 
+            incRow++;
             totBlTime += Number(result[key]['bltmx']);
             curFlag = result[key]['pflagx'];
           }
@@ -1458,8 +1463,8 @@
       setInterval(() => {
         //$('#accepted-list').addClass('d-none');
         //$('#lot-loader').removeClass('d-none');
-      //  fetchData('view-list', setUrlParam(1));
-      }, 30000);
+       fetchData('view-list', setUrlParam(1));
+      }, 60000);
 
     });
   </script>

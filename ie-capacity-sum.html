@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <link rel="icon" href="assets/img/logo128.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>First Output Review</title>
+  <title>Capacity analisys summary</title>
   <link rel="stylesheet" href="assets/css/font-awesome/all.min.css"/>
   <link rel="stylesheet" href="assets/css/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/sass.css">
@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
   <link rel="stylesheet" href="assets/css/daterangepicker.css">
-  <link rel="stylesheet" href="assets/css/selectize.bootstrap5.css">
   <style>
     /* @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300&display=swap'); */
     
@@ -41,79 +40,187 @@
   <header>
     <div class="container-fluid fixed-top p-2 bg-purple text-white ">
       <div class="d-flex justify-content-between">
-        <div class="align-self-center fw-bold"><span class="fas fa-solid fa-magnifying-glass ms-2 me-2"></span> First Output Review</div>
+        <div class="align-self-center fw-bold"><span class="fas fa-warehouse ms-2 me-2"></span> Capacity Analisys Summary</div>
         <div class="align-self-center">
           <!-- <a id="nav-nav-list" href="index.html" class="btn btn-sm btn-outline-secondary"><span class="fas fa-angle-left"> Back</span></a> -->
           <a id="nav-men-list" href="index.html" class="btn btn-sm btn-light fw-bold"><span class="fas fa-angle-left"></span> Back</a>
+          <a id="nav-cnt-header" href="#" class="btn btn-sm btn-light d-none fw-bold"><span class="fas fa-angle-left"></span> Back</a>
         </div>
       </div>
     </div>
   </header>
   <main role="main" class="flex-shrink-0 pt-5">
     <div class="container-fluid">
-      <!-- Prod list -->
-      <div id="filter-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-2 ">
-        <div class="col">
+      <!-- list -->
+      <div id="filter-list" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 mt-2 ">
+        <!-- <div class="col">
           <div class="input-group">
-            <span class="input-group-text w-25 fw-bold">Date</span>
-            <input id="date-his" name="date-his" type="text" class="form-control">
+            <span class="input-group-text w-25">Date</span>
+            <input id="date" name="date" type="text" class="form-control">
           </div>
-        </div>
+        </div> -->
         <div class="col">
           <div class="input-group">
-            <span class="input-group-text w-25 fw-bold">Unit</span>
+            <span class="input-group-text w-25">Unit</span>
             <select name="unit" id="unit" class="form-select">
               <option value="ALL">ALL</option>
               <option value="A">MATTEL A</option>
               <option value="B">MATTEL B</option>
+              <option value="C">MATTEL C</option>
             </select>
           </div>
         </div>
         <div class="col">
           <div class="input-group">
-            <span class="input-group-text w-25 fw-bold">Line</span>
+            <span class="input-group-text w-25">Line</span>
             <select name="line" id="line" class="form-select">
               <option value="ALL">ALL</option>
               <option value="1">MATTEL A</option>
               <option value="2">MATTEL B</option>
             </select>
-            <button type="button" id="add-review" class="btn btn-success">
-              <span class="fas fa-plus"></span>
-              <span>Add new review</span>
-            </button>
+          </div>
+        </div>
+        <div class="col">
+          <div class="input-group">
+            <span class="input-group-text w-25">Group</span>
+            <select name="group" id="group" class="form-select">
+              <option value="ALL">ALL</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="E">E</option>
+              <option value="F">F</option>
+              <option value="G">G</option>
+              <option value="H">H</option>
+              <option value="I">I</option>
+              <option value="J">J</option>
+              <option value="K">K</option>
+              <option value="A1">A1</option>
+              <option value="A2">A2</option>
+              <option value="A3">A3</option>
+              <option value="A4">A4</option>
+              <option value="A5">A5</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="B3">B3</option>
+              <option value="B4">B4</option>
+              <option value="B5">B5</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="B3">B3</option>
+              <option value="B4">B4</option>
+              <option value="B5">B5</option>
+              <option value="C1">C1</option>
+              <option value="C2">C2</option>
+              <option value="C3">C3</option>
+              <option value="C4">C4</option>
+              <option value="C5">C5</option>
+              <option value="D1">D1</option>
+              <option value="D2">D2</option>
+              <option value="D3">D3</option>
+              <option value="D4">D4</option>
+              <option value="D5">D5</option>
+              <option value="E1">E1</option>
+              <option value="E2">E2</option>
+              <option value="E3">E3</option>
+              <option value="E4">E4</option>
+              <option value="E5">E5</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="input-group">
+            <span class="input-group-text w-25">Style</span>
+            <input id="style" name="style" type="text" class="form-control">
             <button type="button" id="refresh" class="btn btn-outline-secondary">
               <span class="fa fa-refresh"></span>
             </button>
           </div>
-        </div>      
+        </div>        
       </div>
-      <div id="detail-list" class="row mt-3">
+      <div id="head-list" class="row mt-3">
         <div class="col">
-          <table class="table mb-0">
-            <tbody>
-              <tr class="table-primary fw-bold">
-                <td>Daily history</td>
-              </tr>
-            </tbody>
-          </table>
-          <table class="table table-striped">
-            <thead>
-              <tr class="text-center align-middle">
-                <th>No</th>
-                <th>Unit</th>
-                <th>Line</th>
-                <th>Group</th>
-                <th>Style No</th>
-                <th>Desc</th>
-                <th>Average PPM</th>
-                <th>Review By</th>
-                <th>Act</th>
-              </tr>
-            </thead>
-            <tbody id="row-list">
-
-            </tbody>
-          </table>
+          <ul class="nav nav-tabs fw-bold">
+            <li class="nav-item">
+              <a class="nav-link active" href="#" id="tab-d"><span class="far fa-file-alt"></span> Detail Analisys</a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="#" id="tab-s"><span class="far fa-file-alt"></span> Count Summary</a>
+            </li> -->
+          </ul>
+        </div>
+      </div> 
+      <div id="detail-list" class="row mt-2">
+        <div class="col">                   
+          <div class="accordion accordion-flush" id="div-data-detail">
+            <!-- <div class="accordion-item">
+              <table class="table accordion-header">
+                <tbody>
+                  <tr class="align-middle text-start">
+                    <td class="fw-bold" style="width:40px;">1.</td>
+                    <td class="fw-bold">F.TOWEL JJB43</td>
+                    </td>
+                    <td style="width:80px;">
+                      <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-1" aria-expanded="false" aria-controls="flush-collapse-1">
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div> -->
+            <!-- <div id="flush-collapse-1" class="accordion-collapse collapse" aria-labelledby="flush-heading-1" data-bs-parent="#div-data-detail">
+              <div class="table-responsive">
+                <table class="table table-sm">
+                  <thead>
+                    <tr class="align-middle table-light text-center fw-bold">
+                      <td>No</td>
+                      <td>Date</td>
+                      <td>Unit</td>
+                      <td>Line</td>
+                      <td>Group</td>
+                      <td>Leader</td>
+                      <td>Time Balance</td>
+                      <td>By</td>
+                      <td>Act</td>
+                    </tr>                    
+                  </thead>
+                  <tbody>
+                    <tr class="align-middle text-center">
+                      <td>1</td>
+                      <td>2025-06-17</td>
+                      <td>A</td>
+                      <td class="text-start">LINE 1</td>
+                      <td>C</td>
+                      <td class="text-start">NOVY</td>                      
+                      <td>-98</td>
+                      <td class="text-start">MARIA</td>
+                      <td>
+                        <button id="btn-det-1" data-bs-id="122" class="btn btn-sm btn-outline-success">
+                          <span class="fas fa-search"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="align-middle text-center">
+                      <td>2</td>
+                      <td>2025-06-16</td>
+                      <td>A</td>
+                      <td class="text-start">LINE 2</td>
+                      <td>C</td>
+                      <td class="text-start">SENDY</td>                      
+                      <td>-30</td>
+                      <td class="text-start">MARIA</td>
+                      <td>
+                        <button id="btn-det-1" data-bs-id="122" class="btn btn-sm btn-outline-success">
+                          <span class="fas fa-search"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div> -->
+          </div>
         </div>
       </div>
       <!-- loader -->
@@ -144,17 +251,19 @@
     </div>
   </main>
   <!-- modal dialog -->
-  <div class="modal fade" id="modalDialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+  <div class="modal fade" id="modalDialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel"></h5>
+          <h5 class="modal-title" id="staticBackdropLabel">Delete current lot ?</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           
         </div>
         <div class="modal-footer">
+          <button id="btn-modal-yes" type="button" class="btn btn-warning">Yes</button>
+          <button id="btn-modal-no" type="button" class="btn btn-primary" data-bs-dismiss="modal">No</button>
         </div>
       </div>
     </div>
@@ -175,22 +284,31 @@
   <script src="assets/js/moment.min.js"></script>
   <script src="assets/js/daterangepicker.js"></script>
   <script src="assets/js/xlsx.full.min.js"></script>
-  <script src="assets/js/selectize.min.js"></script>
   <script type="module">
     import {setCookie, getCookie} from './assets/js/main.js';
     $(document).ready(function(){
+      
       let path = window.location.pathname;
       let page = path.split("/").pop();
       setCookie('pagex', page, 7);
 
+      function formatNumber(number){
+        return new Intl.NumberFormat().format(number);
+      }
+
+      let G_PRD_LINE = "'"+"XX"+"'";
+      let G_CUR_TABLE = 'table-header';
+      let G_CUR_LINE_CODE = '';
+      let G_CUR_LINE = '';
+      let G_CUR_LEAD = '';
+      let G_CUR_GROUP = '';
+      let G_CUR_PART = '';
+      let G_CUR_DESC = '';
+      
       let linex = getCookie('linex');
       const lineArrays = linex.split("|");
       //console.log(lineArray);
       
-      let G_PRD_LINE = "'"+"XX"+"'";
-      let G_ADD_LINE = '';
-      let G_ADD_PART = '';
-
       let i = 0;
       let line_html = ''; let strArray = '';
       while (i < lineArrays.length) {
@@ -205,8 +323,6 @@
         //console.log(lineAarray[1]);
         i++;
       }
-
-      G_ADD_LINE = line_html;
       // apend line data
       $('#line').empty();
       $('#line').append(line_html);
@@ -220,56 +336,115 @@
           <option value="ALL">ALL</option>
           <option value="A" selected>MATTEL A</option>
           <option value="B">MATTEL B</option>
+          <option value="C">MATTEL C</option>
         `;
       } else if (unitx == 'B') {
         html_unit = `
           <option value="ALL">ALL</option>
           <option value="A">MATTEL A</option>
           <option value="B" selected>MATTEL B</option>
+          <option value="C">MATTEL C</option>
+        `;
+      } else if (unitx == 'C') {
+        html_unit = `
+          <option value="ALL">ALL</option>
+          <option value="A">MATTEL A</option>
+          <option value="B">MATTEL B</option>
+          <option value="C" selected>MATTEL C</option>
         `;
       } else {
         html_unit = `
           <option value="ALL" selected>ALL</option>
           <option value="A">MATTEL A</option>
           <option value="B">MATTEL B</option>
+          <option value="C">MATTEL C</option>
         `;
       }
       $('#unit').empty();
       $('#unit').append(html_unit);
-                 
-      //set param
+
+      function sortTable(tableid, startRow, sortCol, dataType = 'string') {
+        let table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById(tableid);
+        switching = true;
+        /*Make a loop that will continue until
+        no switching has been done:*/
+        while (switching) {
+          //start by saying: no switching is done:
+          switching = false;
+          rows = table.rows;
+          /*Loop through all table rows (except the
+          first, which contains table headers):*/
+          for (i = startRow; i < (rows.length - 1); i++) {
+            //start by saying there should be no switching:
+            shouldSwitch = false;
+            /*Get the two elements you want to compare,
+            one from current row and one from the next:*/
+            x = rows[i].getElementsByTagName("TD")[sortCol];
+            y = rows[i + 1].getElementsByTagName("TD")[sortCol];
+
+            //console.log(x.innerHTML.toLowerCase());
+            //check if the two rows should switch place:
+            if (dataType == 'string') {
+              if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                //if so, mark as a switch and break the loop:
+                shouldSwitch = true;
+                break;
+              }
+            } else {
+              if (Number(x.innerHTML.toLowerCase()) < Number(y.innerHTML.toLowerCase())) {
+                //if so, mark as a switch and break the loop:
+                shouldSwitch = true;
+                break;
+              }
+            }
+          }
+          if (shouldSwitch) {
+            /*If a switch has been marked, make the switch
+            and mark that a switch has been done:*/
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+          }
+        }
+      }
+
+      //load list
       const setUrlParam = (section, data_id = '', defect_type = 'N', defect_data = '0#0') => {
         let urlParam = "";
         if (section == 1) {
           urlParam = new URLSearchParams({
-            date: $("#date-his").val(),
+            date: $("#date").val(),
             unit: $("#unit").val(),
-            line: $("#line").val()
+            line: $("#line").val(),
+            line_all: G_PRD_LINE,
+            group: $("#group").val(),
+            style: $("#style").val()            
           });
         } 
         return urlParam;
       }
-      
-      //fetch data
+
+      const setView = (section) =>{
+        switch(section){
+          case 'view-hour-list':
+            $('#lot-loader').addClass('d-none');
+            $('#filter-list').removeClass('d-none');
+            $('#nav-men-list').removeClass('d-none');
+          break;
+        }
+      };
+
       const fetchData = async (section, urlParam) => {
         try {
           let apiSection = "";
-          if(section == 'view-list'){
-            apiSection = "fo.php?section=6&" + urlParam; 
-          } else if(section == 'view-list-det'){
-            apiSection = "fo.php?section=7&" + urlParam; 
-          } else if(section == 'add-list'){
-            apiSection = "fo.php?section=8";
-          }else if(section == 'upd-list-det'){
-            apiSection = "fo.php?section=9";           
-          } else if(section == 'del-list'){
-            apiSection = "fo.php?section=10"; 
-          } else if (section == 'view-part-list'){
-            apiSection = "fo.php?section=91&" + urlParam;
+          if(section == 'view-detail-list'){
+            apiSection = "ie.php?section=6&" + urlParam; 
+          } else if (section == 'view-list-det'){
+            apiSection = "ie.php?section=7&" + urlParam;
           }
 
           let res = '';
-          if (section == 'add-list' || section == 'upd-list-det' || section == 'del-list') {
+          if (section == 'add-detail-list') {
             res = await fetch("assets/api/"+ apiSection, {
               method : "POST",
               body : urlParam
@@ -291,7 +466,6 @@
             return;
           } else {
             if(output.auth_view == 'false') {
-              
               let html_data = '<span class="text-danger">Anda tidak mempunyai izin untuk membuka halaman ini.</span>';
               $('.modal-dialog').removeClass('modal-xl');
               $('.modal-title').empty();
@@ -310,6 +484,7 @@
               });
 
               $("#modalDialog").modal('show');
+
               return;
             }
 
@@ -332,109 +507,124 @@
               return;
             }
 
-            if (section == 'view-list') {           
-              setList(output);
-            } else if (section == 'view-list-det') {           
+            if (section == 'view-detail-list') { // plan list
+              setDetailList(output);
+            } else if (section == 'view-list-det'){
               setListDet(output);
-            } else if (section == 'updlist-det'){
+            } else {
               console.log(output);
-            } else if (section == 'add-list'){
-              if (output[0].actx == 'FALSE'){
-                $('#tr-msg-add').removeClass('d-none');
-                $('#td-msg-add').empty();
-                $('#td-msg-add').append('Error or duplicate data.');
-                return;
-              } else {
-                $('#modalDialog').modal('hide');
-                fetchData('view-list', setUrlParam(1));
-              }
-            } else if(section == 'del-list'){
-              if (output[0]['actx'] == 'TRUE') {
-                $('#row-data-' + output[0]['idx']).remove();                
-              }
-            } else if (section == 'view-part-list'){
-              setPartList(output);
             }
           }
+
         } catch (error) {
           console.log(error);
         }
       }
 
       //daily list
-      function setList(result){
-        let htmlData = '', incRow = 1;
+      function setDetailList(result){
+        // console.log(result);
+        let html_data = ''; let html_sep = '';
+        let timex = '';
 
         if (result.empty == undefined) {
+          let curPart = '';
+          let incRow = 1; let incRowLine = 1; let incRowbs = 1; let incInp = 1; let incNo = 1;
           for (let key in result){
-            
             let blstyle = '';
-            if (Number(result[key]['avgppm']) > 50 ) {
+            timex = result[key]['timex'];
+            if (Number(timex) < 0 ) {
               blstyle = 'text-danger fw-bold';
             } else {
-              blstyle = 'text-success fw-bold';
+              blstyle = 'fw-bold';
+            }
+            
+            if (curPart != result[key]['partx']) {
+              if (key != 0) {
+                html_sep = `
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                `;
+              } else {
+                html_sep = ``;
+              }
+
+              html_data += html_sep + `
+                <div class="accordion-item">
+                  <table class="table table-sm accordion-header table-light" id="flush-heading-${incRowLine}">
+                    <tbody>
+                      <tr class="align-middle text-start">
+                        <td class="fw-bold" style="width:60px;">${incRowLine}.</td>
+                        <td class="fw-bold">${result[key]['partdx']}</td>
+                        <td class="fw-bold text-end" style="width:180px;"><span id="span-total-part-${incRowLine}" data-bs-span="${incRowbs}"></span></td>
+                        <td style="width:70px;">
+                          <button class="accordion-button collapsed fw-bold bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-${incRowLine}" aria-expanded="false" aria-controls="flush-collapse-${incRowLine}">
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div id="flush-collapse-${incRowLine}" class="accordion-collapse collapse" aria-labelledby="flush-heading-${incRowLine}" data-bs-parent="#div-data-header">
+                  <table class="table table-sm">
+                    <thead>
+                      <tr class="align-middle text-center table-light fw-bold">
+                        <td class="" scope="col">No</td>
+                        <td class="" scope="col">Date</td>
+                        <td class="" scope="col">Unit</td>
+                        <td class="" scope="col">Line</td>
+                        <td class="" scope="col">Group</td>
+                        <td class="" scope="col">Time Balance</td>
+                        <td class="" scope="col">By</td>
+                        <td class="" scope="col">Act</td>
+                      </tr>
+                    </thead>
+                    <tbody id="curCount-${incInp}">
+              `;
+              incRowLine++;
+              incRowbs++;
+              incInp++;
+              incNo = 1;
             }
 
-            if (result[key]['avgppm'] == null  || result[key]['avgppm'] == 0) {
-              htmlData += `
-                <tr class="align-middle text-start" id="row-data-${result[key]['idx']}">
-                  <td class="text-center">${incRow}</td>
-                  <td class="text-center">${result[key]['unitx']}</td>
-                  <td class="text-center">${result[key]['linedx']}</td>
-                  <td class="text-center">${result[key]['groupx']}</td>
-                  <td class="text-center">${result[key]['partx']}</td>
-                  <td class="text-center">${result[key]['partdx']}</td>
-                  <td id="td-avgh-${result[key]['idx']}" class="text-center ${blstyle}">-</td>
-                  <td class="text-center">${result[key]['byx']}</td>
-                  <td class="text-center">                  
-                    <button id="btn-det-${incRow}" 
-                      data-bs-id="${result[key]['idx']}"
-                      class="btn btn-sm btn-outline-success" >
-                      <span class="fas fa-search"></span>
-                    </button>
-                    <button id="btn-del-${incRow}" 
-                      data-bs-id="${result[key]['idx']}"
-                      class="btn btn-sm btn-outline-danger" >
-                      <span class="fas fa-trash"></span>
-                    </button> 
-                  </td>
-                </tr>
-              `;
-            } else {
-              htmlData += `
-                <tr class="align-middle text-start" id="row-data-${result[key]['idx']}">
-                  <td class="text-center">${incRow}</td>
-                  <td class="text-center">${result[key]['unitx']}</td>
-                  <td class="text-center">${result[key]['linedx']}</td>
-                  <td class="text-center">${result[key]['groupx']}</td>
-                  <td class="text-center">${result[key]['partx']}</td>
-                  <td class="text-center">${result[key]['partdx']}</td>
-                  <td id="td-avgh-${result[key]['idx']}" class="text-center ${blstyle}">${result[key]['avgppm']}K</td>
-                  <td class="text-center">${result[key]['byx']}</td>
-                  <td class="text-center">                  
-                    <button id="btn-det-${incRow}" 
-                      data-bs-id="${result[key]['idx']}"
-                      class="btn btn-sm btn-outline-success" >
-                      <span class="fas fa-search"></span>
-                    </button> 
-                    <button id="btn-del-${incRow}" 
-                      data-bs-id="${result[key]['idx']}"
-                      class="btn btn-sm btn-outline-danger" >
-                      <span class="fas fa-trash"></span>
-                    </button> 
-                  </td>
-                </tr>
-              `;
-            }
+            html_data += `
+              <tr>
+                <td class="text-center align-middle">${incNo}</td>
+                <td class="text-center align-middle">${result[key]['datex']}</td>
+                <td class="text-center align-middle">${result[key]['unitx']}</td>
+                <td class="text-center align-middle">${result[key]['linedx']}</td>
+                <td class="text-center align-middle">${result[key]['groupx']}</td>
+                <td id="td-timex-${result[key]['idx']}" data-bs-td="${incRowbs}" class="text-center ${blstyle}">${result[key]['timex']}</td>
+                <td class="text-center align-middle">${result[key]['byx']}</td>
+                <td class="text-center align-middle">
+                  <button id="btn-det-${incRow}"
+                    data-bs-id="${result[key]['idx']}"
+                    class="btn btn-sm btn-outline-success" >
+                    <span class="fas fa-search"></span>
+                  </button>
+                </td>
+              </tr>
+            `;
+            
+            curPart = result[key]['partx'];
             incRow++; 
+            incNo++;
           }
+          html_sep = `
+                </tbody>
+              </table>
+            </div>
+          </div>
+          `;
+
+          html_data += html_sep;
         }
 
-        $('#row-list').empty();
-        $('#row-list').append(htmlData);
-
-        $('#th-tot').empty();
-        $('#th-tot').append(incRow-1);
+        //console.log(html_data);
+        $('#div-data-detail').empty();
+        $('#div-data-detail').append(html_data);
 
         $('[id^=btn-det-]').click(function(){
           let data_id = $(this).attr('data-bs-id');
@@ -444,48 +634,26 @@
           });
           fetchData('view-list-det', urlPar);
         });
-        
-        $('[id^=btn-del-]').click(function(){
-          let data_id = $(this).attr('data-bs-id');
-          let html_data = '';
-          $('.modal-dialog').removeClass('modal-xl');
-          $('.modal-dialog').removeClass('modal-fullscreen')
-          $('.modal-title').empty();
-          $('.modal-title').append('Delete current review?');
-          $('.modal-body').empty();
-          $('.modal-body').append(html_data);
-          $('#btn-modal-yes').addClass('d-none');
-          $('#btn-modal-no').addClass('d-none');
-          $('#btn-save-yes').addClass('d-none');
-          $('#btn-save-no').addClass('d-none');
-          $('.btn-close').addClass('d-none');
-          let html_btn = `
-            <button id="btn-del-yes-${data_id}" type="button" class="btn btn-success">Yes</button>
-            <button id="btn-del-no-${data_id}" type="button" class="btn btn-danger">No</button>
-          `;
-          //$('.modal-footer').empty();
-          $('.modal-footer').append(html_btn);
-          $("#modalDialog").modal('show');
-          
-          $('#btn-del-no-'+data_id).click(function(){
-            $("#modalDialog").modal('hide');
-            $('#btn-del-yes-'+data_id).remove();
-            $('#btn-del-no-'+data_id).remove();
-          });
 
-          $('#btn-del-yes-'+data_id).click(function(){
-            let urlPar = '';
-            urlPar = new URLSearchParams({
-              data_id: data_id
-            });
-            fetchData('del-list', urlPar);
-            $("#modalDialog").modal('hide');
-            $('#btn-del-yes-'+data_id).remove();
-            $('#btn-del-no-'+data_id).remove();
-          });
+        $('[id^=span-total-part-]').each(function(e){
+          e.preventDefault;
+
+          let curSpan = 0;
+          curSpan = $(this).attr('data-bs-span');
+          var count = $('#curCount-' + curSpan).children('tr').length;
+          
+          $('#span-total-part-' + curSpan).empty();
+          $('#span-total-part-' + curSpan).append('Analized ' + count + ' Times');
+          
+          // let avgstyle = '';
+          // if (timex < 0) {
+          //   avgstyle = 'text-danger fw-bold';
+          // } else {
+          //   avgstyle = 'text-success fw-bold';
+          // }
         });
       }
-
+      
       //detail list
       function setListDet(result){
         let htmlData = '', htmlHead = '', htmlForm = '', htmlPart = '', htmlStg = '', incRow = 1, incSs = 1;
@@ -1308,40 +1476,6 @@
         //console.log(htmlData);
       }
       
-      //part list
-      function setPartList(result){
-        // console.log(result);
-        G_ADD_PART = '<option value=""></option>';
-        if (result.empty == undefined) {
-          for (let key in result){
-            G_ADD_PART += `<option value="${result[key]['partx']}">${result[key]['part_namex']}</option>`;
-          }
-        }
-      }
-
-      $('input[name="date-his"]').daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true,
-        locale: {
-            format: 'YYYY-MM-DD'
-          }
-      });
-
-      $("#date-his").change(function (e) { 
-        e.preventDefault();
-        fetchData('view-list', setUrlParam(1));
-      });
-
-      $("#unit").change(function (e) { 
-        e.preventDefault();
-        fetchData('view-list', setUrlParam(1));
-      });
-
-      $("#line").change(function (e) { 
-        e.preventDefault();
-        fetchData('view-list', setUrlParam(1));
-      });
-      
       $('#nav-cnt-header').click(function (e){
         e.preventDefault();
         $('#nav-men-list').removeClass('d-none');
@@ -1349,181 +1483,63 @@
         $('#div-data-detail').addClass('d-none');
         $('#filter-list').removeClass('d-none');
         $('#div-data-header').removeClass('d-none');
-      });      
-            
-      $("#add-review").click(function (e) { 
-        e.preventDefault();
-        let html_data = `
-          <table class="table">
-            <tbody>
-              <tr class="align-middle text-start">
-                <td class="table-primary w-25">Date</td>
-                <td class="table-primary" style="width:20px">:</td>
-                <td>
-                  <input id="date-add" name="date-add" type="text" class="form-control">
-                </td>
-              </tr>
-              <tr class="align-middle text-start">
-                <td class="table-primary w-25">Line &amp; Group</td>
-                <td class="table-primary" style="width:20px">:</td>
-                <td>
-                  <div class="input-group">
-                    <select name="line-add" id="line-add" class="form-select w-50">
-                      ${G_ADD_LINE}
-                    </select>
-                    <select name="group-add" id="group-add" class="form-select w-25">
-                      <option value=""></option>
-                      <option value="A">A</option>
-                      <option value="B">B</option>
-                      <option value="C">C</option>
-                      <option value="D">D</option>
-                      <option value="E">E</option>
-                      <option value="F">F</option>
-                      <option value="G">G</option>
-                      <option value="H">H</option>
-                      <option value="I">I</option>
-                      <option value="J">J</option>
-                      <option value="K">K</option>
-                      <option value="L">L</option>
-                      <option value="M">M</option>
-                      <option value="N">N</option>
-                      <option value="O">O</option>
-                    </select>
-                  </div>
-                </td>
-              </tr>
-              <tr class="align-middle text-start table-light">
-                <td class="table-primary">Part / Style</td>
-                <td class="table-primary" style="width:20px">:</td>
-                <td>
-                  <select name="part-add" id="part-add" class="form-select" autocomplete="on">
-                    ${G_ADD_PART}
-                  </select>
-                </td>
-              </tr>
-              <tr class="align-middle text-start">
-                <td class="table-primary w-25">Stage</td>
-                <td class="table-primary" style="width:20px">:</td>
-                <td>
-                  <select name="stage-add" id="stage-add" class="form-select w-25">
-                    <option value=""></option>
-                    <option value="PP">PP</option>
-                    <option value="PS">PS</option>
-                  </select>
-                </td>
-              </tr>
-              <tr class="align-middle text-start">
-                <td class="table-primary w-25">Review by</td>
-                <td class="table-primary" style="width:20px">:</td>
-                <td>
-                  <input id="by-add" name="by-add" type="text" class="form-control">
-                </td>
-              </tr>
-              <tr id="tr-msg-add" class="d-none table-danger">
-                <td id="td-msg-add" colspan="3"></td>
-              </tr>
-            </tbody>
-          </table>
-        `;
+      });
 
-        let html_button = `
-          <button id="btn-modal-yes" type="button" class="btn btn-warning">Save</button>
-          <button id="btn-modal-no" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
-        `;
-        
-        $('.modal-dialog').removeClass('modal-fullscreen');
-        $('.modal-dialog').addClass('modal-xl');
-        $('.modal-title').empty();
-        $('.modal-title').append('Add new review');
-        $('.modal-body').empty();
-        $('.modal-body').append(html_data);
-        $('.modal-footer').empty();
-        $('.modal-footer').append(html_button);
-                
-        $('input[name="date-add"]').daterangepicker({
+      $('input[name="date"]').daterangepicker({
         singleDatePicker: true,
         showDropdowns: true,
         locale: {
-            format: 'YYYY-MM-DD'
-          }
-        });
-
-        $("#part-add").selectize({
-          plugins: ['remove_button'],
-	        sortField: 'text'
-        });
-
-        //action save
-        $('#btn-modal-yes').click(function(e){
-          
-          let rev_date = $('#date-add').val();
-          let rev_line = $('#line-add').val();
-          let rev_group = $('#group-add').val();
-          let rev_part = $('#part-add').val();
-          let rev_stage = $('#stage-add').val();
-          let rev_by = $('#by-add').val();
-
-          //valid data
-          if (rev_line.trim() == 'ALL'){
-            $('#tr-msg-add').removeClass('d-none');
-            $('#td-msg-add').empty();
-            $('#td-msg-add').append('Choose Line First.');
-            return;
-          } else if (rev_group.trim() == ''){
-            $('#tr-msg-add').removeClass('d-none');
-            $('#td-msg-add').empty();
-            $('#td-msg-add').append('Group not allowed empty.');
-            return;
-          } else if (rev_part.trim() == ''){
-            $('#tr-msg-add').removeClass('d-none');
-            $('#td-msg-add').empty();
-            $('#td-msg-add').append('Part/Style not allowed empty.');
-            return;
-          } else if (rev_stage.trim() == ''){
-            $('#tr-msg-add').removeClass('d-none');
-            $('#td-msg-add').empty();
-            $('#td-msg-add').append('Stage not allowed empty.');
-            return;
-          } else if (rev_by.trim() == ''){
-            $('#tr-msg-add').removeClass('d-none');
-            $('#td-msg-add').empty();
-            $('#td-msg-add').append('Review by not allowed empty.');
-            return;
-          }
-
-          const urlParam = new FormData();
-          urlParam.append('rev_date', rev_date);
-          urlParam.append('rev_line', rev_line);
-          urlParam.append('rev_group', rev_group);
-          urlParam.append('rev_part', rev_part);
-          urlParam.append('rev_stage', rev_stage);
-          urlParam.append('rev_by', rev_by);
-
-          fetchData('add-list', urlParam);
-        });
-
-        $('#modalDialog').modal('show');
+          format: 'YYYY-MM-DD'
+        }
       });
 
+      // $("#date").change(function (e) { 
+      //   e.preventDefault();
+      //   $('#detail-list').addClass('d-none');
+      //   $('#lot-loader').removeClass('d-none');
+      //   fetchData('view-detail-list', setUrlParam(1));
+      // });
+
+      $("#unit").change(function (e) { 
+        e.preventDefault();
+        fetchData('view-detail-list', setUrlParam(1));
+      });
+
+      $("#line").change(function (e) { 
+        e.preventDefault();
+        fetchData('view-detail-list', setUrlParam(1));
+      });
+
+      $("#group").change(function (e) { 
+        e.preventDefault();
+        fetchData('view-detail-list', setUrlParam(1));
+      });
+
+      $("#style").keyup(function (e) { 
+        e.preventDefault();
+        fetchData('view-detail-list', setUrlParam(1));
+      });
+     
       $("#refresh").click(function (e) { 
         e.preventDefault();
-        $('#div-list').addClass('d-none');
-        fetchData('view-list', setUrlParam(1));
+        fetchData('view-detail-list', setUrlParam(1));
       });
-            
+         
       // ############################################ 
       // General
       // ############################################
-
       //first load data
-      fetchData('view-list', setUrlParam(1));
-      fetchData('view-part-list', setUrlParam(0));
+      fetchData('view-detail-list', setUrlParam(1));
 
+      $("#nav-prd-list").click(function(){
+        setView('view-detail-list');
+      });
+      
       setInterval(() => {
         //$('#accepted-list').addClass('d-none');
         //$('#lot-loader').removeClass('d-none');
-       fetchData('view-list', setUrlParam(1));
-      }, 60000);
+        //fetchData('view-detail-list', setUrlParam(1));
+      }, 30000);
 
     });
   </script>

@@ -23,7 +23,7 @@ if ($menu_view == 0) {
   $rows["auth_view"] = "false";
   echo json_encode($rows);
   exit();
-} 
+}
 
 if ($auth != false) {
   if ($section == 1){ //view list
@@ -355,10 +355,10 @@ if ($auth != false) {
     //   LEFT JOIN line c on a.linex = c.LINE_CODE;
     // ";
     $strSql = "
-      SELECT idx, datex, linex, b.PART_NAME partdx, c.LINE_DESC linedx, groupx, partx, byx, stg, a.ss, a.rej, avgppm, a.pflagx, a.seam, a.spi, a.dim, a.oth, a.act, a.c_aes, a.c_func, a.c_dim, a.c_stat, a.procx, a.procdx, a.mcx
+      SELECT idx, datex, linex, b.PART_NAME partdx, c.LINE_DESC linedx, groupx, partx, byx, stg, a.ss, a.rej, avgppm, totavgppm, a.pflagx, a.seam, a.spi, a.dim, a.oth, a.act, a.c_aes, a.c_func, a.c_dim, a.c_stat, a.procx, a.procdx, a.mcx
       FROM (
         SELECT
-          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, a.rev_ss ss, a.rev_rej rej, ROUND(((a.rev_rej/a.rev_ss)*1000),0) avgppm,
+          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, a.rev_ss ss, a.rev_rej rej, ROUND(((a.rev_rej/a.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm,
           'CBS' pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act, a.rev_proc_id procx, b.CBSD_PROC_DESC procdx,  b.CBSD_PROC_MC_TOOL mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat
         FROM fo_review_d a
         LEFT JOIN toy_part_cbsd b ON a.rev_proc_id = b.CBSD_ID
@@ -366,7 +366,7 @@ if ($auth != false) {
         WHERE a.rev_id = '$id' AND IFNULL(b.CBSD_PROC_FCH, 0) <> 0
         UNION ALL
         SELECT
-          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej, ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm,
+          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej, ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm,
           'CUS' pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat
         FROM fo_review_dc a
         LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
@@ -381,7 +381,7 @@ if ($auth != false) {
       $rows["auth_mod"] = "false";
       echo json_encode($rows);
       exit();
-    } 
+    }
 
     $rev_date = $_POST['rev_date'];
     $rev_line = $_POST['rev_line'];
@@ -605,6 +605,11 @@ if ($auth != false) {
       SELECT lead_name FROM line_leader a UNION ALL
       SELECT DISTINCT a.LINE_NAME_SPV FROM line a
     ) a ORDER BY lead_name;
+    ";
+  } else if ($section == 91) { // get ref style
+    $strSql = "
+      SELECT PART_NUM partx, PART_NAME part_namex 
+      FROM toy_part ORDER BY PART_NAME ASC; 
     ";
   }
 }

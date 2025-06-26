@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `fo_review_d` (
   `rev_c_aes` varchar(150) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `rev_c_func` varchar(150) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `rev_c_dim` varchar(150) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
-  `rev_c_stat` double DEFAULT NULL,
+  `rev_c_stat` varchar(150) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `add_date` datetime DEFAULT NULL,
   `add_id` bigint DEFAULT NULL,
   `mod_date` datetime DEFAULT NULL,
@@ -42,7 +42,11 @@ CREATE TABLE IF NOT EXISTS `fo_review_d` (
   PRIMARY KEY (`rev_id`,`rev_proc_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin ROW_FORMAT=DYNAMIC;
 
--- Dumping data for table db_sahabat_unggul.fo_review_d: ~11 rows (approximately)
+-- Dumping data for table db_sahabat_unggul.fo_review_d: ~3 rows (approximately)
+REPLACE INTO `fo_review_d` (`rev_id`, `rev_proc_id`, `rev_ss`, `rev_rej`, `rev_avgppm`, `rev_seam`, `rev_spi`, `rev_dim`, `rev_oth`, `rev_act`, `rev_c_aes`, `rev_c_func`, `rev_c_dim`, `rev_c_stat`, `add_date`, `add_id`, `mod_date`, `mod_id`) VALUES
+	(1, '3192', 5, 3, 600, '', '', '', '2, Dirty, torn', '', NULL, NULL, NULL, NULL, '2025-06-18 01:48:44', 161, '2025-06-18 08:56:07', 161),
+	(1, '3193', 5, 3, 600, '', '', '', '', '', NULL, NULL, NULL, NULL, '2025-06-18 01:48:44', 161, '2025-06-18 08:56:11', 161),
+	(1, '3194', NULL, NULL, NULL, '', '', '', '', '', NULL, NULL, NULL, NULL, '2025-06-18 01:48:44', 161, NULL, NULL);
 
 -- Dumping structure for table db_sahabat_unggul.fo_review_dc
 CREATE TABLE IF NOT EXISTS `fo_review_dc` (
@@ -58,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `fo_review_dc` (
   `rev_c_aes` varchar(150) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `rev_c_func` varchar(150) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `rev_c_dim` varchar(150) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
-  `rev_c_stat` varchar(150) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `rev_c_stat` double DEFAULT NULL,
   `add_date` datetime DEFAULT NULL,
   `add_id` bigint DEFAULT NULL,
   `mod_date` datetime DEFAULT NULL,
@@ -67,6 +71,12 @@ CREATE TABLE IF NOT EXISTS `fo_review_dc` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin ROW_FORMAT=DYNAMIC;
 
 -- Dumping data for table db_sahabat_unggul.fo_review_dc: ~5 rows (approximately)
+REPLACE INTO `fo_review_dc` (`rev_id`, `rev_proc_id`, `rev_proc`, `rev_mc`, `rev_seam`, `rev_spi`, `rev_dim`, `rev_oth`, `rev_act`, `rev_c_aes`, `rev_c_func`, `rev_c_dim`, `rev_c_stat`, `add_date`, `add_id`, `mod_date`, `mod_id`) VALUES
+	(1, 'DC1', '', NULL, NULL, NULL, NULL, NULL, NULL, '', '', 'Undersize neck 1 1/2', 0, '2025-06-18 01:48:44', 161, '2025-06-25 00:45:03', 161),
+	(1, 'DC2', '', NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, '2025-06-18 01:48:44', 161, '2025-06-18 08:55:49', 161),
+	(1, 'DC3', '', NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, '2025-06-18 01:48:44', 161, '2025-06-18 08:42:31', 161),
+	(1, 'DC4', '', NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, '2025-06-18 01:48:44', 161, '2025-06-18 08:42:29', 161),
+	(1, 'DC5', '', NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, '2025-06-18 01:48:44', 161, '2025-06-18 07:16:45', 161);
 
 -- Dumping structure for table db_sahabat_unggul.fo_review_h
 CREATE TABLE IF NOT EXISTS `fo_review_h` (
@@ -85,9 +95,11 @@ CREATE TABLE IF NOT EXISTS `fo_review_h` (
   `mod_date` datetime DEFAULT NULL,
   `mod_id` bigint DEFAULT NULL,
   PRIMARY KEY (`rev_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin ROW_FORMAT=DYNAMIC;
 
 -- Dumping data for table db_sahabat_unggul.fo_review_h: ~1 rows (approximately)
+REPLACE INTO `fo_review_h` (`rev_id`, `rev_avgppm`, `rev_date`, `rev_line`, `rev_group`, `rev_part`, `rev_by`, `rev_stage`, `rev_ss`, `rev_rej`, `add_date`, `add_id`, `mod_date`, `mod_id`) VALUES
+	(1, 400, '2025-06-18', '08', 'B', '11027-78339', 'Bimo', 'PP', NULL, NULL, '2025-06-18 01:48:44', 161, NULL, NULL);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

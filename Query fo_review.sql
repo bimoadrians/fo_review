@@ -39,3 +39,11 @@
 	UPDATE fo_review_h
    SET rev_avgppm='(ROUND((352,33333333),0)' 
    WHERE rev_id='1';
+   
+	INSERT INTO `fo_review_dc` (`rev_id`, `rev_proc_id`, `rev_proc`, `rev_c_aes`, `rev_c_func`, `rev_c_dim`, `rev_c_stat`, `add_date`, `add_id`) 
+	SELECT '2' aidx, 'DC1' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, '2025-06-18 01:48:44' addx, '161' adux UNION ALL
+	SELECT '2' aidx, 'DC2' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, '2025-06-18 01:48:44' addx, '161' adux UNION ALL
+	SELECT '2' aidx, 'DC3' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, '2025-06-18 01:48:44' addx, '161' adux UNION ALL
+	SELECT '2' aidx, 'DC4' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, '2025-06-18 01:48:44' addx, '161' adux UNION ALL
+	SELECT '2' aidx, 'DC5' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, '2025-06-18 01:48:44' addx, '161' adux
+	;

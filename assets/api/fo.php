@@ -287,7 +287,7 @@ if ($auth != false) {
       $strSql = "SELECT '$data_id' idx, 'FALSE' actx, 'Error delete' msgx";
     }
     
-  } if ($section == 6){ //view list
+  } else if ($section == 6){ //view list
 
     $date = $_GET['date'];
     $unit = $_GET['unit'];
@@ -323,9 +323,10 @@ if ($auth != false) {
       ) sa 
       LEFT JOIN line sb ON sa.linex = sb.LINE_CODE
       LEFT JOIN toy_part sc ON sa.partx = sc.PART_NUM
-      WHERE 1=1;
+      WHERE 1=1
     ".(($unit !="" && $unit != "ALL") ? " AND sb.LINE_PREF ='$unit' " : "").""
-     .(($line !="" && $line != "ALL") ? " AND sb.LINE_CODE ='$line' " : "")."";//Untuk daily history
+     .(($line !="" && $line != "ALL") ? " AND sb.LINE_CODE ='$line' " : "").";
+     ";//Untuk daily history
 
     //echo '<pre>'. $strSql . '</pre>';
 
@@ -439,8 +440,8 @@ if ($auth != false) {
 
         // INSERT CBS
         $strSql = "
-        INSERT INTO `fo_review_d` (`rev_id`, `rev_proc_id`, `rev_ss`, `rev_rej`, `rev_seam`, `rev_spi`, `rev_dim`, `rev_oth`, `rev_act`, `add_date`, `add_id`) 
-        SELECT '$idx' aidx, a.CBSD_ID procx, '0' ss, '0' rej, '' seam, '' spi, '' dim, '' oth, '' act, NOW() addx, '$useridx' adux   
+        INSERT INTO `fo_review_d` (`rev_id`, `rev_proc_id`, `rev_ss`, `rev_rej`, `rev_avgppm`, `rev_seam`, `rev_spi`, `rev_dim`, `rev_oth`, `rev_act`, `add_date`, `add_id`) 
+        SELECT '$idx' aidx, a.CBSD_ID procx, '0' ss, '0' rej, '0' avgppm, '' seam, '' spi, '' dim, '' oth, '' act, NOW() addx, '$useridx' adux   
         FROM toy_part_cbsd a 
         LEFT JOIN toy_part_cbsh b ON a.CBSD_PART_NUM = b.CBSH_PART_NUM
         WHERE a.CBSD_PART_NUM = '$rev_part';
@@ -455,12 +456,12 @@ if ($auth != false) {
         // INSERT CUSTOME
         $strSql = "
         INSERT INTO `fo_review_dc` (`rev_id`, `rev_proc_id`, `rev_proc`, `rev_c_aes`, `rev_c_func`, `rev_c_dim`, `rev_c_stat`, `add_date`, `add_id`) 
-        SELECT '$idx' aidx, 'DC1' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC2' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC3' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC4' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC5' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux
-        ;";
+        SELECT '$idx' aidx, 'DC1' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC2' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC3' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC4' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC5' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, NOW() addx, '$useridx' adux;
+        ";
         
         if (mysqli_query($conn, $strSql)) {
           $action = 'TRUE';
@@ -599,6 +600,148 @@ if ($auth != false) {
       $strSql = "SELECT '$data_id' idx, 'FALSE' actx, 'Error delete' msgx";
     }
     
+  } else if ($section == 11){ //view list pis
+
+    $date = $_GET['date'];
+    $unit = $_GET['unit'];
+    $line = $_GET['line'];
+    $group = $_GET['group'];
+    $style = strtoupper($_GET['style']);
+
+    $strSql = "
+    SELECT sa.*, sc.PART_NAME partdx, sb.LINE_DESC linedx, sb.LINE_PREF unitx
+    FROM (
+      SELECT sa.idx, sa.partx, sa.linex, sa.groupx, sa.datex, sa.byx, SUM(timex) timex
+      FROM (        
+        SELECT a.anali_id idx, a.anali_part partx, a.anali_line linex, a.anali_group groupx, a.anali_date datex, a.anali_fch fchx, IFNULL(a.anali_by, '') byx, 
+        IFNULL(ROUND((((IFNULL(3600/b.anali_act_ct1, 0) + IFNULL(3600/b.anali_act_ct2, 0)) - ((ROUND((((a.anali_hc * a.anali_wh)/a.anali_fch)*1000),0) * a.anali_eff)/a.anali_wh)) * b.anali_act_ct1)/60, 0), '') timex
+        FROM ie_capacity_analih a 
+        LEFT JOIN ie_capacity_analid b ON a.anali_id = b.anali_id
+        UNION ALL
+        SELECT a.anali_id idx, a.anali_part partx, a.anali_line linex, a.anali_group groupx, a.anali_date datex, a.anali_fch fchx, IFNULL(a.anali_by, '') byx, 
+        IFNULL(ROUND((((IFNULL(3600/b.anali_act_ct1, 0) + IFNULL(3600/b.anali_act_ct2, 0)) - ((ROUND((((a.anali_hc * a.anali_wh)/a.anali_fch)*1000),0) * a.anali_eff)/a.anali_wh)) * b.anali_act_ct1)/60, 0), '') timex
+        FROM ie_capacity_analih a 
+        RIGHT JOIN ie_capacity_analidc b ON a.anali_id = b.anali_id
+      ) sa GROUP BY sa.idx, sa.partx, sa.linex, sa.groupx, sa.datex, sa.byx
+    ) sa
+    LEFT JOIN line sb ON sa.linex = sb.LINE_CODE
+    LEFT JOIN toy_part sc ON sa.partx = sc.PART_NUM 
+    WHERE 1=1
+    ".(($unit !="" && $unit != "ALL") ? " AND sb.LINE_PREF ='$unit' " : "").""
+    .(($line !="" && $line != "ALL") ? " AND sb.LINE_CODE ='$line' " : "").""
+    .(($style !="" && $style != "ALL") ? " AND UCASE(sc.PART_NAME) like '%$style%'" : "").""
+    .(($group !="" && $group != "ALL") ? " AND UCASE(IFNULL(sa.groupx, '')) ='$group' " : "")."
+    ORDER BY partdx ASC, datex DESC;
+    ";
+
+    //echo '<pre>'. $strSql . '</pre>';
+
+  } else if ($section == 12){ //add pis  
+    if ($menu_mod == 0) {
+      $rows["auth_mod"] = "false";
+      echo json_encode($rows);
+      exit();
+    }
+
+    $add_part = $_POST['add_part'];
+    $note_desc = $_POST['note_desc'];
+    $note_dim = $_POST['note_dim'];
+    $note_stre = $_POST['note_stre'];
+    $fc_poi = $_POST['fc_poi'];
+    $fc_desc = $_POST['fc_desc'];
+    $fc_size = $_POST['fc_size'];
+    $fc_allow = $_POST['fc_allow'];
+    $fc_stre = $_POST['fc_stre'];
+
+    $msgx = '';
+
+    $strSql = "
+      SELECT IFNULL(COUNT(*),0) rec_count 
+      FROM fo_review_h
+      WHERE rev_date='$rev_date' 
+      AND rev_line='$rev_line'
+      AND rev_group='$rev_group'
+      AND rev_part='$rev_part'
+      AND rev_stage='$rev_stage'
+      AND rev_by='$rev_by';
+    ";//check data duplikat atau tidak
+
+    $res = mysqli_query($conn, $strSql);
+    $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
+    $rec_count = $row['rec_count'];
+
+    if ($rec_count == 0) {
+      
+      //get style data
+      $strSql = "SELECT * FROM toy_part_cbsh WHERE CBSH_PART_NUM='$rev_part' LIMIT 1;";
+      $res = mysqli_query($conn, $strSql);
+      $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
+      
+      $strSql = "
+      INSERT INTO `fo_review_h` (
+        `rev_avgppm`, `rev_date`, `rev_line`, `rev_group`, 
+        `rev_part`, `rev_by`, `rev_stage`, 
+        `add_date`, `add_id`
+      ) VALUES (
+        '0', '$rev_date', '$rev_line', '$rev_group',
+        '$rev_part', '$rev_by', '$rev_stage',
+        NOW(), $useridx
+      );";
+
+      if (mysqli_query($conn, $strSql)) {
+       
+        $strSql = "
+        SELECT rev_id FROM fo_review_h 
+        WHERE `rev_date`='$rev_date' AND `rev_line`='$rev_line' AND  
+         `rev_group`='$rev_group' AND `rev_part`='$rev_part';
+        ";
+
+        $res = mysqli_query($conn, $strSql);
+        $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
+        $idx = $row['rev_id'];
+
+        // INSERT CBS
+        $strSql = "
+        INSERT INTO `fo_review_d` (`rev_id`, `rev_proc_id`, `rev_ss`, `rev_rej`, `rev_seam`, `rev_spi`, `rev_dim`, `rev_oth`, `rev_act`, `add_date`, `add_id`) 
+        SELECT '$idx' aidx, a.CBSD_ID procx, '0' ss, '0' rej, '' seam, '' spi, '' dim, '' oth, '' act, NOW() addx, '$useridx' adux   
+        FROM toy_part_cbsd a 
+        LEFT JOIN toy_part_cbsh b ON a.CBSD_PART_NUM = b.CBSH_PART_NUM
+        WHERE a.CBSD_PART_NUM = '$rev_part';
+        ";
+
+        if (mysqli_query($conn, $strSql)) {
+          $action = 'TRUE';
+        } else {
+          $action = 'FALSE';
+        }
+
+        // INSERT CUSTOME
+        $strSql = "
+        INSERT INTO `fo_review_dc` (`rev_id`, `rev_proc_id`, `rev_proc`, `rev_c_aes`, `rev_c_func`, `rev_c_dim`, `rev_c_stat`, `add_date`, `add_id`) 
+        SELECT '$idx' aidx, 'DC1' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC2' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC3' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC4' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DC5' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '' c_stat, NOW() addx, '$useridx' adux
+        ;";
+        
+        if (mysqli_query($conn, $strSql)) {
+          $action = 'TRUE';
+        } else {
+          $action = 'FALSE';
+        }
+      } else {
+        $action = 'FALSE';
+      }
+    } else {
+      $action = 'FALSE';
+      $msgx = "DUPLIKAT";
+    }
+    
+    $strSql = "
+      SELECT '$action' actx, '$msgx' msgx;
+    ";
+  
   } else if ($section == 90){ //view all list lead    
     $strSql = "
     SELECT DISTINCT lead_name leadx FROM (

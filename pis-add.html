@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="assets/img/logo128.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Inspection Specification (PIS)</title>
+  <link rel="stylesheet" href="assets/css/font-awesome/all.min.css"/>
+  <link rel="stylesheet" href="assets/css/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/sass.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/daterangepicker.css">
+  <link rel="stylesheet" href="assets/css/selectize.bootstrap5.css">
+  <style>
+    /* @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300&display=swap'); */
+    
+    *{
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    
+    html {
+      height: -webkit-fill-available;
+      font-size: 14px;
+    }
+    
+    .bg-purple {
+      background: rgb(235,59,142);
+      background: linear-gradient(180deg, rgba(235,59,142,1) 0%, rgba(235,59,142,1) 100%);
+    }
+    
+    .text-purple {
+      background: rgb(248,2,55);
+      background: linear-gradient(90deg, rgba(248,2,55,1) 0%, rgba(248,2,156,1) 100%);
+    }
+   
+  </style>
+</head>
+<body class="d-flex flex-column h-100">
+  <header>
+    <div class="container-fluid fixed-top p-2 bg-purple text-white ">
+      <div class="d-flex justify-content-between">
+        <div class="align-self-center fw-bold"><span class="fas fa-solid fa-pencil ms-2 me-2"></span> Product Inspection Specification (PIS)</div>
+        <div class="align-self-center">
+          <!-- <a id="nav-nav-list" href="index.html" class="btn btn-sm btn-outline-secondary"><span class="fas fa-angle-left"> Back</span></a> -->
+          <a id="nav-men-list" href="index.html" class="btn btn-sm btn-light fw-bold"><span class="fas fa-angle-left"></span> Back</a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main role="main" class="flex-shrink-0 pt-5">
+    <div class="container-fluid">
+      <!-- Prod list -->
+      <div id="filter-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-2 ">
+        <div class="col" style="width:60%">
+          <div class="input-group">
+            <span class="input-group-text w-25">Style</span>
+            <input id="style" name="style" type="text" class="form-control">
+            <button type="button" id="add-pis" class="btn btn-success">
+              <span class="fas fa-plus"></span>
+              <span>Add Specification</span>
+            </button>
+            <button type="button" id="refresh" class="btn btn-outline-secondary">
+              <span class="fa fa-refresh"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="head-list" class="row mt-3">
+        <div class="col">
+          <ul class="nav nav-tabs fw-bold">
+            <li class="nav-item">
+              <a class="nav-link active" href="#" id="tab-note-spec" data-bs-toggle="tab" data-bs-target="#note-spec"><span class="far fa-file-alt"></span> Note Spec Sewing</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="tab-spec-fc" data-bs-toggle="tab" data-bs-target="#spec-fc"><span class="far fa-file-alt"></span> Spec Finished Costume</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="note-spec" role="tabpanel" aria-labelledby="tab-note-spec">
+              <div id="detail-list" class="row mt-2">
+                <div class="col">                   
+                  <div class="accordion accordion-flush" id="div-data-detail-note">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="spec-fc" role="tabpanel" aria-labelledby="tab-spec-fc">
+              <div id="detail-list" class="row mt-2">
+                <div class="col">
+                  <div class="accordion accordion-flush" id="div-data-detail-fc">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- loader -->
+      <div id="lot-loader" class="row mt-2 d-none">
+        <div class="col">
+          <div id="loader" class="mt-3 text-center">
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- modal dialog -->
+  <div class="modal fade" id="modalDialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Footer -->
+  <footer class="footer mt-auto py-3">
+    <div class="container-fluid fixed-bottom p-1 bg-purple text-white">
+      <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center">
+          <span class="small">SUI APPS V2.0 &copy; 2024 PT. Sahabat Unggul International </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap/popper.min.js"></script>
+  <script src="assets/js/bootstrap/bootstrap.min.js"></script>
+  <script src="assets/js/moment.min.js"></script>
+  <script src="assets/js/daterangepicker.js"></script>
+  <script src="assets/js/xlsx.full.min.js"></script>
+  <script src="assets/js/selectize.min.js"></script>
+  <script type="module">
+    import {setCookie, getCookie} from './assets/js/main.js';
+    $(document).ready(function(){
+      let path = window.location.pathname;
+      let page = path.split("/").pop();
+      setCookie('pagex', page, 7);
+
+      let linex = getCookie('linex');
+      const lineArrays = linex.split("|");
+      // console.log(lineArrays);
+      
+      let G_PRD_LINE = "'"+"XX"+"'";
+      let G_ADD_LINE = '';
+      let G_ADD_PART = '';
+      let G_ADD_POI = '';
+      let G_ADD_POI_S = '';
+
+      let i = 0;
+      let line_html = ''; let strArray = '';
+      while (i < lineArrays.length) {
+        strArray = lineArrays[i];
+        if (strArray != '') {
+        let lineAarray = strArray.split("=");
+          line_html = line_html +`
+          <option value="${lineAarray[0]}">${lineAarray[1]}</option>`;
+          G_PRD_LINE += ",'"+ lineAarray[0]+"'";
+        }
+        // console.log(strArray);
+        // console.log(lineAarray[1]);
+        i++;
+      }
+
+      G_ADD_LINE = line_html;
+      // apend line data
+      $('#line').empty();
+      $('#line').append(line_html);
+      //console.log(line_html);
+
+      let unitx = getCookie('unitx');
+      let html_unit = '';
+      //console.log(unitx);
+      if (unitx == 'A') {
+        html_unit = `
+          <option value="ALL">ALL</option>
+          <option value="A" selected>MATTEL A</option>
+          <option value="B">MATTEL B</option>
+        `;
+      } else if (unitx == 'B') {
+        html_unit = `
+          <option value="ALL">ALL</option>
+          <option value="A">MATTEL A</option>
+          <option value="B" selected>MATTEL B</option>
+        `;
+      } else {
+        html_unit = `
+          <option value="ALL" selected>ALL</option>
+          <option value="A">MATTEL A</option>
+          <option value="B">MATTEL B</option>
+        `;
+      }
+      $('#unit').empty();
+      $('#unit').append(html_unit);
+                 
+      //set param
+      const setUrlParam = (section, data_id = '', defect_type = 'N', defect_data = '0#0') => {
+        let urlParam = "";
+        if (section == 1) {
+          urlParam = new URLSearchParams({
+            // date: $("#date-his").val(),
+            // unit: $("#unit").val(),
+            // line: $("#line").val(),
+            style: $("#style").val()
+          });
+        } 
+        return urlParam;
+      }
+      
+      //fetch data
+      const fetchData = async (section, urlParam) => {
+        try {
+          let apiSection = "";
+          if(section == 'view-list'){
+            apiSection = "fo.php?section=11&" + urlParam; 
+          } else if(section == 'add-list'){
+            apiSection = "fo.php?section=12";
+          } else if(section == 'upd-list-det'){
+            apiSection = "fo.php?section=13";           
+          } else if(section == 'del-list'){
+            apiSection = "fo.php?section=10";
+          } else if (section == 'view-part-list'){
+            apiSection = "fo.php?section=91&" + urlParam;
+          }
+
+          let res = '';
+          if (section == 'add-list' || section == 'upd-list-det' || section == 'del-list') {
+            res = await fetch("assets/api/"+ apiSection, {
+              method : "POST",
+              body : urlParam
+            });
+          } else {
+            res = await fetch("assets/api/"+ apiSection, {
+              method : "GET",
+              headers: {
+                "Content-Type": "application/json"
+              }
+            });
+          }
+
+          const output = await res.json();
+          //console.log(output.auth);
+          
+          if (output.auth == 'false') {
+            location.replace("login.html");
+            return;
+          } else {
+            if(output.auth_view == 'false') {
+              
+              let html_data = '<span class="text-danger">Anda tidak mempunyai izin untuk membuka halaman ini.</span>';
+              $('.modal-dialog').removeClass('modal-xl');
+              $('.modal-title').empty();
+              $('.modal-title').append('Error access');
+              $('.modal-body').empty();
+              $('.modal-body').append(html_data);
+              $('#btn-modal-yes').addClass('d-none');
+              $('#btn-modal-no').addClass('d-none');
+              $('.btn-close').addClass('d-none');
+              
+              $('#btn-modal-accs').remove();
+              $('.modal-footer').append('<button id="btn-modal-accs" type="button" class="btn btn-primary">Exit</button>');
+              $('#btn-modal-accs').click(function (e){
+                e.preventDefault;
+                location.replace("index.html");
+              });
+
+              $("#modalDialog").modal('show');
+              return;
+            }
+
+            if(output.auth_mod == 'false') {
+              
+              let html_data = '<span class="text-danger">Anda tidak mempunyai izin untuk melakukan modifikasi di halaman ini.</span>';
+              $('.modal-dialog').removeClass('modal-xl');
+
+              $('.modal-title').empty();
+              $('.modal-title').append('Invalid access');
+
+              $('.modal-body').empty();
+              $('.modal-body').append(html_data);
+
+              $('#btn-modal-yes').addClass('d-none');
+              $('#btn-modal-no').empty();
+              $('#btn-modal-no').append('Ok');
+              $('#btn-modal-no').removeClass('d-none');
+              $("#modalDialog").modal('show');
+              return;
+            }
+
+            if (section == 'view-list') {           
+              setList(output);
+            } else if (section == 'updlist-det'){
+              console.log(output);
+            } else if (section == 'add-list'){
+              if (output[0].actx == 'FALSE'){
+                $('#tr-msg-add').removeClass('d-none');
+                $('#td-msg-add').empty();
+                $('#td-msg-add').append('Error or duplicate data.');
+                return;
+              } else {
+                $('#modalDialog').modal('hide');
+                fetchData('view-list', setUrlParam(1));
+              }
+            } else if(section == 'del-list'){
+              if (output[0]['actx'] == 'TRUE') {
+                $('#row-data-' + output[0]['idx']).remove();                
+              }
+            } else if (section == 'view-part-list'){
+              setPartList(output);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      //daily list
+      function setList(result){
+        // console.log(result);
+        let html_data = ''; let html_sep = ''; let html_add = ''; let html_row = '';
+        let timex = '';
+
+        if (result.empty == undefined) {
+          let curPart = '';
+          let incRow = 1; let incRowLine = 1; let incRowbs = 1; let incInp = 1; let incNo = 1;
+          let incFc = 1; let incRowfc = 1;
+          for (let key in result){
+            if (curPart != result[key]['partx']) {
+              if (key != 0) {
+                html_sep = `
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                `;
+              } else {
+                html_sep = ``;
+              }
+
+              html_data += html_sep + `
+                <div class="accordion-item">
+                  <table class="table table-sm accordion-header table-light" id="flush-heading-${incRowLine}">
+                    <tbody>
+                      <tr class="align-middle text-start">
+                        <td class="fw-bold" style="width:60px;">${incRowLine}.</td>
+                        <td class="fw-bold">${result[key]['partdx']} || ${result[key]['partx']}</td>
+                        <td class="fw-bold text-end" style="width:180px;"><span id="span-total-part-${incRowLine}" data-bs-span="${incRowbs}"></span></td>
+                        <td style="width:70px;">
+                          <button class="accordion-button collapsed fw-bold bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-${incRowLine}" aria-expanded="false" aria-controls="flush-collapse-${incRowLine}">
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div id="flush-collapse-${incRowLine}" class="accordion-collapse collapse" aria-labelledby="flush-heading-${incRowLine}" data-bs-parent="#div-data-header">
+                  <table class="table table-sm">
+                    <thead>
+                      <tr class="align-middle text-left table-light fw-bold">
+                        <td colspan="6">Note Spec Sewing</td>
+                      </tr>
+                      <tr class="align-middle text-center table-light fw-bold">
+                        <td class="" scope="col">No</td>
+                        <td class="" scope="col">Description</td>
+                        <td class="" scope="col">Dimention</td>
+                        <td class="" scope="col">Strech</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+              `;
+              incRowLine++;
+              incRowbs++;
+              incInp++;
+              incNo = 1;
+            }
+
+            let ndim_style = '';
+            if (result[key]['ndim'] == '' || result[key]['ndim'] == '-') {
+              ndim_style = '-';
+            } else {
+              ndim_style = '"';
+            }
+
+            let nstre_style = '';
+            if (result[key]['nstre'] == '' || result[key]['nstre'] == '-') {
+              nstre_style = '-';
+            } else {
+              nstre_style = '"';
+            }
+
+            html_data += `
+              <tr id="notetr-${incNo}">
+                <td class="text-center align-middle">${incNo}</td>
+                <td class="text-center align-middle" style="width:40%">
+                  <input type="text" class="form-control form-control"
+                  data-bs-part="${result[key]['partx']}"
+                  data-bs-id="${result[key]['idx']}"
+                  name="ndesc-${result[key]['idx']}" id="ndesc-${result[key]['idx']}" value="${result[key]['ndesc']}">
+                </td>
+                <td class="text-center align-middle" style="width:40%">
+                  <input type="text" class="form-control form-control"
+                  data-bs-part="${result[key]['partx']}"
+                  data-bs-id="${result[key]['idx']}"
+                  name="ndim-${result[key]['idx']}" id="ndim-${result[key]['idx']}" value="${result[key]['ndim']}">
+                </td>
+                <td class="text-center align-middle" style="width:40%">
+                  <input type="text" class="form-control form-control"
+                  data-bs-part="${result[key]['partx']}"
+                  data-bs-id="${result[key]['idx']}"
+                  name="nstre-${result[key]['idx']}" id="nstre-${result[key]['idx']}" value="${result[key]['nstre']}">
+                </td>
+              </tr>
+            `;
+
+            curPart = result[key]['partx'];
+            incRow++;
+            incNo++;
+          }
+
+          html_sep = `
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+
+          html_data += html_sep;
+              
+          incRowLine = 1;
+          incFc = 1;
+          incNo = 1;
+        }
+
+        if (result.empty == undefined) {
+          let curPart = '';
+          let incRow = 1; let incRowLine = 1; let incRowbs = 1; let incInp = 1; let incNo = 1;
+          let incFc = 1; let incRowfc = 1;
+          for (let key in result){
+            if (curPart != result[key]['partx']) {
+              if (key != 0) {
+                html_row = `
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                `;
+              } else {
+                html_row = ``;
+              }
+
+              html_add += html_row + `
+                <div class="accordion-item">
+                  <table class="table table-sm accordion-header table-light" id="flush-heading-${incRowLine}">
+                    <tbody>
+                      <tr class="align-middle text-start">
+                        <td class="fw-bold" style="width:60px;">${incRowLine}.</td>
+                        <td class="fw-bold">${result[key]['partdx']} || ${result[key]['partx']}</td>
+                        <td class="fw-bold text-end" style="width:180px;"><span id="span-total-part-${incRowLine}" data-bs-span="${incRowbs}"></span></td>
+                        <td style="width:70px;">
+                          <button class="accordion-button collapsed fw-bold bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-${incRowLine}" aria-expanded="false" aria-controls="flush-collapse-${incRowLine}">
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div id="flush-collapse-${incRowLine}" class="accordion-collapse collapse" aria-labelledby="flush-heading-${incRowLine}" data-bs-parent="#div-data-header">
+                  <table class="table table-sm">
+                    <thead>
+                      <tr class="align-middle text-left table-light fw-bold">
+                        <td colspan="6">Spec Finished Costume</td>
+                      </tr>
+                      <tr class="align-middle text-center table-light fw-bold">
+                        <td class="" scope="col">No</td>
+                        <td class="" scope="col">No. Point Of Inspection</td>
+                        <td class="" scope="col">Desc Point Of Inspection</td>
+                        <td class="" scope="col">Size</td>
+                        <td class="" scope="col">Allowance</td>
+                        <td class="" scope="col">Strechability</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+              `;
+              incRowLine++;
+              incRowbs++;
+              incInp++;
+              incNo = 1;
+            }
+
+            html_add += `
+              <tr id="fctr-${incNo}">
+                <td class="text-center align-middle">${incNo}</td>
+                <td class="text-center align-middle" style="width:15%">
+                  <select class="form-select"
+                  data-bs-part="${result[key]['partx']}"
+                  data-bs-id="${result[key]['idx']}"
+                  data-bs-select="${result[key]['fcpoi']}"
+                  name="fcpoi-${result[key]['idx']}" id="fcpoi-${result[key]['idx']}" >
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+                    <option value="H">H</option>
+                    <option value="I">I</option>
+                    <option value="J">J</option>
+                    <option value="K">K</option>
+                    <option value="L">L</option>
+                    <option value="M">M</option>
+                    <option value="N">N</option>
+                    <option value="O">O</option>
+                    <option value="P">P</option>
+                    <option value="Q">Q</option>
+                    <option value="R">R</option>
+                    <option value="S">S</option>
+                    <option value="T">T</option>
+                    <option value="U">U</option>
+                    <option value="V">V</option>
+                    <option value="W">W</option>
+                    <option value="X">X</option>
+                    <option value="Y">Y</option>
+                    <option value="Z">Z</option>
+                  </select>
+                </td>
+                <td class="text-center align-middle" style="width:30%">
+                  <input type="text" class="form-control form-control"
+                  data-bs-part="${result[key]['partx']}"
+                  data-bs-id="${result[key]['idx']}"
+                  name="fcdesc-${result[key]['idx']}" id="fcdesc-${result[key]['idx']}" value="${result[key]['fcdesc']}">                
+                </td>
+                <td class="text-center align-middle" style="width:20%">
+                  <input type="text" class="form-control form-control"
+                  data-bs-part="${result[key]['partx']}"
+                  data-bs-id="${result[key]['idx']}"
+                  name="fcsize-${result[key]['idx']}" id="fcsize-${result[key]['idx']}" value="${result[key]['fcsize']}">                
+                </td>
+                <td class="text-center align-middle" style="width:20%">
+                  <input type="text" class="form-control form-control"
+                  data-bs-part="${result[key]['partx']}"
+                  data-bs-id="${result[key]['idx']}"
+                  name="fcallow-${result[key]['idx']}" id="fcallow-${result[key]['idx']}" value="${result[key]['fcallow']}">                
+                </td>
+                <td class="text-center align-middle" style="width:30%">
+                  <input type="text" class="form-control form-control"
+                  data-bs-part="${result[key]['partx']}"
+                  data-bs-id="${result[key]['idx']}"
+                  name="fcstre-${result[key]['idx']}" id="fcstre-${result[key]['idx']}" value="${result[key]['fcstre']}">                
+                </td>
+              </tr>
+            `;
+
+            curPart = result[key]['partx'];
+            incRow++;
+            incNo++;
+          }
+
+          html_row = `
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+
+          html_add += html_row;
+        }
+
+        $('#div-data-detail-note').empty();
+        $('#div-data-detail-note').append(html_data);
+
+        $('#div-data-detail-fc').empty();
+        $('#div-data-detail-fc').append(html_add);
+
+        var optionValues =[];
+        let poiSelect ='';
+        let poiId ='';
+        $('[id^=fcpoi-]').each(function(){
+          poiId = $(this).attr('data-bs-id');
+          poiSelect = $(this).attr('data-bs-select');
+          $('#fcpoi-' + poiId + '> option').each(function(){
+            // console.log($(this).html());
+            if ($(this).html() == poiSelect) {
+              $(this).attr('selected','selected');
+            }
+          });
+        });
+
+        //Note Description
+        $('[id^=ndesc-]').change(function (e){
+          e.preventDefault;
+          let urlPar = '';
+          let curId = $(this).attr('data-bs-id');
+          urlPar = new URLSearchParams({
+            rPart: $(this).attr('data-bs-part'),
+            rId: curId,
+            rNdesc: $('#ndesc-' + curId).val(),
+            rNdim: $('#ndim-' + curId).val(),
+            rNstre: $('#nstre-' + curId).val(),
+            rFcpoi: $('#fcpoi-' + curId).val(),
+            rFcdesc: $('#fcdesc-' + curId).val(),
+            rFcsize: $('#fcsize-' + curId).val(),
+            rFcallow: $('#fcallow-' + curId).val(),
+            rFcstre: $('#fcstre-' + curId).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Note Dimention
+        $('[id^=ndim-]').change(function (e){
+          e.preventDefault;
+          let urlPar = '';
+          let curId = $(this).attr('data-bs-id');
+          urlPar = new URLSearchParams({
+            rPart: $(this).attr('data-bs-part'),
+            rId: curId,
+            rNdesc: $('#ndesc-' + curId).val(),
+            rNdim: $('#ndim-' + curId).val(),
+            rNstre: $('#nstre-' + curId).val(),
+            rFcpoi: $('#fcpoi-' + curId).val(),
+            rFcdesc: $('#fcdesc-' + curId).val(),
+            rFcsize: $('#fcsize-' + curId).val(),
+            rFcallow: $('#fcallow-' + curId).val(),
+            rFcstre: $('#fcstre-' + curId).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Note Strech
+        $('[id^=nstre-]').change(function (e){
+          e.preventDefault;
+          let urlPar = '';
+          let curId = $(this).attr('data-bs-id');
+          urlPar = new URLSearchParams({
+            rPart: $(this).attr('data-bs-part'),
+            rId: curId,
+            rNdesc: $('#ndesc-' + curId).val(),
+            rNdim: $('#ndim-' + curId).val(),
+            rNstre: $('#nstre-' + curId).val(),
+            rFcpoi: $('#fcpoi-' + curId).val(),
+            rFcdesc: $('#fcdesc-' + curId).val(),
+            rFcsize: $('#fcsize-' + curId).val(),
+            rFcallow: $('#fcallow-' + curId).val(),
+            rFcstre: $('#fcstre-' + curId).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Finished Costume No. Point Of Inspection
+        $('[id^=fcpoi-]').change(function (e){
+          e.preventDefault;
+          let urlPar = '';
+          let curId = $(this).attr('data-bs-id');
+          urlPar = new URLSearchParams({
+            rPart: $(this).attr('data-bs-part'),
+            rId: curId,
+            rNdesc: $('#ndesc-' + curId).val(),
+            rNdim: $('#ndim-' + curId).val(),
+            rNstre: $('#nstre-' + curId).val(),
+            rFcpoi: $('#fcpoi-' + curId).val(),
+            rFcdesc: $('#fcdesc-' + curId).val(),
+            rFcsize: $('#fcsize-' + curId).val(),
+            rFcallow: $('#fcallow-' + curId).val(),
+            rFcstre: $('#fcstre-' + curId).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Finished Costume Desc Point Of Inspection
+        $('[id^=fcdesc-]').change(function (e){
+          e.preventDefault;
+          let urlPar = '';
+          let curId = $(this).attr('data-bs-id');
+          urlPar = new URLSearchParams({
+            rPart: $(this).attr('data-bs-part'),
+            rId: curId,
+            rNdesc: $('#ndesc-' + curId).val(),
+            rNdim: $('#ndim-' + curId).val(),
+            rNstre: $('#nstre-' + curId).val(),
+            rFcpoi: $('#fcpoi-' + curId).val(),
+            rFcdesc: $('#fcdesc-' + curId).val(),
+            rFcsize: $('#fcsize-' + curId).val(),
+            rFcallow: $('#fcallow-' + curId).val(),
+            rFcstre: $('#fcstre-' + curId).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Finished Costume Size
+        $('[id^=fcsize-]').change(function (e){
+          e.preventDefault;
+          let urlPar = '';
+          let curId = $(this).attr('data-bs-id');
+          urlPar = new URLSearchParams({
+            rPart: $(this).attr('data-bs-part'),
+            rId: curId,
+            rNdesc: $('#ndesc-' + curId).val(),
+            rNdim: $('#ndim-' + curId).val(),
+            rNstre: $('#nstre-' + curId).val(),
+            rFcpoi: $('#fcpoi-' + curId).val(),
+            rFcdesc: $('#fcdesc-' + curId).val(),
+            rFcsize: $('#fcsize-' + curId).val(),
+            rFcallow: $('#fcallow-' + curId).val(),
+            rFcstre: $('#fcstre-' + curId).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Finished Costume Allowance
+        $('[id^=fcallow-]').change(function (e){
+          e.preventDefault;
+          let urlPar = '';
+          let curId = $(this).attr('data-bs-id');
+          urlPar = new URLSearchParams({
+            rPart: $(this).attr('data-bs-part'),
+            rId: curId,
+            rNdesc: $('#ndesc-' + curId).val(),
+            rNdim: $('#ndim-' + curId).val(),
+            rNstre: $('#nstre-' + curId).val(),
+            rFcpoi: $('#fcpoi-' + curId).val(),
+            rFcdesc: $('#fcdesc-' + curId).val(),
+            rFcsize: $('#fcsize-' + curId).val(),
+            rFcallow: $('#fcallow-' + curId).val(),
+            rFcstre: $('#fcstre-' + curId).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Finished Costume Strechability
+        $('[id^=fcstre-]').change(function (e){
+          e.preventDefault;
+          let urlPar = '';
+          let curId = $(this).attr('data-bs-id');
+          urlPar = new URLSearchParams({
+            rPart: $(this).attr('data-bs-part'),
+            rId: curId,
+            rNdesc: $('#ndesc-' + curId).val(),
+            rNdim: $('#ndim-' + curId).val(),
+            rNstre: $('#nstre-' + curId).val(),
+            rFcpoi: $('#fcpoi-' + curId).val(),
+            rFcdesc: $('#fcdesc-' + curId).val(),
+            rFcsize: $('#fcsize-' + curId).val(),
+            rFcallow: $('#fcallow-' + curId).val(),
+            rFcstre: $('#fcstre-' + curId).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+      }
+
+      //part list
+      function setPartList(result){
+        // console.log(result);
+        G_ADD_PART = '<option value=""></option>';
+        if (result.empty == undefined) {
+          for (let key in result){
+            G_ADD_PART += `<option value="${result[key]['partx']}">${result[key]['part_namex']}</option>`;
+          }
+        }
+      }
+
+      $('input[name="date-his"]').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'YYYY-MM-DD'
+          }
+      });
+
+      $("#date-his").change(function (e) { 
+        e.preventDefault();
+        fetchData('view-list', setUrlParam(1));
+      });
+
+      $("#unit").change(function (e) { 
+        e.preventDefault();
+        fetchData('view-list', setUrlParam(1));
+      });
+
+      $("#line").change(function (e) { 
+        e.preventDefault();
+        fetchData('view-list', setUrlParam(1));
+      });
+      
+      $("#style").keyup(function (e) { 
+        e.preventDefault();
+        fetchData('view-list', setUrlParam(1));
+      });
+
+      $('#nav-cnt-header').click(function (e){
+        e.preventDefault();
+        $('#nav-men-list').removeClass('d-none');
+        $('#nav-cnt-header').addClass('d-none');
+        $('#div-data-detail').addClass('d-none');
+        $('#filter-list').removeClass('d-none');
+        $('#div-data-header').removeClass('d-none');
+      });      
+            
+      $("#add-pis").click(function (e) { 
+        e.preventDefault();
+        let html_data = `
+          <table class="table">
+            <tbody>
+              <tr class="align-middle text-start">
+                <td class="table-primary" style="width:25%">Part / Style</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <select name="add_part" id="add_part" class="form-select">
+                    ${G_ADD_PART}
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          Note Spec Sewing
+          <table class="table">
+            <tbody>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Description</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <input id="note_desc" name="note_desc" type="text" class="form-control">
+                </td>
+              </tr>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Dimention</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <input id="note_dim" name="note_dim" type="text" class="form-control">
+                </td>
+              </tr>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Strech</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <input id="note_stre" name="note_stre" type="text" class="form-control">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          Spec Finished Costume
+          <table class="table">
+            <tbody>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">No. Point Of Inspection</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <select name="fc_poi" id="fc_poi" class="form-select">
+                      <option value=""></option>
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                      <option value="F">F</option>
+                      <option value="G">G</option>
+                      <option value="H">H</option>
+                      <option value="I">I</option>
+                      <option value="J">J</option>
+                      <option value="K">K</option>
+                      <option value="L">L</option>
+                      <option value="M">M</option>
+                      <option value="N">N</option>
+                      <option value="O">O</option>
+                      <option value="P">P</option>
+                      <option value="Q">Q</option>
+                      <option value="R">R</option>
+                      <option value="S">S</option>
+                      <option value="T">T</option>
+                      <option value="U">U</option>
+                      <option value="V">V</option>
+                      <option value="W">W</option>
+                      <option value="X">X</option>
+                      <option value="Y">Y</option>
+                      <option value="Z">Z</option>
+                    </select>
+                </td>
+              </tr>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Desc Point Of Inspection</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <input id="fc_desc" name="fc_desc" type="text" class="form-control">
+                </td>
+              </tr>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Size</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <input id="fc_size" name="fc_size" type="text" class="form-control">
+                </td>
+              </tr>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Allowance</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <input id="fc_allow" name="fc_allow" type="text" class="form-control">
+                </td>
+              </tr>
+              <tr class="align-middle text-start">
+                <td class="table-primary w-25">Strechability</td>
+                <td class="table-primary" style="width:20px">:</td>
+                <td>
+                  <input id="fc_stre" name="fc_stre" type="text" class="form-control">
+                </td>
+              </tr>
+              <tr id="tr-msg-add" class="d-none table-danger">
+                <td id="td-msg-add" colspan="3"></td>
+              </tr>
+              <tr id="tr-msg-add" class="d-none table-danger">
+                <td id="td-msg-add" colspan="3"></td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+
+        let html_button = `
+          <button id="btn-modal-yes" type="button" class="btn btn-warning">Save</button>
+          <button id="btn-modal-no" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+        `;
+        
+        $('.modal-dialog').removeClass('modal-fullscreen');
+        $('.modal-dialog').addClass('modal-xl');
+        $('.modal-title').empty();
+        $('.modal-title').append('Add Specification');
+        $('.modal-body').empty();
+        $('.modal-body').append(html_data);
+        $('.modal-footer').empty();
+        $('.modal-footer').append(html_button);
+                
+        $('input[name="date-add"]').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'YYYY-MM-DD'
+          }
+        });
+
+        $("#add_part").selectize({
+          plugins: ['remove_button'],
+	        sortField: 'text'
+        });
+
+        //action save
+        $('#btn-modal-yes').click(function(e){
+          let add_part = $('#add_part').val();
+          let note_desc = $('#note_desc').val();
+          let note_dim = $('#note_dim').val();
+          let note_stre = $('#note_stre').val();
+          let fc_poi = $('#fc_poi').val();
+          let fc_desc = $('#fc_desc').val();
+          let fc_size = $('#fc_size').val();
+          let fc_allow = $('#fc_allow').val();
+          let fc_stre = $('#fc_stre').val();
+
+          //valid data
+          if (add_part.trim() == ''){
+            $('#tr-msg-add').removeClass('d-none');
+            $('#td-msg-add').empty();
+            $('#td-msg-add').append('Choose Part/Style First.');
+            return;
+          }
+          // else if (note_desc.trim() == ''){
+          //   $('#tr-msg-add').removeClass('d-none');
+          //   $('#td-msg-add').empty();
+          //   $('#td-msg-add').append('Description Note Spec Sewing not allowed empty.');
+          //   return;
+          // } else if (note_dim.trim() == ''){
+          //   $('#tr-msg-add').removeClass('d-none');
+          //   $('#td-msg-add').empty();
+          //   $('#td-msg-add').append('Dimention Note Spec Sewing not allowed empty.');
+          //   return;
+          // } else if (note_stre.trim() == ''){
+          //   $('#tr-msg-add').removeClass('d-none');
+          //   $('#td-msg-add').empty();
+          //   $('#td-msg-add').append('Strech Note Spec Sewing not allowed empty.');
+          //   return;
+          // } else if (fc_poi.trim() == ''){
+          //   $('#tr-msg-add').removeClass('d-none');
+          //   $('#td-msg-add').empty();
+          //   $('#td-msg-add').append('Choose No. Point Of Inspection First.');
+          //   return;
+          // } else if (fc_desc.trim() == ''){
+          //   $('#tr-msg-add').removeClass('d-none');
+          //   $('#td-msg-add').empty();
+          //   $('#td-msg-add').append('Description Finished Costume not allowed empty.');
+          //   return;
+          // } else if (fc_size.trim() == ''){
+          //   $('#tr-msg-add').removeClass('d-none');
+          //   $('#td-msg-add').empty();
+          //   $('#td-msg-add').append('Size Finished Costume not allowed empty.');
+          //   return;
+          // } else if (fc_allow.trim() == ''){
+          //   $('#tr-msg-add').removeClass('d-none');
+          //   $('#td-msg-add').empty();
+          //   $('#td-msg-add').append('Allowance Finished Costume not allowed empty.');
+          //   return;
+          // } else if (fc_stre.trim() == ''){
+          //   $('#tr-msg-add').removeClass('d-none');
+          //   $('#td-msg-add').empty();
+          //   $('#td-msg-add').append('Strechability Finished Costume not allowed empty.');
+          //   return;
+          // }
+
+          const urlParam = new FormData();
+          urlParam.append('add_part', add_part);
+          urlParam.append('note_desc', note_desc);
+          urlParam.append('note_dim', note_dim);
+          urlParam.append('note_stre', note_stre);
+          urlParam.append('fc_poi', fc_poi);
+          urlParam.append('fc_desc', fc_desc);
+          urlParam.append('fc_size', fc_size);
+          urlParam.append('fc_allow', fc_allow);
+          urlParam.append('fc_stre', fc_stre);
+
+          fetchData('add-list', urlParam);
+        });
+
+        $('#modalDialog').modal('show');
+      });
+
+      $("#refresh").click(function (e) { 
+        e.preventDefault();
+        $('#div-list').addClass('d-none');
+        fetchData('view-list', setUrlParam(1));
+      });
+            
+      // ############################################ 
+      // General
+      // ############################################
+
+      //first load data
+      fetchData('view-list', setUrlParam(1));
+      fetchData('view-part-list', setUrlParam(0));
+
+      setInterval(() => {
+        // $('#accepted-list').addClass('d-none');
+        // $('#lot-loader').removeClass('d-none');
+        // fetchData('view-list', setUrlParam(1));
+      }, 60000);
+
+    });
+  </script>
+</body>
+</html>

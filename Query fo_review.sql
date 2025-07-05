@@ -47,3 +47,7 @@
 	SELECT '2' aidx, 'DC4' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, '2025-06-18 01:48:44' addx, '161' adux UNION ALL
 	SELECT '2' aidx, 'DC5' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, '2025-06-18 01:48:44' addx, '161' adux
 	;
+	
+	SELECT rev_ss ss, rev_rej rej
+   FROM fo_review_d
+ 	WHERE rev_id='2' AND rev_proc_id='3192';

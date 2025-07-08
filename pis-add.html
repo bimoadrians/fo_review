@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <link rel="icon" href="assets/img/logo128.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Inspection Specification (PIS)</title>
+  <title>Add Product Inspection Specification (PIS)</title>
   <link rel="stylesheet" href="assets/css/font-awesome/all.min.css"/>
   <link rel="stylesheet" href="assets/css/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/sass.css">
@@ -41,7 +41,7 @@
   <header>
     <div class="container-fluid fixed-top p-2 bg-purple text-white ">
       <div class="d-flex justify-content-between">
-        <div class="align-self-center fw-bold"><span class="fas fa-solid fa-pencil ms-2 me-2"></span> Product Inspection Specification (PIS)</div>
+        <div class="align-self-center fw-bold"><span class="fas fa-solid fa-pencil ms-2 me-2"></span> Add Product Inspection Specification (PIS)</div>
         <div class="align-self-center">
           <!-- <a id="nav-nav-list" href="index.html" class="btn btn-sm btn-outline-secondary"><span class="fas fa-angle-left"> Back</span></a> -->
           <a id="nav-men-list" href="index.html" class="btn btn-sm btn-light fw-bold"><span class="fas fa-angle-left"></span> Back</a>
@@ -247,7 +247,7 @@
           } else if(section == 'upd-list-det'){
             apiSection = "fo.php?section=13";           
           } else if(section == 'del-list'){
-            apiSection = "fo.php?section=10";
+            apiSection = "fo.php?section=14";
           } else if (section == 'view-part-list'){
             apiSection = "fo.php?section=91&" + urlParam;
           }
@@ -332,7 +332,8 @@
               }
             } else if(section == 'del-list'){
               if (output[0]['actx'] == 'TRUE') {
-                $('#row-data-' + output[0]['idx']).remove();                
+                $('#row-data-' + output[0]['idx']).remove();
+                fetchData('view-list', setUrlParam(1));
               }
             } else if (section == 'view-part-list'){
               setPartList(output);
@@ -386,13 +387,14 @@
                   <table class="table table-sm">
                     <thead>
                       <tr class="align-middle text-left table-light fw-bold">
-                        <td colspan="6">Note Spec Sewing</td>
+                        <td colspan="7">Note Spec Sewing</td>
                       </tr>
                       <tr class="align-middle text-center table-light fw-bold">
                         <td class="" scope="col">No</td>
                         <td class="" scope="col">Description</td>
                         <td class="" scope="col">Dimention</td>
                         <td class="" scope="col">Strech</td>
+                        <td class="" scope="col">Act</td>
                       </tr>
                     </thead>
                     <tbody>
@@ -419,7 +421,7 @@
 
             html_data += `
               <tr id="notetr-${incNo}">
-                <td class="text-center align-middle">${incNo}</td>
+                <td class="text-center align-middle" style="width:1%">${incNo}</td>
                 <td class="text-center align-middle" style="width:40%">
                   <input type="text" class="form-control form-control"
                   data-bs-part="${result[key]['partx']}"
@@ -437,6 +439,13 @@
                   data-bs-part="${result[key]['partx']}"
                   data-bs-id="${result[key]['idx']}"
                   name="nstre-${result[key]['idx']}" id="nstre-${result[key]['idx']}" value="${result[key]['nstre']}">
+                </td>
+                <td class="text-center align-middle" style="width:40%">
+                  <button id="btn-del-note-${result[key]['idx']}"
+                    data-bs-id="${result[key]['idx']}"
+                    class="btn btn-sm btn-outline-danger" >
+                    <span class="fas fa-trash"></span>
+                  </button>
                 </td>
               </tr>
             `;
@@ -497,7 +506,7 @@
                   <table class="table table-sm">
                     <thead>
                       <tr class="align-middle text-left table-light fw-bold">
-                        <td colspan="6">Spec Finished Costume</td>
+                        <td colspan="7">Spec Finished Costume</td>
                       </tr>
                       <tr class="align-middle text-center table-light fw-bold">
                         <td class="" scope="col">No</td>
@@ -506,6 +515,7 @@
                         <td class="" scope="col">Size</td>
                         <td class="" scope="col">Allowance</td>
                         <td class="" scope="col">Strechability</td>
+                        <td class="" scope="col">Act</td>
                       </tr>
                     </thead>
                     <tbody>
@@ -518,7 +528,7 @@
 
             html_add += `
               <tr id="fctr-${incNo}">
-                <td class="text-center align-middle">${incNo}</td>
+                <td class="text-center align-middle" style="width:1%">${incNo}</td>
                 <td class="text-center align-middle" style="width:15%">
                   <select class="form-select"
                   data-bs-part="${result[key]['partx']}"
@@ -577,6 +587,13 @@
                   data-bs-id="${result[key]['idx']}"
                   name="fcstre-${result[key]['idx']}" id="fcstre-${result[key]['idx']}" value="${result[key]['fcstre']}">                
                 </td>
+                <td class="text-center align-middle" style="width:40%">
+                  <button id="btn-del-fc-${result[key]['idx']}"
+                    data-bs-id="${result[key]['idx']}"
+                    class="btn btn-sm btn-outline-danger" >
+                    <span class="fas fa-trash"></span>
+                  </button>
+                </td>
               </tr>
             `;
 
@@ -601,7 +618,84 @@
         $('#div-data-detail-fc').empty();
         $('#div-data-detail-fc').append(html_add);
 
-        var optionValues =[];
+        $('[id^=btn-del-note-]').click(function(){
+          let data_id = $(this).attr('data-bs-id');
+          let html_data = '';
+          $('.modal-dialog').removeClass('modal-xl');
+          $('.modal-dialog').removeClass('modal-fullscreen');
+          $('.modal-title').empty();
+          $('.modal-title').append('Delete current note spec sewing?');
+          $('.modal-body').empty();
+          $('.modal-body').append(html_data);
+          $('#btn-modal-yes').addClass('d-none');
+          $('#btn-modal-no').addClass('d-none');
+          $('#btn-save-yes').addClass('d-none');
+          $('#btn-save-no').addClass('d-none');
+          $('.btn-close').addClass('d-none');
+          let html_btn = `
+            <button id="btn-del-note-yes-${data_id}" type="button" class="btn btn-success">Yes</button>
+            <button id="btn-del-note-no-${data_id}" type="button" class="btn btn-danger">No</button>
+          `;
+          $('.modal-footer').append(html_btn);
+          $("#modalDialog").modal('show');
+          
+          $('#btn-del-note-no-'+data_id).click(function(){
+            $("#modalDialog").modal('hide');
+            $('#btn-del-note-yes-'+data_id).remove();
+            $('#btn-del-note-no-'+data_id).remove();
+          });
+
+          $('#btn-del-note-yes-'+data_id).click(function(){
+            let urlPar = '';
+            urlPar = new URLSearchParams({
+              data_id: data_id
+            });
+            fetchData('del-list', urlPar);
+            $("#modalDialog").modal('hide');
+            $('#btn-del-note-yes-'+data_id).remove();
+            $('#btn-del-note-no-'+data_id).remove();
+          });
+        });
+
+        $('[id^=btn-del-fc-]').click(function(){
+          let data_id = $(this).attr('data-bs-id');
+          let html_data = '';
+          $('.modal-dialog').removeClass('modal-xl');
+          $('.modal-dialog').removeClass('modal-fullscreen');
+          $('.modal-title').empty();
+          $('.modal-title').append('Delete current spec finished costume?');
+          $('.modal-body').empty();
+          $('.modal-body').append(html_data);
+          $('#btn-modal-yes').addClass('d-none');
+          $('#btn-modal-no').addClass('d-none');
+          $('#btn-save-yes').addClass('d-none');
+          $('#btn-save-no').addClass('d-none');
+          $('.btn-close').addClass('d-none');
+          let html_btn = `
+            <button id="btn-del-fc-yes-${data_id}" type="button" class="btn btn-success">Yes</button>
+            <button id="btn-del-fc-no-${data_id}" type="button" class="btn btn-danger">No</button>
+          `;
+          $('.modal-footer').append(html_btn);
+          $("#modalDialog").modal('show');
+          
+          $('#btn-del-fc-no-'+data_id).click(function(){
+            $("#modalDialog").modal('hide');
+            $('#btn-del-fc-yes-'+data_id).remove();
+            $('#btn-del-fc-no-'+data_id).remove();
+          });
+
+          $('#btn-del-fc-yes-'+data_id).click(function(){
+            let urlPar = '';
+            urlPar = new URLSearchParams({
+              data_id: data_id
+            });
+            fetchData('del-list', urlPar);
+            $("#modalDialog").modal('hide');
+            $('#btn-del-fc-yes-'+data_id).remove();
+            $('#btn-del-fc-no-'+data_id).remove();
+          });
+        });
+
         let poiSelect ='';
         let poiId ='';
         $('[id^=fcpoi-]').each(function(){
@@ -1066,7 +1160,6 @@
         // $('#lot-loader').removeClass('d-none');
         // fetchData('view-list', setUrlParam(1));
       }, 60000);
-
     });
   </script>
 </body>

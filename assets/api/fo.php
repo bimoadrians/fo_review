@@ -619,7 +619,7 @@ if ($auth != false) {
 
     //echo '<pre>'. $strSql . '</pre>';
 
-  } else if ($section == 12){ //add pis  
+  } else if ($section == 12){ //add list pis
     if ($menu_mod == 0) {
       $rows["auth_mod"] = "false";
       echo json_encode($rows);
@@ -657,8 +657,32 @@ if ($auth != false) {
     $rec_count = $row['rec_count'];
 
     if ($rec_count == 0) {
+
+      if ($note_desc == '') {
+        $note_desc = '-';
+      }
+      if ($note_dim == '') {
+        $note_dim = '-';
+      }
+      if ($note_stre == '') {
+        $note_stre = '-';
+      }
+      if ($fc_poi == '') {
+        $fc_poi = '-';
+      }
+      if ($fc_desc == '') {
+        $fc_desc = '-';
+      }
+      if ($fc_size == '') {
+        $fc_size = '-';
+      }
+      if ($fc_allow == '') {
+        $fc_allow = '-';
+      }
+      if ($fc_stre == '') {
+        $fc_stre = '-';
+      }
       
-      //get style data
       $strSql = "
       INSERT INTO `toy_part_pis` (
         `part_num`, `note_desc`, `note_dim`, `note_stre`, 
@@ -683,7 +707,7 @@ if ($auth != false) {
     $strSql = "
       SELECT '$action' actx, '$msgx' msgx, $part_num;
     ";  
-  } else if ($section == 13){ //update list detail
+  } else if ($section == 13){ //update list pis
     if ($menu_mod == 0) {
       $rows["auth_mod"] = "false";
       echo json_encode($rows);
@@ -718,6 +742,30 @@ if ($auth != false) {
     $strSql = "
       SELECT '$action' actionx, '$msgx' msgx;
     ";
+  } else if ($section == 14) { //delete list pis
+
+    if ($menu_mod == 0) {
+      $rows["auth_mod"] = "false";
+      echo json_encode($rows);
+      exit();
+    }
+  
+    $data_id = $_POST['data_id'];
+
+    $strSql = "DELETE FROM toy_part_pis WHERE toy_part_id='$data_id';";
+    if (mysqli_query($conn, $strSql)) {
+      $strSql = "SELECT '$data_id' idx, 'TRUE' actx, 'Success delete' msgx";
+    } else {
+      $strSql = "SELECT '$data_id' idx, 'FALSE' actx, 'Error delete' msgx";
+    }
+    
+    $strSql = "ALTER TABLE toy_part_pis AUTO_INCREMENT = 1;";
+    if (mysqli_query($conn, $strSql)) {
+      $strSql = "SELECT '$data_id' idx, 'TRUE' actx, 'Success delete' msgx";
+    } else {
+      $strSql = "SELECT '$data_id' idx, 'FALSE' actx, 'Error delete' msgx";
+    }
+    
   } else if ($section == 90){ //view all list lead    
     $strSql = "
     SELECT DISTINCT lead_name leadx FROM (

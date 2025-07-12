@@ -331,8 +331,8 @@ if ($auth != false) {
     //echo '<pre>'. $strSql . '</pre>';
 
   } else if ($section == 7){ //view list detail
-
     $id = $_GET['id'];
+    $part_num = $_GET['part_num'];
     // $strSql = "
     //   SELECT idx, datex, linex, c.LINE_DESC linedx, groupx, partx, byx, stg, ss, rej, seam, spi, dim, oth, act, a.c_aes, a.c_func, a.c_dim, a.c_stat, avgppm, b.PART_NAME partdx, a.pflagx, a.procx, a.procdx, a.mcx
     //   FROM (
@@ -355,8 +355,61 @@ if ($auth != false) {
     //   LEFT JOIN toy_part b on a.partx = b.PART_NUM
     //   LEFT JOIN line c on a.linex = c.LINE_CODE;
     // ";
+    // $strSql = "
+    //   SELECT idx, datex, linex, b.PART_NAME partdx, c.LINE_DESC linedx, groupx, partx, a.ndesc, a.ndim, a.nstre, a.fcpoi, a.fcdesc, a.fcsize, a.fcallow,
+    //   a.fcstre, byx, stg, a.ss, a.rej, avgppm, totavgppm, a.pflagx, a.seam, a.spi, a.dim, a.oth, a.act, a.c_aes, a.c_func, a.c_dim, a.c_stat, a.procx,
+    //   a.procdx, a.mcx
+    //   FROM (
+    //     SELECT
+    //       c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, a.rev_ss ss, a.rev_rej rej,
+    //     ROUND(((a.rev_rej/a.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm, a.pflag pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth,
+    //     a.rev_act act, a.rev_proc_id procx, b.CBSD_PROC_DESC procdx,  b.CBSD_PROC_MC_TOOL mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim,
+    //     a.rev_c_stat c_stat, '' ndesc, '' ndim, '' nstre, '' fcpoi, '' fcdesc, '' fcsize, '' fcallow, '' fcstre
+    //     FROM fo_review_d a
+    //     LEFT JOIN toy_part_cbsd b ON a.rev_proc_id = b.CBSD_ID
+    //     LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
+    //     WHERE a.rev_id = '$id' AND IFNULL(b.CBSD_PROC_FCH, 0) <> 0
+    //     UNION ALL
+    //     SELECT
+    //       c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej,
+    //     ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm, a.pflag pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth,
+    //     a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat,
+    //     '' ndesc, '' ndim, '' nstre, '' fcpoi, '' fcdesc, '' fcsize, '' fcallow, '' fcstre
+    //     FROM fo_review_dc_aes a
+    //     LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
+    //     WHERE a.rev_id = '$id'
+    //     UNION ALL
+    //     SELECT
+    //       c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej,
+    //     ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm, a.pflag pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth,
+    //     a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat,
+    //     '' ndesc, '' ndim, '' nstre, '' fcpoi, '' fcdesc, '' fcsize, '' fcallow, '' fcstre
+    //     FROM fo_review_dc_fun a
+    //     LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
+    //     WHERE a.rev_id = '$id'
+    //     UNION ALL
+    //     SELECT
+    //       c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej,
+    //     ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm, a.pflag pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth,
+    //     a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat,
+    //     '' ndesc, '' ndim, '' nstre, '' fcpoi, '' fcdesc, '' fcsize, '' fcallow, '' fcstre
+    //     FROM fo_review_dc_dim a
+    //     LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
+    //     WHERE a.rev_id = '$id'
+    //     UNION ALL
+    //     SELECT
+    //       a.toy_part_id idx, '' datex, '' linex, a.part_num partx, '' groupx, '' byx, '' stg, '' ss, '' rej, '' avgppm, '' totavgppm, 'PIS' pflagx, '' seam, 
+    //     '' spi, '' dim, '' oth, '' act, '' procx, '' procdx, '' mcx, '' c_aes, '' c_func, '' c_dim, '' c_stat, a.note_desc ndesc, a.note_dim ndim,
+    //     a.note_stre nstre, a.fc_poi fcpoi, a.fc_desc fcdesc, a.fc_size fcsize, a.fc_allow fcallow, a.fc_stre fcstre
+    //     FROM toy_part_pis a
+    //     WHERE a.part_num = '$part_num'
+    //     ) a
+    //   LEFT JOIN toy_part b on a.partx = b.PART_NUM
+    //   LEFT JOIN line c on a.linex = c.LINE_CODE;
+    // ";
     $strSql = "
-      SELECT idx, datex, linex, b.PART_NAME partdx, c.LINE_DESC linedx, groupx, partx, byx, stg, a.ss, a.rej, avgppm, totavgppm, a.pflagx, a.seam, a.spi, a.dim, a.oth, a.act, a.c_aes, a.c_func, a.c_dim, a.c_stat, a.procx, a.procdx, a.mcx
+      SELECT idx, datex, linex, b.PART_NAME partdx, c.LINE_DESC linedx, groupx, partx,
+	    byx, stg, a.ss, a.rej, avgppm, totavgppm, a.pflagx, a.seam, a.spi, a.dim, a.oth, a.act, a.c_aes, a.c_func, a.c_dim, a.c_stat, a.procx, a.procdx, a.mcx
       FROM (
         SELECT
           c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, a.rev_ss ss, a.rev_rej rej, ROUND(((a.rev_rej/a.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm,
@@ -368,8 +421,22 @@ if ($auth != false) {
         UNION ALL
         SELECT
           c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej, ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm,
-          'CUS' pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat
-        FROM fo_review_dc a
+          'AES' pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat
+        FROM fo_review_dc_aes a
+        LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
+        WHERE a.rev_id = '$id'
+        UNION ALL
+        SELECT
+          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej, ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm,
+          'FUN' pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat
+        FROM fo_review_dc_fun a
+        LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
+        WHERE a.rev_id = '$id'
+        UNION ALL
+        SELECT
+          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej, ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm,
+          '' pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat
+        FROM fo_review_dc_dim a
         LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
         WHERE a.rev_id = '$id'
         ) a
@@ -601,7 +668,6 @@ if ($auth != false) {
     }
     
   } else if ($section == 11){ //view list pis
-
     $style = strtoupper($_GET['style']);
 
     $strSql = "
@@ -777,6 +843,14 @@ if ($auth != false) {
     $strSql = "
       SELECT PART_NUM partx, PART_NAME part_namex 
       FROM toy_part ORDER BY PART_NAME ASC; 
+    ";
+  } else if ($section == 92) { // get pis
+    $part_num = $_GET['part_num'];
+    $strSql = "
+      SELECT a.toy_part_id idx, a.part_num partx, a.note_desc ndesc, a.note_dim ndim, a.note_stre nstre, a.fc_poi fcpoi, a.fc_desc fcdesc, a.fc_size fcsize,
+      a.fc_allow fcallow, a.fc_stre fcstre
+      FROM toy_part_pis a
+      WHERE a.part_num = '$part_num'; 
     ";
   }
 }

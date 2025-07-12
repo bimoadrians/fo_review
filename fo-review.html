@@ -35,6 +35,27 @@
       background: linear-gradient(90deg, rgba(248,2,55,1) 0%, rgba(248,2,156,1) 100%);
     }
    
+    * {
+      box-sizing: border-box;
+    }
+
+    .row_pis {
+      margin-left:-5px;
+      margin-right:-5px;
+    }
+      
+    .column_pis {
+      float: right;
+      width: 50%;
+      padding: 0px;
+    }
+
+    /* Clearfix (clear floats) */
+    .row_pis::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
   </style>
 </head>
 <body class="d-flex flex-column h-100">
@@ -190,6 +211,7 @@
       let G_PRD_LINE = "'"+"XX"+"'";
       let G_ADD_LINE = '';
       let G_ADD_PART = '';
+      let fc_poi = '';
 
       let i = 0;
       let line_html = ''; let strArray = '';
@@ -239,6 +261,7 @@
                  
       //set param
       const setUrlParam = (section, data_id = '', defect_type = 'N', defect_data = '0#0') => {
+        let part_n = $(this).attr('data-bs-part');
         let urlParam = "";
         if (section == 1) {
           urlParam = new URLSearchParams({
@@ -246,7 +269,11 @@
             unit: $("#unit").val(),
             line: $("#line").val()
           });
-        } 
+        } else if (section == 2) {
+          urlParam = new URLSearchParams({
+            part_num: part_n,
+          });
+        }
         return urlParam;
       }
       
@@ -260,12 +287,14 @@
             apiSection = "fo.php?section=7&" + urlParam; 
           } else if(section == 'add-list'){
             apiSection = "fo.php?section=8";
-          }else if(section == 'upd-list-det'){
+          } else if(section == 'upd-list-det'){
             apiSection = "fo.php?section=9";           
           } else if(section == 'del-list'){
             apiSection = "fo.php?section=10"; 
           } else if (section == 'view-part-list'){
             apiSection = "fo.php?section=91&" + urlParam;
+          } else if (section == 'view-pis-list'){
+            apiSection = "fo.php?section=92&" + urlParam;
           }
 
           let res = '';
@@ -291,7 +320,6 @@
             return;
           } else {
             if(output.auth_view == 'false') {
-              
               let html_data = '<span class="text-danger">Anda tidak mempunyai izin untuk membuka halaman ini.</span>';
               $('.modal-dialog').removeClass('modal-xl');
               $('.modal-title').empty();
@@ -350,14 +378,35 @@
               }
             } else if(section == 'del-list'){
               if (output[0]['actx'] == 'TRUE') {
-                $('#row-data-' + output[0]['idx']).remove();                
+                $('#row-data-' + output[0]['idx']).remove();
               }
             } else if (section == 'view-part-list'){
               setPartList(output);
+            } else if (section == 'view-pis-list'){
+              setPisList(output);
             }
           }
         } catch (error) {
           console.log(error);
+        }
+      }
+
+      //pis list
+      function setPisList(result){
+        // console.log(result);
+        fc_poi = '';
+        if (result.empty == undefined) {
+          for (let key in result){
+            fc_poi += `
+              <tr class="align-middle text-center" style="height: 41px;">
+                <td>${result[key]['fcpoi']}</td>
+                <td>${result[key]['fcdesc']}</td>
+                <td>${result[key]['fcsize']}</td>
+                <td>${result[key]['fcallow']}</td>
+                <td>${result[key]['fcstre']}</td>
+              </tr>
+            `;
+          }
         }
       }
 
@@ -396,7 +445,7 @@
                       data-bs-id="${result[key]['idx']}"
                       class="btn btn-sm btn-outline-danger" >
                       <span class="fas fa-trash"></span>
-                    </button> 
+                    </button>
                   </td>
                 </tr>
               `;
@@ -414,6 +463,7 @@
                   <td class="text-center">                  
                     <button id="btn-det-${incRow}" 
                       data-bs-id="${result[key]['idx']}"
+                      data-bs-part="${result[key]['partx']}"
                       class="btn btn-sm btn-outline-success" >
                       <span class="fas fa-search"></span>
                     </button> 
@@ -438,10 +488,13 @@
 
         $('[id^=btn-det-]').click(function(){
           let data_id = $(this).attr('data-bs-id');
+          let part_n = $(this).attr('data-bs-part');
           let urlPar = '';
           urlPar = new URLSearchParams({
-            id: data_id
+            id: data_id,
+            part_num: part_n,
           });
+          fetchData('view-pis-list', urlPar);
           fetchData('view-list-det', urlPar);
         });
         
@@ -449,7 +502,7 @@
           let data_id = $(this).attr('data-bs-id');
           let html_data = '';
           $('.modal-dialog').removeClass('modal-xl');
-          $('.modal-dialog').removeClass('modal-fullscreen')
+          $('.modal-dialog').removeClass('modal-fullscreen');
           $('.modal-title').empty();
           $('.modal-title').append('Delete current review?');
           $('.modal-body').empty();
@@ -488,11 +541,12 @@
 
       //detail list
       function setListDet(result){
-        let htmlData = '', htmlHead = '', htmlForm = '', htmlPart = '', htmlStg = '', incRow = 1, incSs = 1;
+        let htmlData = '', htmlHead = '', htmlForm = '', htmlPart = '', htmlStg = '', incRow = 1, incAes = 1, incDim = 1, incFun = 1;
         let ctdDate='', ctdPart='', ctdPartd='', ctdLine='', ctdLined='';
         let ctdAvg = 0, ctdTotavg = 0,  ctdAvgend = 0, ctdSs = 0, ctdRej = 0, ctdSeam = '', ctdSpi = '', ctdDim = '', ctdOth = '', ctdAct = '';
         let ctdByx = '', ctdStg = '', ctdGroup='', ctdId = '', curFlag = '';
         let totBlTime = 0, totRej = 0, totSs = 0, totAvg = 0;
+        
         htmlHead += `
         <div class="d-flex">
           <table class="table me-3">
@@ -526,16 +580,11 @@
                 <td class="table-primary">:</td>
                 <td id="tdh-byx">Bimo</td>
               </tr>
-              <tr>
-                <td class="table-primary">Average PPM (Inline)</td>
-                <td class="table-primary">:</td>
-                <td id="tdh-avg">(Reject/Sample Size)*1000k</td>
-              </tr>
-              <tr>
+              <!-- <tr>
                 <td class="table-primary">Average PPM (Endline)</td>
                 <td class="table-primary">:</td>
                 <td id="tdh-avg-end">(Reject/Sample Size)*1000k</td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
@@ -563,67 +612,125 @@
             }
             totSs += Number(result[key]['ss']);
             totRej += Number(result[key]['rej']);
-            
-            // console.log(totSs);
-            // console.log(totRej);
-            // console.log(ctdAvg);
-            // console.log(totAvg);
 
             if (curFlag != result[key]['pflagx']){
               if (result[key]['pflagx'] == 'CBS'){
                 htmlData += `
                 <span>Sewing Process (Inline)</span>
+                  <table class="table table-sm">
+                    <thead>
+                      <tr class="align-middle text-center table-success">
+                        <th rowspan="2">Process</th>
+                        <th rowspan="2" style="width:75px">Sample Size</th>
+                        <th rowspan="2" style="width:75px">Reject</th>
+                        <th colspan="4">Result</th>
+                        <th rowspan="2">Action</th>
+                      </tr>
+                      <tr class="align-middle text-center table-success">
+                        <th>SEAM</th>
+                        <th>SPI</th>
+                        <th>DIMENTION</th>
+                        <th>OTHERS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="align-middle text-start">
+                      <td colspan="8" class="table-warning">CBS process</td>
+                    </tr>
+                `;
+              } else if (result[key]['pflagx'] == 'AES'){
+                htmlData += `
                 <table class="table table-sm">
                   <thead>
-                    <tr class="align-middle text-center table-success">
-                      <th rowspan="2">Process</th>
-                      <th rowspan="2" style="width:75px">Sample Size</th>
-                      <th rowspan="2" style="width:75px">Reject</th>
-                      <th colspan="4">Result</th>
-                      <th rowspan="2">Action</th>
-                    </tr>
-                    <tr class="align-middle text-center table-success">
-                      <th>SEAM</th>
-                      <th>SPI</th>
-                      <th>DIMENTION</th>
-                      <th>OTHERS</th>
+                    <tr class="align-middle text-center">
+                      <td class="table-warning text-end">Average PPM (Inline) :</td>
+                      <td id="tdh-avg" class="table-warning" style="width: 15%;">(Reject/Sample Size)*1000k</td>
                     </tr>
                   </thead>
-                  <tbody>
-                  <tr class="align-middle text-start">
-                    <td colspan="8" class="table-warning">CBS process</td>
-                  </tr>
-                `;
-              } else {
-                htmlData += `
+                </table>
                 <table class="table table-sm">
                   <span>Finished Costume (Endline)</span>
                   <thead>
+                    <tr class="align-middle text-start">
+                      <td colspan="5" class="table-warning">Aesthetic</td>
+                    </tr>
+                    <tr class="align-middle text-start">
+                      <td rowspan="2" class="table-primary text-center" style="width: 4%;">Note:</td>
+                      <td colspan="4" class="table-primary">- Kualifikasi umun : Warna, design fabric, sisa benang, jahitan tidak terbuka, kostum tidak sobek, SPI, tidak dirty</td>
+                    </tr>
+                    <tr class="align-middle text-start">
+                      <td colspan="4" class="table-primary">- Posisi accessories, dan CTQ</td>
+                    </tr>
                     <tr class="align-middle text-center table-success">
                       <th>No</th>
-                      <th>Aesthetic</th>
-                      <th>Function</th>
-                      <th>Dimention</th>
+                      <th>Finding</th>
                       <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
                 `;
+              } else if (result[key]['pflagx'] == 'FUN'){
+                htmlData += `
+                <table class="table table-sm">
+                  <thead>
+                    <tr class="align-middle text-center">
+                      <td class="table-warning text-end">Average PPM (Aesthetic) :</td>
+                      <td class="table-warning" style="width: 15%;">(Reject/Sample Size)*1000k</td>
+                    </tr>
+                  </thead>
+                </table>
+                <table class="table table-sm">
+                  <thead>
+                    <tr class="align-middle text-start">
+                      <td colspan="5" class="table-warning">Funtion</td>
+                    </tr>
+                    <tr class="align-middle text-start">
+                      <td rowspan="2" class="table-primary text-center" style="width: 4%;">Note:</td>
+                      <td colspan="4" class="table-primary">- Velcro/ snap tertutup dengan baik, tidak oversize/ undersize, tidak ada broken setelah dressing, tidak ada neede hole pada saat dressing</td>
+                    </tr>
+                    <tr class="align-middle text-start">
+                      <td colspan="4" class="table-primary">- Pastikan pada function torso di fungsikan (tangan, kaki, dan sit position)</td>
+                    </tr>
+                    <tr class="align-middle text-center table-success">
+                      <th>No</th>
+                      <th>Finding</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                `;
+              } else {
+                htmlData += `
+                  <table class="table table-sm">
+                    <thead>
+                      <tr class="align-middle text-center">
+                        <td class="table-warning text-end">Average PPM (Function) :</td>
+                        <td class="table-warning" style="width: 15%;">(Reject/Sample Size)*1000k</td>
+                      </tr>
+                    </thead>
+                  </table>
+                  <div class="row_pis">
+                    <div class="column_pis">
+                      <table class="table table-sm">
+                        <thead>
+                          <tr class="align-middle text-start">
+                            <td colspan="5" class="table-warning" style="height: 28px;"></td>
+                          </tr>
+                          <tr class="align-middle text-start">
+                            <td colspan="5" class="table-primary text-center" style="width: 4%; height: 29px;"></td>
+                          </tr>
+                          <tr class="align-middle text-center table-success">
+                            <th style="width:20%">1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                `;
               }
-            }            
-            // let tdSumColor = '';
-            // if (Number(result[key]['tpoprct']) < Number(result[key]['thx'])) {
-            //   if (Number(result[key]['oprct1x']) > 0 ) {
-            //     tdSumColor = 'table-danger';
-            //   }
-            // }
-
-            // let tdSumColorBl = '';
-            // if (Number(result[key]['oprblx']) < 0) {
-            //   if (Number(result[key]['oprct1x']) > 0 ) {
-            //     tdSumColorBl = 'table-danger';
-            //   }
-            // }
+            }
 
             if (result[key]['pflagx'] == 'CBS') {
               if (result[key]['ss'] == null || result[key]['ss'] == 0 || result[key]['rej'] == null || result[key]['rej'] == 0) {
@@ -689,6 +796,89 @@
                   </td>
                 </tr>
               `;
+            } else if (result[key]['pflagx'] == 'AES') {
+              let c_stat = '';
+              if (result[key]['c_stat'] == null || result[key]['c_stat'] == "null") {
+                c_stat = `
+                  <option value="0">Accept</option>
+                  <option value="1">Reject</option>
+                `;
+              } else if (result[key]['c_stat'] == '0') {
+                c_stat = `
+                  <option value="0" selected>Accept</option>
+                  <option value="1">Reject</option>
+                `;
+              } else {
+                c_stat = `
+                  <option value="0">Accept</option>
+                  <option value="1" selected>Reject</option>
+                `;
+              }
+
+              ctdAvgend += Number(result[key]['c_stat']);
+              
+              htmlData += `
+                <tr class="align-middle text-start" id="row-data-${result[key]['idx']}">
+                  <td class="text-center">${incAes}</td>
+                  <td class="">
+                    <input type="text" class="form-control form-control"
+                      data-bs-fl="DC"
+                      data-bs-proc_dc="${result[key]['procx']}"
+                      name="c_aes-${result[key]['procx']}" id="c_aes-${result[key]['procx']}" value="${result[key]['c_aes']}">                
+                  </td>
+                  <td class="">
+                    <select class="form-control form-control text-center"
+                      data-bs-fl="DC"
+                      data-bs-proc_dc="${result[key]['procx']}"
+                      name="c_stat-${result[key]['procx']}" id="c_stat-${result[key]['procx']}">
+                        ${c_stat}
+                    </select>
+                  </td>
+                </tr>
+              `;
+              incAes++;
+              
+            } else if (result[key]['pflagx'] == 'FUN') {
+              let c_stat = '';
+              if (result[key]['c_stat'] == null || result[key]['c_stat'] == "null") {
+                c_stat = `
+                  <option value="0">Accept</option>
+                  <option value="1">Reject</option>
+                `;
+              } else if (result[key]['c_stat'] == '0') {
+                c_stat = `
+                  <option value="0" selected>Accept</option>
+                  <option value="1">Reject</option>
+                `;
+              } else {
+                c_stat = `
+                  <option value="0">Accept</option>
+                  <option value="1" selected>Reject</option>
+                `;
+              }
+
+              ctdAvgend += Number(result[key]['c_stat']);
+              
+              htmlData += `
+                <tr class="align-middle text-start" id="row-data-${result[key]['idx']}">
+                  <td class="text-center">${incFun}</td>
+                  <td class="">
+                    <input type="text" class="form-control form-control"
+                      data-bs-fl="DC"
+                      data-bs-proc_dc="${result[key]['procx']}"
+                      name="c_func-${result[key]['procx']}" id="c_func-${result[key]['procx']}" value="${result[key]['c_func']}">                
+                  </td>
+                  <td class="">
+                    <select class="form-control form-control text-center"
+                      data-bs-fl="DC"
+                      data-bs-proc_dc="${result[key]['procx']}"
+                      name="c_stat-${result[key]['procx']}" id="c_stat-${result[key]['procx']}">
+                        ${c_stat}
+                    </select>
+                  </td>
+                </tr>
+              `;
+              incFun++;
             } else {
               let c_stat = '';
               if (result[key]['c_stat'] == null || result[key]['c_stat'] == "null") {
@@ -709,51 +899,42 @@
               }
 
               ctdAvgend += Number(result[key]['c_stat']);
-              // console.log(ctdAvgend);
-
-              // if (ctdAvgend == 0) {
-              //   ctdAvgend = 0;
-              // } else {
-              //   ctdAvgend = Number(result[key]['c_stat']);
-              // }
+              
               htmlData += `
                 <tr class="align-middle text-start" id="row-data-${result[key]['idx']}">
-                  <td class="text-center">${incSs}</td>
                   <td class="">
-                    <input type="text" class="form-control form-control"
+                    <input type="text" class="form-control form-control";
                       data-bs-fl="DC"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_aes-${result[key]['procx']}" id="c_aes-${result[key]['procx']}" value="${result[key]['c_aes']}">                
+                      name="c_poi-${result[key]['procx']}" id="c_poi-${result[key]['procx']}" value="${result[key]['c_dim']}">
                   </td>
                   <td class="">
                     <input type="text" class="form-control form-control"
                       data-bs-fl="DC"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_func-${result[key]['procx']}" id="c_func-${result[key]['procx']}" value="${result[key]['c_func']}">                
+                      name="c_aes-${result[key]['procx']}" id="c_aes-${result[key]['procx']}" value="${result[key]['c_aes']}">
                   </td>
                   <td class="">
                     <input type="text" class="form-control form-control"
                       data-bs-fl="DC"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_dim-${result[key]['procx']}" id="c_dim-${result[key]['procx']}" value="${result[key]['c_dim']}">                
+                      name="c_func-${result[key]['procx']}" id="c_func-${result[key]['procx']}" value="${result[key]['c_func']}">
                   </td>
                   <td class="">
-                    <select class="form-control form-control"
+                    <input type="text" class="form-control form-control"
                       data-bs-fl="DC"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_stat-${result[key]['procx']}" id="c_stat-${result[key]['procx']}">
-                        ${c_stat}
-                    </select>
+                      name="c_dim-${result[key]['procx']}" id="c_dim-${result[key]['procx']}" value="${result[key]['c_dim']}">
+                  </td>
+                  <td class="">
+                    <input type="text" class="form-control form-control"
+                      data-bs-fl="DC"
+                      data-bs-proc_dc="${result[key]['procx']}"
+                      value="${result[key]['c_dim']}">
                   </td>
                 </tr>
               `;
-              incSs++;
-              // <td class="">
-              //   <input type="text" class="form-control form-control"
-              //     data-bs-fl="DC"
-              //     data-bs-proc_dc="${result[key]['procx']}"
-              //     name="c_stat-${result[key]['procx']}" id="c_stat-${result[key]['procx']}" value="${result[key]['c_stat']}">                
-              // </td>
+              incDim++;
             }
             incRow++;
             totBlTime += Number(result[key]['bltmx']);
@@ -762,7 +943,40 @@
         }
 
         htmlData += `
-            </tbody>
+                </tbody>
+              </table>
+            </div>
+            <div class="column_pis">
+              <table class="table table-sm">
+                <thead>
+                  <tr class="align-middle text-start">
+                    <td colspan="5" class="table-warning">Dimention</td>
+                  </tr>
+                  <tr class="align-middle text-start">
+                    <td class="table-primary text-center" style="width: 2%;">Note:</td>
+                    <td colspan="4" class="table-primary">- Ukur masing-masing costume sesuai spec dimention</td>
+                  </tr>
+                  <tr class="align-middle text-center table-success">
+                    <th style="width: 1%;">Point</th>
+                    <th style="width: 20%;">Desc</th>
+                    <th style="width: 5%;">Size</th>
+                    <th style="width: 1%;">Allowance</th>
+                    <th style="width: 1%;">Strechability</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${fc_poi}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <table class="table table-sm">
+            <thead>
+              <tr class="align-middle text-center">
+                <td class="table-warning text-end">Average PPM (Dimention) :</td>
+                <td class="table-warning" style="width: 15%;">(Reject/Sample Size)*1000k</td>
+              </tr>
+            </thead>
           </table>
         `;
 
@@ -1511,12 +1725,13 @@
         fetchData('view-list', setUrlParam(1));
       });
             
-      // ############################################ 
+      // ############################################
       // General
       // ############################################
 
       //first load data
       fetchData('view-list', setUrlParam(1));
+      fetchData('view-pis-list', setUrlParam(2));
       fetchData('view-part-list', setUrlParam(0));
 
       setInterval(() => {

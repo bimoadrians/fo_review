@@ -408,35 +408,56 @@ if ($auth != false) {
     //   LEFT JOIN line c on a.linex = c.LINE_CODE;
     // ";
     $strSql = "
-      SELECT idx, datex, linex, b.PART_NAME partdx, c.LINE_DESC linedx, groupx, partx,
-	    byx, stg, a.ss, a.rej, avgppm, totavgppm, a.pflagx, a.seam, a.spi, a.dim, a.oth, a.act, a.c_aes, a.c_func, a.c_dim, a.c_stat, a.procx, a.procdx, a.mcx
+      SELECT idx, datex, linex, b.PART_NAME partdx, c.LINE_DESC linedx, groupx, partx, byx, stg, a.ss, a.rej, avgppm, totavgppm,
+      a.seam, a.spi, a.dim, a.oth, a.act, a.pflagx, a.procx, a.procdx, a.mcx,
+      a.rev_finding, a.ndesc, a.ndim, a.nstre, a.fcpoi, a.fcdesc, a.fcsize, a.fcallow, a.fcstre, a.rev_1, a.rev_2, a.rev_3, a.rev_4, a.rev_5, a.c_stat
       FROM (
         SELECT
-          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, a.rev_ss ss, a.rev_rej rej, ROUND(((a.rev_rej/a.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm,
-          'CBS' pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act, a.rev_proc_id procx, b.CBSD_PROC_DESC procdx,  b.CBSD_PROC_MC_TOOL mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat
+          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, a.rev_ss ss, a.rev_rej rej,
+        ROUND(((a.rev_rej/a.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act,
+          'CBS' pflagx, a.rev_proc_id procx, b.CBSD_PROC_DESC procdx,  b.CBSD_PROC_MC_TOOL mcx, '' rev_finding, '' ndesc, '' ndim, '' nstre,
+        '' fcpoi, '' fcdesc, '' fcsize, '' fcallow, '' fcstre, '' rev_1, '' rev_2, '' rev_3, '' rev_4,
+        '' rev_5, '' c_stat
         FROM fo_review_d a
         LEFT JOIN toy_part_cbsd b ON a.rev_proc_id = b.CBSD_ID
         LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
         WHERE a.rev_id = '$id' AND IFNULL(b.CBSD_PROC_FCH, 0) <> 0
         UNION ALL
         SELECT
-          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej, ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm,
-          'AES' pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat
+          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, '' ss, '' rej, '' avgppm,
+        '' totavgppm, '' seam, '' spi, '' dim, '' oth, '' act,
+          'AES' pflagx, a.rev_proc_id procx, '' procdx, '' mcx, a.rev_aes_finding rev_finding, '' ndesc, '' ndim, '' nstre,
+        '' fcpoi, '' fcdesc, '' fcsize, '' fcallow, '' fcstre, '' rev_1, '' rev_2, '' rev_3, '' rev_4, '' rev_5, a.rev_aes_stat c_stat
         FROM fo_review_dc_aes a
         LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
         WHERE a.rev_id = '$id'
         UNION ALL
         SELECT
-          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej, ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm,
-          'FUN' pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat
+          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, '' ss, '' rej, '' avgppm,
+        '' totavgppm, '' seam, '' spi, '' dim, '' oth, '' act,
+          'FUN' pflagx, a.rev_proc_id procx, '' procdx, '' mcx, a.rev_fun_finding rev_finding, '' ndesc, '' ndim, '' nstre,
+        '' fcpoi, '' fcdesc, '' fcsize, '' fcallow, '' fcstre, '' rev_1, '' rev_2, '' rev_3, '' rev_4, '' rev_5,
+        a.rev_fun_stat c_stat
         FROM fo_review_dc_fun a
         LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
         WHERE a.rev_id = '$id'
         UNION ALL
         SELECT
-          c.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, c.rev_ss ss, c.rev_rej rej, ROUND(((c.rev_rej/c.rev_ss)*1000),0) avgppm, c.rev_avgppm totavgppm,
-          '' pflagx, a.rev_seam seam, a.rev_spi spi, a.rev_dim dim, a.rev_oth oth, a.rev_act act, a.rev_proc_id procx, a.rev_proc procdx, a.rev_mc mcx, a.rev_c_aes c_aes, a.rev_c_func c_func, a.rev_c_dim c_dim, a.rev_c_stat c_stat
+          a.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, '' ss, '' rej, '' avgppm,
+        '' totavgppm, '' seam, '' spi, '' dim, '' oth, '' act,
+          'DIM' pflagx, a.rev_proc_id procx, '' procdx, '' mcx, '' rev_finding, a.note_desc ndesc, a.note_dim ndim, a.note_stre nstre, a.fc_poi fcpoi,
+        a.fc_desc fcdesc, a.fc_size fcsize, a.fc_allow fcallow, a.fc_stre fcstre, a.rev_1 rev_1, a.rev_2 rev_2, a.rev_3 rev_3, a.rev_4 rev_4, a.rev_5 rev_5,
+        '' c_stat
         FROM fo_review_dc_dim a
+        LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
+        WHERE a.rev_id = '$id'
+        UNION ALL
+        SELECT
+          a.rev_id idx, c.rev_date datex, c.rev_line linex, c.rev_part partx, c.rev_group groupx, c.rev_by byx, c.rev_stage stg, '' ss, '' rej, '' avgppm, '' totavgppm,
+        '' seam, '' spi, '' dim, '' oth, '' act,
+          'DMS' pflagx, a.rev_proc_id procx, '' procdx, '' mcx, '' rev_finding, '' ndesc, '' ndim, '' nstre, '' fcpoi, '' fcdesc, '' fcsize, '' fcallow, '' fcstre, '' rev_1,
+        '' rev_2, '' rev_3, '' rev_4, '' rev_5, a.rev_dim_stat c_stat
+        FROM fo_review_dc_dim_stat a
         LEFT JOIN fo_review_h c ON a.rev_id = c.rev_id
         WHERE a.rev_id = '$id'
         ) a
@@ -484,8 +505,8 @@ if ($auth != false) {
       
       $strSql = "
       INSERT INTO `fo_review_h` (
-        `rev_avgppm`, `rev_date`, `rev_line`, `rev_group`, 
-        `rev_part`, `rev_by`, `rev_stage`, 
+        `rev_avgppm`, `rev_date`, `rev_line`, `rev_group`,
+        `rev_part`, `rev_by`, `rev_stage`,
         `add_date`, `add_id`
       ) VALUES (
         '0', '$rev_date', '$rev_line', '$rev_group',
@@ -494,7 +515,6 @@ if ($auth != false) {
       );";
 
       if (mysqli_query($conn, $strSql)) {
-       
         $strSql = "
         SELECT rev_id FROM fo_review_h 
         WHERE `rev_date`='$rev_date' AND `rev_line`='$rev_line' AND  
@@ -507,9 +527,10 @@ if ($auth != false) {
 
         // INSERT CBS
         $strSql = "
-        INSERT INTO `fo_review_d` (`rev_id`, `rev_proc_id`, `rev_ss`, `rev_rej`, `rev_avgppm`, `rev_seam`, `rev_spi`, `rev_dim`, `rev_oth`, `rev_act`, `add_date`, `add_id`) 
-        SELECT '$idx' aidx, a.CBSD_ID procx, '0' ss, '0' rej, '0' avgppm, '' seam, '' spi, '' dim, '' oth, '' act, NOW() addx, '$useridx' adux   
-        FROM toy_part_cbsd a 
+        INSERT INTO `fo_review_d` (`rev_id`, `rev_proc_id`, `rev_ss`, `rev_rej`, `rev_avgppm`, `rev_seam`, `rev_spi`, `rev_dim`, `rev_oth`, `rev_act`, `add_date`,
+        `add_id`)
+        SELECT '$idx' aidx, a.CBSD_ID procx, '0' ss, '0' rej, '0' avgppm, '' seam, '' spi, '' dim, '' oth, '' act, NOW() addx, '$useridx' adux
+        FROM toy_part_cbsd a
         LEFT JOIN toy_part_cbsh b ON a.CBSD_PART_NUM = b.CBSH_PART_NUM
         WHERE a.CBSD_PART_NUM = '$rev_part';
         ";
@@ -520,16 +541,62 @@ if ($auth != false) {
           $action = 'FALSE';
         }
 
-        // INSERT CUSTOME
+        // INSERT AESTHETIC
         $strSql = "
-        INSERT INTO `fo_review_dc` (`rev_id`, `rev_proc_id`, `rev_proc`, `rev_c_aes`, `rev_c_func`, `rev_c_dim`, `rev_c_stat`, `add_date`, `add_id`) 
-        SELECT '$idx' aidx, 'DC1' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC2' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC3' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC4' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DC5' procx, '' procdx, '' c_aes, '' c_func, '' c_dim, '0' c_stat, NOW() addx, '$useridx' adux;
+        INSERT INTO `fo_review_dc_aes` (`rev_id`, `rev_proc_id`, `rev_aes_finding`, `rev_aes_stat`, `add_date`, `add_id`) 
+        SELECT '$idx' aidx, 'AE1' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'AE2' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'AE3' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'AE4' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'AE5' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux;
+        ";
+
+        if (mysqli_query($conn, $strSql)) {
+          $action = 'TRUE';
+        } else {
+          $action = 'FALSE';
+        }
+
+        // INSERT FUNCTION
+        $strSql = "
+        INSERT INTO `fo_review_dc_fun` (`rev_id`, `rev_proc_id`, `rev_fun_finding`, `rev_fun_stat`, `add_date`, `add_id`) 
+        SELECT '$idx' aidx, 'FU1' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'FU2' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'FU3' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'FU4' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'FU5' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux;
+        ";
+
+        if (mysqli_query($conn, $strSql)) {
+          $action = 'TRUE';
+        } else {
+          $action = 'FALSE';
+        }
+
+        // INSERT DIMENTION
+        $strSql = "
+        INSERT INTO `fo_review_dc_dim` (`rev_id`, `rev_proc_id`, `rev_1`, `rev_2`, `rev_3`, `rev_4`, `rev_5`, `note_desc`, `note_dim`, `note_stre`, `fc_poi`, `fc_desc`, `fc_size`, `fc_allow`, `fc_stre`, `add_date`, `add_id`)
+        SELECT '$idx' aidx, toy_part_id procx, '' rev_1, '' rev_2, '' rev_3, '' rev_4, '' rev_5, note_desc ndesc, note_dim ndim, note_stre nstre, fc_poi fcpoi, fc_desc fcdesc, fc_size fcsize, fc_allow fcallow, fc_stre fcstre, NOW() addx, '$useridx' adux
+        FROM toy_part_pis
+        WHERE part_num = '$rev_part';
         ";
         
+        if (mysqli_query($conn, $strSql)) {
+          $action = 'TRUE';
+        } else {
+          $action = 'FALSE';
+        }
+
+        // INSERT DIMENTION STATUS
+        $strSql = "
+        INSERT INTO `fo_review_dc_dim_stat` (`rev_id`, `rev_proc_id`, `rev_dim_stat`, `add_date`, `add_id`) 
+        SELECT '$idx' aidx, 'DS1' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DS2' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DS3' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DS4' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+        SELECT '$idx' aidx, 'DS5' procx, '0' c_stat, NOW() addx, '$useridx' adux;
+        ";
+
         if (mysqli_query($conn, $strSql)) {
           $action = 'TRUE';
         } else {
@@ -574,18 +641,23 @@ if ($auth != false) {
     $rAct = $_POST['rAct'];
 
     $rAes = $_POST['rAes'];
-    $rFunc = $_POST['rFunc'];
-    $rC_dim = $_POST['rC_dim'];
-    $rStat = $_POST['rStat'];
+    $rSaes = $_POST['rSaes'];
+    $rAest = $_POST['rAest'];
+
+    $rFun = $_POST['rFun'];
+    $rSfun = $_POST['rSfun'];
+    $rFunt = $_POST['rFunt'];
+
+    $rDim1 = $_POST['rDim1'];
+    $rDim2 = $_POST['rDim2'];
+    $rDim3 = $_POST['rDim3'];
+    $rDim4 = $_POST['rDim4'];
+    $rDim5 = $_POST['rDim5'];
+
+    $rSdim = $_POST['rSdim'];
+    $rDimt = $_POST['rDimt'];
 
     if ($rflag == 'D') {
-      // $strSql ="
-      // UPDATE fo_review_d a INNER JOIN fo_review_h b ON (a.rev_id = b.rev_id)
-      // SET
-      //   a.rev_ss='$rSs', a.rev_rej='$rRej', a.rev_avgppm='$rAvg', a.rev_seam='$rSeam', a.rev_spi='$rSpi', a.rev_dim='$rDim', a.rev_oth='$rOth', a.rev_act='$rAct', a.mod_date=NOW(), a.mod_id='$useridx',
-      //   b.rev_avgppm='$rTotavg'
-      // WHERE a.rev_id = '$rId' AND a.rev_proc_id = '$rIdProc' AND b.rev_id = '$rId';
-      // ";
       $strSql ="
       UPDATE fo_review_d
       SET rev_ss='$rSs', rev_rej='$rRej', rev_avgppm='$rAvg', rev_seam='$rSeam', rev_spi='$rSpi', rev_dim='$rDim', rev_oth='$rOth', rev_act='$rAct', mod_date=NOW(), mod_id='$useridx' 
@@ -611,10 +683,46 @@ if ($auth != false) {
       } else {
         $action = 'FALSE';
       }
-    } else if ($rflag == 'DC') {
+    } else if ($rflag == 'AES') {
       $strSql ="
-      UPDATE fo_review_dc
-      SET rev_c_aes='$rAes', rev_c_func='$rFunc', rev_c_dim='$rC_dim', rev_c_stat='$rStat', mod_date=NOW(), mod_id='$useridx' 
+      UPDATE fo_review_dc_aes
+      SET rev_aes_finding='$rAes', rev_aes_stat='$rSaes', mod_date=NOW(), mod_id='$useridx' 
+      WHERE rev_id='$rId' AND rev_proc_id='$rIdProc';
+      ";
+    } else if ($rflag == 'AESH') {
+      $strSql ="
+      UPDATE fo_review_h
+      SET rev_avgaes='$rAest', mod_date=NOW(), mod_id='$useridx' 
+      WHERE rev_id='$rId';
+      ";
+    } else if ($rflag == 'FUN') {
+      $strSql ="
+      UPDATE fo_review_dc_fun
+      SET rev_fun_finding='$rFun', rev_fun_stat='$rSfun', mod_date=NOW(), mod_id='$useridx' 
+      WHERE rev_id='$rId' AND rev_proc_id='$rIdProc';
+      ";
+    } else if ($rflag == 'FUNH') {
+      $strSql ="
+      UPDATE fo_review_h
+      SET rev_avgfun='$rFunt', mod_date=NOW(), mod_id='$useridx' 
+      WHERE rev_id='$rId';
+      ";
+    } else if ($rflag == 'DIM') {
+      $strSql ="
+      UPDATE fo_review_dc_dim
+      SET rev_1='$rDim1', rev_2='$rDim2', rev_3='$rDim3', rev_4='$rDim4', rev_5='$rDim5', mod_date=NOW(), mod_id='$useridx'
+      WHERE rev_id='$rId' AND rev_proc_id='$rIdProc';
+      ";
+    } else if ($rflag == 'DIMH') {
+      $strSql ="
+      UPDATE fo_review_h
+      SET rev_avgdim='$rDimt', mod_date=NOW(), mod_id='$useridx' 
+      WHERE rev_id='$rId';
+      ";
+    } else if ($rflag == 'DMS') {
+      $strSql ="
+      UPDATE fo_review_dc_dim_stat
+      SET rev_dim_stat='$rSdim', mod_date=NOW(), mod_id='$useridx'
       WHERE rev_id='$rId' AND rev_proc_id='$rIdProc';
       ";
     }
@@ -639,7 +747,28 @@ if ($auth != false) {
   
     $data_id = $_POST['data_id'];
 
-    $strSql = "DELETE FROM fo_review_dc WHERE rev_id='$data_id';";
+    $strSql = "DELETE FROM fo_review_dc_aes WHERE rev_id='$data_id';";
+    if (mysqli_query($conn, $strSql)) {
+      $strSql = "SELECT '$data_id' idx, 'TRUE' actx, 'Success delete' msgx";
+    } else {
+      $strSql = "SELECT '$data_id' idx, 'FALSE' actx, 'Error delete' msgx";
+    }
+
+    $strSql = "DELETE FROM fo_review_dc_fun WHERE rev_id='$data_id';";
+    if (mysqli_query($conn, $strSql)) {
+      $strSql = "SELECT '$data_id' idx, 'TRUE' actx, 'Success delete' msgx";
+    } else {
+      $strSql = "SELECT '$data_id' idx, 'FALSE' actx, 'Error delete' msgx";
+    }
+
+    $strSql = "DELETE FROM fo_review_dc_dim WHERE rev_id='$data_id';";
+    if (mysqli_query($conn, $strSql)) {
+      $strSql = "SELECT '$data_id' idx, 'TRUE' actx, 'Success delete' msgx";
+    } else {
+      $strSql = "SELECT '$data_id' idx, 'FALSE' actx, 'Error delete' msgx";
+    }
+
+    $strSql = "DELETE FROM fo_review_dc_dim_stat WHERE rev_id='$data_id';";
     if (mysqli_query($conn, $strSql)) {
       $strSql = "SELECT '$data_id' idx, 'TRUE' actx, 'Success delete' msgx";
     } else {
@@ -723,7 +852,6 @@ if ($auth != false) {
     $rec_count = $row['rec_count'];
 
     if ($rec_count == 0) {
-
       if ($note_desc == '') {
         $note_desc = '-';
       }

@@ -675,7 +675,7 @@
                   <thead>
                     <tr class="align-middle text-center">
                       <td class="table-warning text-end">Average PPM (Aesthetic) :</td>
-                      <td class="table-warning" style="width: 15%;">(Reject/Sample Size)*1000k</td>
+                      <td id="aes_avg" class="table-warning" style="width: 15%;">(Reject/Sample Size)*1000k</td>
                     </tr>
                   </thead>
                 </table>
@@ -699,35 +699,38 @@
                   </thead>
                   <tbody>
                 `;
-              } else {
+              } else if (result[key]['pflagx'] == 'DIM') {
                 htmlData += `
                   <table class="table table-sm">
                     <thead>
                       <tr class="align-middle text-center">
                         <td class="table-warning text-end">Average PPM (Function) :</td>
-                        <td class="table-warning" style="width: 15%;">(Reject/Sample Size)*1000k</td>
+                        <td id="fun_avg" class="table-warning" style="width: 15%;">(Reject/Sample Size)*1000k</td>
                       </tr>
                     </thead>
                   </table>
-                  <div class="row_pis">
-                    <div class="column_pis">
-                      <table class="table table-sm">
-                        <thead>
-                          <tr class="align-middle text-start">
-                            <td colspan="5" class="table-warning" style="height: 28px;"></td>
-                          </tr>
-                          <tr class="align-middle text-start">
-                            <td colspan="5" class="table-primary text-center" style="width: 4%; height: 29px;"></td>
-                          </tr>
-                          <tr class="align-middle text-center table-success">
-                            <th style="width:20%">1</th>
-                            <th>2</th>
-                            <th>3</th>
-                            <th>4</th>
-                            <th>5</th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                  <table class="table table-sm">
+                    <thead>
+                      <tr class="align-middle text-start">
+                        <td colspan="10" class="table-warning">Dimention</td>
+                      </tr>
+                      <tr class="align-middle text-start">
+                        <td colspan="10" class="table-primary text-start">Note: - Ukur masing-masing costume sesuai spec dimention</td>
+                      </tr>
+                      <tr class="align-middle text-center table-success">
+                        <th>Point</th>
+                        <th>Desc</th>
+                        <th>Size</th>
+                        <th>Allowance</th>
+                        <th>Strechability</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                      </tr>
+                    </thead>
+                    <tbody>
                 `;
               }
             }
@@ -763,13 +766,13 @@
                     data-bs-count="${incRow}"
                     id="rej-${result[key]['procx']}" name="rej-${result[key]['procx']}" min="1" max="9999" value="${result[key]['rej']}">
                   </td>
-                  <td class="" style="width:90px">
+                  <td class="">
                     <input type="text" class="form-control form-control"
                     data-bs-fl="D"
                     data-bs-proc="${result[key]['procx']}"
                     name="seam-${result[key]['procx']}" id="seam-${result[key]['procx']}" value="${result[key]['seam']}">                
                   </td>
-                  <td class="" style="width:90px">
+                  <td class="">
                     <input type="text" class="form-control form-control"
                     data-bs-fl="D"
                     data-bs-proc="${result[key]['procx']}"
@@ -791,8 +794,7 @@
                     <textarea type="text" class="form-control form-control"
                       data-bs-fl="D"
                       data-bs-proc="${result[key]['procx']}"
-                      name="act-${result[key]['procx']}" id="act-${result[key]['procx']}" value="${result[key]['act']}">
-                    </textarea>
+                      name="act-${result[key]['procx']}" id="act-${result[key]['procx']}">${result[key]['act']}</textarea>
                   </td>
                 </tr>
               `;
@@ -822,15 +824,15 @@
                   <td class="text-center">${incAes}</td>
                   <td class="">
                     <input type="text" class="form-control form-control"
-                      data-bs-fl="DC"
+                      data-bs-fl="AES"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_aes-${result[key]['procx']}" id="c_aes-${result[key]['procx']}" value="${result[key]['c_aes']}">                
+                      name="aes-${result[key]['procx']}" id="aes-${result[key]['procx']}" value="${result[key]['rev_finding']}">                
                   </td>
                   <td class="">
                     <select class="form-control form-control text-center"
-                      data-bs-fl="DC"
+                      data-bs-fl="AES"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_stat-${result[key]['procx']}" id="c_stat-${result[key]['procx']}">
+                      name="stat_aes-${result[key]['procx']}" id="stat_aes-${result[key]['procx']}">
                         ${c_stat}
                     </select>
                   </td>
@@ -864,22 +866,22 @@
                   <td class="text-center">${incFun}</td>
                   <td class="">
                     <input type="text" class="form-control form-control"
-                      data-bs-fl="DC"
+                      data-bs-fl="FUN"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_func-${result[key]['procx']}" id="c_func-${result[key]['procx']}" value="${result[key]['c_func']}">                
+                      name="fun-${result[key]['procx']}" id="fun-${result[key]['procx']}" value="${result[key]['rev_finding']}">                
                   </td>
                   <td class="">
                     <select class="form-control form-control text-center"
-                      data-bs-fl="DC"
+                      data-bs-fl="FUN"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_stat-${result[key]['procx']}" id="c_stat-${result[key]['procx']}">
+                      name="stat_fun-${result[key]['procx']}" id="stat_fun-${result[key]['procx']}">
                         ${c_stat}
                     </select>
                   </td>
                 </tr>
               `;
               incFun++;
-            } else {
+            } else if (result[key]['pflagx'] == 'DIM') {
               let c_stat = '';
               if (result[key]['c_stat'] == null || result[key]['c_stat'] == "null") {
                 c_stat = `
@@ -901,39 +903,45 @@
               ctdAvgend += Number(result[key]['c_stat']);
               
               htmlData += `
-                <tr class="align-middle text-start" id="row-data-${result[key]['idx']}">
+                <tr class="align-middle text-start" style="height: 41px;" id="row-data-${result[key]['idx']}">
+                  <td class="text-center">${result[key]['fcpoi']}</td>
+                  <td class="text-center">${result[key]['fcdesc']}</td>
+                  <td class="text-center">${result[key]['fcsize']}</td>
+                  <td class="text-center">${result[key]['fcallow']}</td>
+                  <td class="text-center">${result[key]['fcstre']}</td>
                   <td class="">
-                    <input type="text" class="form-control form-control";
-                      data-bs-fl="DC"
+                    <input type="text" class="form-control form-control"
+                      data-bs-fl="DIM"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_poi-${result[key]['procx']}" id="c_poi-${result[key]['procx']}" value="${result[key]['c_dim']}">
+                      name="dim1-${result[key]['procx']}" id="dim1-${result[key]['procx']}" value="${result[key]['rev_1']}">
                   </td>
                   <td class="">
                     <input type="text" class="form-control form-control"
-                      data-bs-fl="DC"
+                      data-bs-fl="DIM"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_aes-${result[key]['procx']}" id="c_aes-${result[key]['procx']}" value="${result[key]['c_aes']}">
+                      name="dim2-${result[key]['procx']}" id="dim2-${result[key]['procx']}" value="${result[key]['rev_2']}">
                   </td>
                   <td class="">
                     <input type="text" class="form-control form-control"
-                      data-bs-fl="DC"
+                      data-bs-fl="DIM"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_func-${result[key]['procx']}" id="c_func-${result[key]['procx']}" value="${result[key]['c_func']}">
+                      name="dim3-${result[key]['procx']}" id="dim3-${result[key]['procx']}" value="${result[key]['rev_3']}">
                   </td>
                   <td class="">
                     <input type="text" class="form-control form-control"
-                      data-bs-fl="DC"
+                      data-bs-fl="DIM"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      name="c_dim-${result[key]['procx']}" id="c_dim-${result[key]['procx']}" value="${result[key]['c_dim']}">
+                      name="dim4-${result[key]['procx']}" id="dim4-${result[key]['procx']}" value="${result[key]['rev_4']}">
                   </td>
                   <td class="">
                     <input type="text" class="form-control form-control"
-                      data-bs-fl="DC"
+                      data-bs-fl="DIM"
                       data-bs-proc_dc="${result[key]['procx']}"
-                      value="${result[key]['c_dim']}">
+                      name="dim5-${result[key]['procx']}" id="dim5-${result[key]['procx']}" value="${result[key]['rev_5']}">
                   </td>
                 </tr>
               `;
+
               incDim++;
             }
             incRow++;
@@ -943,38 +951,56 @@
         }
 
         htmlData += `
-                </tbody>
-              </table>
-            </div>
-            <div class="column_pis">
-              <table class="table table-sm">
-                <thead>
-                  <tr class="align-middle text-start">
-                    <td colspan="5" class="table-warning">Dimention</td>
-                  </tr>
-                  <tr class="align-middle text-start">
-                    <td class="table-primary text-center" style="width: 2%;">Note:</td>
-                    <td colspan="4" class="table-primary">- Ukur masing-masing costume sesuai spec dimention</td>
-                  </tr>
-                  <tr class="align-middle text-center table-success">
-                    <th style="width: 1%;">Point</th>
-                    <th style="width: 20%;">Desc</th>
-                    <th style="width: 5%;">Size</th>
-                    <th style="width: 1%;">Allowance</th>
-                    <th style="width: 1%;">Strechability</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${fc_poi}
-                </tbody>
-              </table>
-            </div>
-          </div>
+            </tbody>
+          </table>
+          <table class="table table-sm">
+            <thead>
+              <td class="table-warning text-end" style="width: 29%;">Status:</td>
+        `;
+
+        if (result.empty == undefined) {
+          for (let key in result){
+            if (result[key]['pflagx'] == 'DMS') {
+              let c_stat = '';
+              if (result[key]['c_stat'] == null || result[key]['c_stat'] == "null") {
+                c_stat = `
+                  <option value="0">Accept</option>
+                  <option value="1">Reject</option>
+                `;
+              } else if (result[key]['c_stat'] == '0') {
+                c_stat = `
+                  <option value="0" selected>Accept</option>
+                  <option value="1">Reject</option>
+                `;
+              } else {
+                c_stat = `
+                  <option value="0">Accept</option>
+                  <option value="1" selected>Reject</option>
+                `;
+              }
+              
+              htmlData += `
+                <td class="">
+                  <select class="form-control form-control text-center"
+                    data-bs-fl="DMS"
+                    data-bs-proc_dc="${result[key]['procx']}"
+                    name="stat_dim-${result[key]['procx']}" id="stat_dim-${result[key]['procx']}">
+                      ${c_stat}
+                  </select>
+                </td>
+              `;
+            }
+          }
+        }
+
+        htmlData += `
+            </thead>
+          </table>
           <table class="table table-sm">
             <thead>
               <tr class="align-middle text-center">
                 <td class="table-warning text-end">Average PPM (Dimention) :</td>
-                <td class="table-warning" style="width: 15%;">(Reject/Sample Size)*1000k</td>
+                <td id="dim_avg" class="table-warning" style="width: 15%;">(Reject/Sample Size)*1000k</td>
               </tr>
             </thead>
           </table>
@@ -1024,7 +1050,7 @@
         //     <span class="input-group-text">${ctdStg}</span>
         //   </div>
         // `;
-        
+
         $('#tdh-date').empty();
         $('#tdh-date').append(ctdDate);
         $('#tdh-date').attr('data-bs-id', ctdId);
@@ -1078,6 +1104,78 @@
           $('#td-avgh-' + curIdh).empty();
           $('#td-avgh-' + curIdh).append(((ctdAvg/curCount).toFixed(0)),"K");
           $('#td-avgh-' + curIdh).addClass(avgstyle);
+        }
+
+        let curAesavg = 0;
+          $('[id^=stat_aes-]').each(function (e){
+            e.preventDefault;
+            let curProc = $(this).attr('data-bs-proc_dc');
+            curAesavg += Number($('#stat_aes-' + curProc).val());
+          });
+
+          let aesstyle = '';
+          if ((curAesavg/5)*1000 > 50) {
+            aesstyle = 'text-danger fw-bold';
+          } else {
+            aesstyle = 'text-success fw-bold';
+          }
+
+          $('#aes_avg').empty();
+          $('#aes_avg').append((((curAesavg/5)*1000).toFixed(0)),"K");
+          $('#aes_avg').addClass(aesstyle);
+
+          if ((curAesavg/5)*1000 == 0) {
+            $('#aes_avg').empty();
+            $('#aes_avg').removeClass('text-danger');
+            $('#aes_avg').append("-");
+          }
+
+        let curFunavg = 0;
+        $('[id^=stat_fun-]').each(function (e){
+          e.preventDefault;
+          let curProc = $(this).attr('data-bs-proc_dc');
+          curFunavg += Number($('#stat_fun-' + curProc).val());
+        });
+
+        let funstyle = '';
+        if ((curFunavg/5)*1000 > 50) {
+          funstyle = 'text-danger fw-bold';
+        } else {
+          funstyle = 'text-success fw-bold';
+        }
+
+        $('#fun_avg').empty();
+        $('#fun_avg').append((((curFunavg/5)*1000).toFixed(0)),"K");
+        $('#fun_avg').addClass(funstyle);
+
+        if ((curFunavg/5)*1000 == 0) {
+          $('#fun_avg').empty();
+          $('#fun_avg').removeClass('text-danger');
+          $('#fun_avg').append("-");
+        }
+
+        let curDimavg = 0;
+        $('[id^=stat_dim-]').each(function (e){
+          e.preventDefault;
+          let curProc = $(this).attr('data-bs-proc_dc');
+          curDimavg += Number($('#stat_dim-' + curProc).val());
+        });
+
+        let dimstyle = '';
+        if ((curDimavg/5)*1000 > 50) {
+          dimstyle = 'text-danger fw-bold';
+        } else {
+          dimstyle = 'text-success fw-bold';
+        }
+
+        $('#dim_avg').empty();
+        $('#dim_avg').append((((curDimavg/5)*1000).toFixed(0)),"K");
+        $('#dim_avg').addClass(dimstyle);
+
+        if ((curDimavg/5)*1000 == 0) {
+          $('#dim_avg').empty();
+          $('#dim_avg').removeClass('text-danger');
+          $('#dim_avg').append("-");
         }
 
         let curAvgend = 0;
@@ -1267,73 +1365,175 @@
         });
 
         //Aesthetic
-        $('[id^=c_aes-]').change(function (e){
+        $('[id^=aes-]').change(function (e){
           e.preventDefault;
           countDataSim();
           let urlPar = '';
           let curProc = $(this).attr('data-bs-proc_dc');
           urlPar = new URLSearchParams({
-            rflag: 'DC',
+            rflag: 'AES',
             rIdProc: curProc,
             rId: $('#tdh-date').attr('data-bs-id'),
-            rAes: $('#c_aes-' + curProc).val(),
-            rFunc: $('#c_func-' + curProc).val(),
-            rC_dim: $('#c_dim-' + curProc).val(),
-            rStat: $('#c_stat-' + curProc).val()
+            rAes: $('#aes-' + curProc).val(),
+            rSaes: $('#stat_aes-' + curProc).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Status Aesthetic
+        $('[id^=stat_aes-]').change(function (e){
+          e.preventDefault;
+          countDataSim();
+          let urlPar = '';
+          let curProc = $(this).attr('data-bs-proc_dc');
+          urlPar = new URLSearchParams({
+            rflag: 'AES',
+            rIdProc: curProc,
+            rId: $('#tdh-date').attr('data-bs-id'),
+            rAes: $('#aes-' + curProc).val(),
+            rSaes: $('#stat_aes-' + curProc).val(),
           });
           fetchData('upd-list-det', urlPar);
         });
 
         //Function
-        $('[id^=c_func-]').change(function (e){
+        $('[id^=fun-]').change(function (e){
           e.preventDefault;
           countDataSim();
           let urlPar = '';
           let curProc = $(this).attr('data-bs-proc_dc');
           urlPar = new URLSearchParams({
-            rflag: 'DC',
+            rflag: 'FUN',
             rIdProc: curProc,
             rId: $('#tdh-date').attr('data-bs-id'),
-            rAes: $('#c_aes-' + curProc).val(),
-            rFunc: $('#c_func-' + curProc).val(),
-            rC_dim: $('#c_dim-' + curProc).val(),
-            rStat: $('#c_stat-' + curProc).val()
+            rFun: $('#fun-' + curProc).val(),
+            rSfun: $('#stat_fun-' + curProc).val(),
           });
           fetchData('upd-list-det', urlPar);
         });
 
-        //Cus Dimention
-        $('[id^=c_dim-]').change(function (e){
+        //Status Function
+        $('[id^=stat_fun-]').change(function (e){
           e.preventDefault;
           countDataSim();
           let urlPar = '';
           let curProc = $(this).attr('data-bs-proc_dc');
           urlPar = new URLSearchParams({
-            rflag: 'DC',
+            rflag: 'FUN',
             rIdProc: curProc,
             rId: $('#tdh-date').attr('data-bs-id'),
-            rAes: $('#c_aes-' + curProc).val(),
-            rFunc: $('#c_func-' + curProc).val(),
-            rC_dim: $('#c_dim-' + curProc).val(),
-            rStat: $('#c_stat-' + curProc).val()
+            rFun: $('#fun-' + curProc).val(),
+            rSfun: $('#stat_fun-' + curProc).val(),
           });
           fetchData('upd-list-det', urlPar);
         });
 
-        //Status
-        $('[id^=c_stat-]').change(function (e){
+        //Dimention 1
+        $('[id^=dim1-]').change(function (e){
           e.preventDefault;
           countDataSim();
           let urlPar = '';
           let curProc = $(this).attr('data-bs-proc_dc');
           urlPar = new URLSearchParams({
-            rflag: 'DC',
+            rflag: 'DIM',
             rIdProc: curProc,
             rId: $('#tdh-date').attr('data-bs-id'),
-            rAes: $('#c_aes-' + curProc).val(),
-            rFunc: $('#c_func-' + curProc).val(),
-            rC_dim: $('#c_dim-' + curProc).val(),
-            rStat: $('#c_stat-' + curProc).val()
+            rDim1: $('#dim1-' + curProc).val(),
+            rDim2: $('#dim2-' + curProc).val(),
+            rDim3: $('#dim3-' + curProc).val(),
+            rDim4: $('#dim4-' + curProc).val(),
+            rDim5: $('#dim5-' + curProc).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Dimention 2
+        $('[id^=dim2-]').change(function (e){
+          e.preventDefault;
+          countDataSim();
+          let urlPar = '';
+          let curProc = $(this).attr('data-bs-proc_dc');
+          urlPar = new URLSearchParams({
+            rflag: 'DIM',
+            rIdProc: curProc,
+            rId: $('#tdh-date').attr('data-bs-id'),
+            rDim1: $('#dim1-' + curProc).val(),
+            rDim2: $('#dim2-' + curProc).val(),
+            rDim3: $('#dim3-' + curProc).val(),
+            rDim4: $('#dim4-' + curProc).val(),
+            rDim5: $('#dim5-' + curProc).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Dimention 3
+        $('[id^=dim3-]').change(function (e){
+          e.preventDefault;
+          countDataSim();
+          let urlPar = '';
+          let curProc = $(this).attr('data-bs-proc_dc');
+          urlPar = new URLSearchParams({
+            rflag: 'DIM',
+            rIdProc: curProc,
+            rId: $('#tdh-date').attr('data-bs-id'),
+            rDim1: $('#dim1-' + curProc).val(),
+            rDim2: $('#dim2-' + curProc).val(),
+            rDim3: $('#dim3-' + curProc).val(),
+            rDim4: $('#dim4-' + curProc).val(),
+            rDim5: $('#dim5-' + curProc).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Dimention 4
+        $('[id^=dim4-]').change(function (e){
+          e.preventDefault;
+          countDataSim();
+          let urlPar = '';
+          let curProc = $(this).attr('data-bs-proc_dc');
+          urlPar = new URLSearchParams({
+            rflag: 'DIM',
+            rIdProc: curProc,
+            rId: $('#tdh-date').attr('data-bs-id'),
+            rDim1: $('#dim1-' + curProc).val(),
+            rDim2: $('#dim2-' + curProc).val(),
+            rDim3: $('#dim3-' + curProc).val(),
+            rDim4: $('#dim4-' + curProc).val(),
+            rDim5: $('#dim5-' + curProc).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Dimention 5
+        $('[id^=dim5-]').change(function (e){
+          e.preventDefault;
+          countDataSim();
+          let urlPar = '';
+          let curProc = $(this).attr('data-bs-proc_dc');
+          urlPar = new URLSearchParams({
+            rflag: 'DIM',
+            rIdProc: curProc,
+            rId: $('#tdh-date').attr('data-bs-id'),
+            rDim1: $('#dim1-' + curProc).val(),
+            rDim2: $('#dim2-' + curProc).val(),
+            rDim3: $('#dim3-' + curProc).val(),
+            rDim4: $('#dim4-' + curProc).val(),
+            rDim5: $('#dim5-' + curProc).val(),
+          });
+          fetchData('upd-list-det', urlPar);
+        });
+
+        //Dimention Status
+        $('[id^=stat_dim-]').change(function (e){
+          e.preventDefault;
+          countDataSim();
+          let urlPar = '';
+          let curProc = $(this).attr('data-bs-proc_dc');
+          urlPar = new URLSearchParams({
+            rflag: 'DMS',
+            rIdProc: curProc,
+            rId: $('#tdh-date').attr('data-bs-id'),
+            rSdim: $('#stat_dim-' + curProc).val(),
           });
           fetchData('upd-list-det', urlPar);
         });
@@ -1484,6 +1684,120 @@
           let curTh = curTr/curWh;
           //console.log(curTr + '-' + curTt + '-' + curTh);
 
+          let curAesavg = 0;
+          $('[id^=stat_aes-]').each(function (e){
+            e.preventDefault;
+            let curProc = $(this).attr('data-bs-proc_dc');
+            curAesavg += Number($('#stat_aes-' + curProc).val());
+          });
+
+          let aesstyle = '';
+          if ((curAesavg/5)*1000 > 50) {
+            aesstyle = 'text-danger fw-bold';
+          } else {
+            aesstyle = 'text-success fw-bold';
+          }
+
+          $('#aes_avg').empty();
+          $('#aes_avg').append((((curAesavg/5)*1000).toFixed(0)),"K");
+          $('#aes_avg').addClass(aesstyle);
+
+          if ((curAesavg/5)*1000 == 0) {
+            $('#aes_avg').empty();
+            $('#aes_avg').removeClass('text-danger');
+            $('#aes_avg').append("-");
+          }
+
+          $('[id^=stat_aes-]').each(function (e){
+            e.preventDefault;
+            let urlPar = '';
+            let curProc = $(this).attr('data-bs-proc_dc');
+            let totAesavg = (curAesavg/5)*1000;
+            urlPar = new URLSearchParams({
+              rflag: 'AESH',
+              rIdProc: curProc,
+              rId: $('#tdh-date').attr('data-bs-id'),
+              rAest: totAesavg,
+            });
+            fetchData('upd-list-det', urlPar);
+          });
+
+          let curFunavg = 0;
+          $('[id^=stat_fun-]').each(function (e){
+            e.preventDefault;
+            let curProc = $(this).attr('data-bs-proc_dc');
+            curFunavg += Number($('#stat_fun-' + curProc).val());
+          });
+
+          let funstyle = '';
+          if ((curFunavg/5)*1000 > 50) {
+            funstyle = 'text-danger fw-bold';
+          } else {
+            funstyle = 'text-success fw-bold';
+          }
+
+          $('#fun_avg').empty();
+          $('#fun_avg').append((((curFunavg/5)*1000).toFixed(0)),"K");
+          $('#fun_avg').addClass(funstyle);
+
+          if ((curFunavg/5)*1000 == 0) {
+            $('#fun_avg').empty();
+            $('#fun_avg').removeClass('text-danger');
+            $('#fun_avg').append("-");
+          }
+
+          $('[id^=stat_fun-]').each(function (e){
+            e.preventDefault;
+            let urlPar = '';
+            let curProc = $(this).attr('data-bs-proc_dc');
+            let totFunavg = (curFunavg/5)*1000;
+            urlPar = new URLSearchParams({
+              rflag: 'FUNH',
+              rIdProc: curProc,
+              rId: $('#tdh-date').attr('data-bs-id'),
+              rFunt: totFunavg,
+            });
+            fetchData('upd-list-det', urlPar);
+          });
+
+          let curDimavg = 0;
+          $('[id^=stat_dim-]').each(function (e){
+            e.preventDefault;
+            let curProc = $(this).attr('data-bs-proc_dc');
+            curDimavg += Number($('#stat_dim-' + curProc).val());
+          });
+
+          let dimstyle = '';
+          if ((curDimavg/5)*1000 > 50) {
+            dimstyle = 'text-danger fw-bold';
+          } else {
+            dimstyle = 'text-success fw-bold';
+          }
+
+          $('#dim_avg').empty();
+          $('#dim_avg').append((((curDimavg/5)*1000).toFixed(0)),"K");
+          $('#dim_avg').addClass(dimstyle);
+
+          if ((curDimavg/5)*1000 == 0) {
+            $('#dim_avg').empty();
+            $('#dim_avg').removeClass('text-danger');
+            $('#dim_avg').append("-");
+          }
+
+          $('[id^=stat_dim-]').each(function (e){
+            e.preventDefault;
+            let urlPar = '';
+            let curProc = $(this).attr('data-bs-proc_dc');
+            let totDimavg = (curDimavg/5)*1000;
+            urlPar = new URLSearchParams({
+              rflag: 'DIMH',
+              rIdProc: curProc,
+              rId: $('#tdh-date').attr('data-bs-id'),
+              rDimt: totDimavg,
+            });
+            fetchData('upd-list-det', urlPar);
+          });
+
           let curAvgend = 0;
           $('[id^=c_stat-]').each(function (e){
             e.preventDefault;
@@ -1519,7 +1833,9 @@
             countData(curPrc);
           });
         }
-        //console.log(htmlData);
+        
+        $('#fcpoi').empty();
+        $('#fcpoi').append(fc_poi);
       }
       
       //part list
@@ -1730,8 +2046,8 @@
       // ############################################
 
       //first load data
-      fetchData('view-list', setUrlParam(1));
       fetchData('view-pis-list', setUrlParam(2));
+      fetchData('view-list', setUrlParam(1));
       fetchData('view-part-list', setUrlParam(0));
 
       setInterval(() => {

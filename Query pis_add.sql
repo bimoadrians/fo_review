@@ -18,5 +18,6 @@
 	a.fc_allow fcallow, a.fc_stre fcstre
 	 FROM toy_part_pis a;
 	 
-	SELECT IFNULL(COUNT(*),0) rec_count
-	FROM toy_part_pis;
+	SELECT IFNULL(COUNT(*),0) style_count
+	FROM toy_part_pis
+	WHERE part_num = '11033-88735';

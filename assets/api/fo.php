@@ -497,113 +497,126 @@ if ($auth != false) {
     $rec_count = $row['rec_count'];
 
     if ($rec_count == 0) {
-      
-      //get style data
-      $strSql = "SELECT * FROM toy_part_cbsh WHERE CBSH_PART_NUM='$rev_part' LIMIT 1;";
+      $strSql = "
+        SELECT IFNULL(COUNT(*),0) pis_count 
+        FROM toy_part_pis
+        WHERE part_num='$rev_part';
+      ";
+
       $res = mysqli_query($conn, $strSql);
       $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
-      
-      $strSql = "
-      INSERT INTO `fo_review_h` (
-        `rev_avgppm`, `rev_date`, `rev_line`, `rev_group`,
-        `rev_part`, `rev_by`, `rev_stage`,
-        `add_date`, `add_id`
-      ) VALUES (
-        '0', '$rev_date', '$rev_line', '$rev_group',
-        '$rev_part', '$rev_by', '$rev_stage',
-        NOW(), $useridx
-      );";
-
-      if (mysqli_query($conn, $strSql)) {
-        $strSql = "
-        SELECT rev_id FROM fo_review_h 
-        WHERE `rev_date`='$rev_date' AND `rev_line`='$rev_line' AND  
-         `rev_group`='$rev_group' AND `rev_part`='$rev_part';
-        ";
-
+      $pis_count = $row['pis_count'];
+      if ($pis_count == 0) {
+        $action = 'EMPTY';
+        $msgx = "EMPTY";
+      } else {
+        //get style data
+        $strSql = "SELECT * FROM toy_part_cbsh WHERE CBSH_PART_NUM='$rev_part' LIMIT 1;";
         $res = mysqli_query($conn, $strSql);
         $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
-        $idx = $row['rev_id'];
-
-        // INSERT CBS
-        $strSql = "
-        INSERT INTO `fo_review_d` (`rev_id`, `rev_proc_id`, `rev_ss`, `rev_rej`, `rev_avgppm`, `rev_seam`, `rev_spi`, `rev_dim`, `rev_oth`, `rev_act`, `add_date`,
-        `add_id`)
-        SELECT '$idx' aidx, a.CBSD_ID procx, '0' ss, '0' rej, '0' avgppm, '' seam, '' spi, '' dim, '' oth, '' act, NOW() addx, '$useridx' adux
-        FROM toy_part_cbsd a
-        LEFT JOIN toy_part_cbsh b ON a.CBSD_PART_NUM = b.CBSH_PART_NUM
-        WHERE a.CBSD_PART_NUM = '$rev_part';
-        ";
-
-        if (mysqli_query($conn, $strSql)) {
-          $action = 'TRUE';
-        } else {
-          $action = 'FALSE';
-        }
-
-        // INSERT AESTHETIC
-        $strSql = "
-        INSERT INTO `fo_review_dc_aes` (`rev_id`, `rev_proc_id`, `rev_aes_finding`, `rev_aes_stat`, `add_date`, `add_id`) 
-        SELECT '$idx' aidx, 'AE1' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'AE2' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'AE3' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'AE4' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'AE5' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux;
-        ";
-
-        if (mysqli_query($conn, $strSql)) {
-          $action = 'TRUE';
-        } else {
-          $action = 'FALSE';
-        }
-
-        // INSERT FUNCTION
-        $strSql = "
-        INSERT INTO `fo_review_dc_fun` (`rev_id`, `rev_proc_id`, `rev_fun_finding`, `rev_fun_stat`, `add_date`, `add_id`) 
-        SELECT '$idx' aidx, 'FU1' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'FU2' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'FU3' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'FU4' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'FU5' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux;
-        ";
-
-        if (mysqli_query($conn, $strSql)) {
-          $action = 'TRUE';
-        } else {
-          $action = 'FALSE';
-        }
-
-        // INSERT DIMENTION
-        $strSql = "
-        INSERT INTO `fo_review_dc_dim` (`rev_id`, `rev_proc_id`, `rev_1`, `rev_2`, `rev_3`, `rev_4`, `rev_5`, `note_desc`, `note_dim`, `note_stre`, `fc_poi`, `fc_desc`, `fc_size`, `fc_allow`, `fc_stre`, `add_date`, `add_id`)
-        SELECT '$idx' aidx, toy_part_id procx, '' rev_1, '' rev_2, '' rev_3, '' rev_4, '' rev_5, note_desc ndesc, note_dim ndim, note_stre nstre, fc_poi fcpoi, fc_desc fcdesc, fc_size fcsize, fc_allow fcallow, fc_stre fcstre, NOW() addx, '$useridx' adux
-        FROM toy_part_pis
-        WHERE part_num = '$rev_part';
-        ";
         
-        if (mysqli_query($conn, $strSql)) {
-          $action = 'TRUE';
-        } else {
-          $action = 'FALSE';
-        }
-
-        // INSERT DIMENTION STATUS
         $strSql = "
-        INSERT INTO `fo_review_dc_dim_stat` (`rev_id`, `rev_proc_id`, `rev_dim_stat`, `add_date`, `add_id`) 
-        SELECT '$idx' aidx, 'DS1' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DS2' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DS3' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DS4' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
-        SELECT '$idx' aidx, 'DS5' procx, '0' c_stat, NOW() addx, '$useridx' adux;
-        ";
+        INSERT INTO `fo_review_h` (
+          `rev_avgppm`, `rev_date`, `rev_line`, `rev_group`,
+          `rev_part`, `rev_by`, `rev_stage`,
+          `add_date`, `add_id`
+        ) VALUES (
+          '0', '$rev_date', '$rev_line', '$rev_group',
+          '$rev_part', '$rev_by', '$rev_stage',
+          NOW(), $useridx
+        );";
 
         if (mysqli_query($conn, $strSql)) {
-          $action = 'TRUE';
+          $strSql = "
+          SELECT rev_id FROM fo_review_h 
+          WHERE `rev_date`='$rev_date' AND `rev_line`='$rev_line' AND  
+          `rev_group`='$rev_group' AND `rev_part`='$rev_part';
+          ";
+
+          $res = mysqli_query($conn, $strSql);
+          $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
+          $idx = $row['rev_id'];
+
+          // INSERT CBS
+          $strSql = "
+          INSERT INTO `fo_review_d` (`rev_id`, `rev_proc_id`, `rev_ss`, `rev_rej`, `rev_avgppm`, `rev_seam`, `rev_spi`, `rev_dim`, `rev_oth`, `rev_act`, `add_date`,
+          `add_id`)
+          SELECT '$idx' aidx, a.CBSD_ID procx, '0' ss, '0' rej, '0' avgppm, '' seam, '' spi, '' dim, '' oth, '' act, NOW() addx, '$useridx' adux
+          FROM toy_part_cbsd a
+          LEFT JOIN toy_part_cbsh b ON a.CBSD_PART_NUM = b.CBSH_PART_NUM
+          WHERE a.CBSD_PART_NUM = '$rev_part';
+          ";
+
+          if (mysqli_query($conn, $strSql)) {
+            $action = 'TRUE';
+          } else {
+            $action = 'FALSE';
+          }
+
+          // INSERT AESTHETIC
+          $strSql = "
+          INSERT INTO `fo_review_dc_aes` (`rev_id`, `rev_proc_id`, `rev_aes_finding`, `rev_aes_stat`, `add_date`, `add_id`) 
+          SELECT '$idx' aidx, 'AE1' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'AE2' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'AE3' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'AE4' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'AE5' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux;
+          ";
+
+          if (mysqli_query($conn, $strSql)) {
+            $action = 'TRUE';
+          } else {
+            $action = 'FALSE';
+          }
+
+          // INSERT FUNCTION
+          $strSql = "
+          INSERT INTO `fo_review_dc_fun` (`rev_id`, `rev_proc_id`, `rev_fun_finding`, `rev_fun_stat`, `add_date`, `add_id`) 
+          SELECT '$idx' aidx, 'FU1' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'FU2' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'FU3' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'FU4' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'FU5' procx, '' rev_finding, '0' c_stat, NOW() addx, '$useridx' adux;
+          ";
+
+          if (mysqli_query($conn, $strSql)) {
+            $action = 'TRUE';
+          } else {
+            $action = 'FALSE';
+          }
+
+          // INSERT DIMENTION
+          $strSql = "
+          INSERT INTO `fo_review_dc_dim` (`rev_id`, `rev_proc_id`, `rev_1`, `rev_2`, `rev_3`, `rev_4`, `rev_5`, `note_desc`, `note_dim`, `note_stre`, `fc_poi`, `fc_desc`, `fc_size`, `fc_allow`, `fc_stre`, `add_date`, `add_id`)
+          SELECT '$idx' aidx, toy_part_id procx, '' rev_1, '' rev_2, '' rev_3, '' rev_4, '' rev_5, note_desc ndesc, note_dim ndim, note_stre nstre, fc_poi fcpoi, fc_desc fcdesc, fc_size fcsize, fc_allow fcallow, fc_stre fcstre, NOW() addx, '$useridx' adux
+          FROM toy_part_pis
+          WHERE part_num = '$rev_part';
+          ";
+          
+          if (mysqli_query($conn, $strSql)) {
+            $action = 'TRUE';
+          } else {
+            $action = 'FALSE';
+          }
+
+          // INSERT DIMENTION STATUS
+          $strSql = "
+          INSERT INTO `fo_review_dc_dim_stat` (`rev_id`, `rev_proc_id`, `rev_dim_stat`, `add_date`, `add_id`) 
+          SELECT '$idx' aidx, 'DS1' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'DS2' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'DS3' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'DS4' procx, '0' c_stat, NOW() addx, '$useridx' adux UNION ALL
+          SELECT '$idx' aidx, 'DS5' procx, '0' c_stat, NOW() addx, '$useridx' adux;
+          ";
+
+          if (mysqli_query($conn, $strSql)) {
+            $action = 'TRUE';
+          } else {
+            $action = 'FALSE';
+          }
         } else {
           $action = 'FALSE';
         }
-      } else {
-        $action = 'FALSE';
       }
     } else {
       $action = 'FALSE';

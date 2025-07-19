@@ -56,7 +56,23 @@
       clear: both;
       display: table;
     }
-  </style>
+
+    .fullscreen {
+      width:29.5%;
+    }
+
+    @media (min-width:500px){
+      .fullscreen {
+        width:46%;
+      }
+    }
+
+    @media (min-width:1000px){
+      .fullscreen {
+        width:29.5%;
+      }
+    }
+</style>
 </head>
 <body class="d-flex flex-column h-100">
   <header>
@@ -371,6 +387,11 @@
                 $('#tr-msg-add').removeClass('d-none');
                 $('#td-msg-add').empty();
                 $('#td-msg-add').append('Error or duplicate data.');
+                return;
+              } else if (output[0].actx == 'EMPTY'){
+                $('#tr-msg-add').removeClass('d-none');
+                $('#td-msg-add').empty();
+                $('#td-msg-add').append('Please input PIS first');
                 return;
               } else {
                 $('#modalDialog').modal('hide');
@@ -829,8 +850,9 @@
                       name="aes-${result[key]['procx']}" id="aes-${result[key]['procx']}" value="${result[key]['rev_finding']}">                
                   </td>
                   <td class="">
-                    <select class="form-control form-control text-center"
+                    <select class="form-control form-control text-center bg-success" style="color:white;"
                       data-bs-fl="AES"
+                      data-bs-stat="${result[key]['c_stat']}"
                       data-bs-proc_dc="${result[key]['procx']}"
                       name="stat_aes-${result[key]['procx']}" id="stat_aes-${result[key]['procx']}">
                         ${c_stat}
@@ -871,8 +893,9 @@
                       name="fun-${result[key]['procx']}" id="fun-${result[key]['procx']}" value="${result[key]['rev_finding']}">                
                   </td>
                   <td class="">
-                    <select class="form-control form-control text-center"
+                    <select class="form-control form-control text-center bg-success" style="color:white;"
                       data-bs-fl="FUN"
+                      data-bs-stat="${result[key]['c_stat']}"
                       data-bs-proc_dc="${result[key]['procx']}"
                       name="stat_fun-${result[key]['procx']}" id="stat_fun-${result[key]['procx']}">
                         ${c_stat}
@@ -900,15 +923,39 @@
                 `;
               }
 
+              let fcsize = '';
+
+              if (result[key]['fcsize'] == null || result[key]['fcsize'] == 'null' || result[key]['fcsize'] == '-') {
+                fcsize = '';
+              } else {
+                fcsize = '"L';
+              }
+
+              let fcallow = '';
+
+              if (result[key]['fcallow'] == null || result[key]['fcallow'] == "null" || result[key]['fcallow'] == "-") {
+                fcallow = '';
+              } else {
+                fcallow = '+/-';
+              }
+
+              let fcstre = '';
+
+              if (result[key]['fcstre'] == null || result[key]['fcstre'] == "null" || result[key]['fcstre'] == "-") {
+                fcstre = '';
+              } else {
+                fcstre = '"';
+              }
+
               ctdAvgend += Number(result[key]['c_stat']);
               
               htmlData += `
                 <tr class="align-middle text-start" style="height: 41px;" id="row-data-${result[key]['idx']}">
                   <td class="text-center">${result[key]['fcpoi']}</td>
                   <td class="text-center">${result[key]['fcdesc']}</td>
-                  <td class="text-center">${result[key]['fcsize']}</td>
-                  <td class="text-center">${result[key]['fcallow']}</td>
-                  <td class="text-center">${result[key]['fcstre']}</td>
+                  <td class="text-center">${result[key]['fcsize']}${fcsize}</td>
+                  <td class="text-center">${fcallow}${result[key]['fcallow']}</td>
+                  <td class="text-center">${result[key]['fcstre']}${fcstre}</td>
                   <td class="">
                     <input type="text" class="form-control form-control"
                       data-bs-fl="DIM"
@@ -955,7 +1002,7 @@
           </table>
           <table class="table table-sm">
             <thead>
-              <td class="table-warning text-end" style="width: 29%;">Status:</td>
+              <td id="fullscreen" class="fullscreen table-warning text-end">Status:</td>
         `;
 
         if (result.empty == undefined) {
@@ -980,14 +1027,15 @@
               }
               
               htmlData += `
-                <td class="">
-                  <select class="form-control form-control text-center"
+                <th class="">
+                  <select class="form-control form-control text-center bg-success" style="color:white;"
                     data-bs-fl="DMS"
                     data-bs-proc_dc="${result[key]['procx']}"
+                    data-bs-stat="${result[key]['c_stat']}"
                     name="stat_dim-${result[key]['procx']}" id="stat_dim-${result[key]['procx']}">
                       ${c_stat}
                   </select>
-                </td>
+                </th>
               `;
             }
           }
@@ -1110,6 +1158,21 @@
           $('[id^=stat_aes-]').each(function (e){
             e.preventDefault;
             let curProc = $(this).attr('data-bs-proc_dc');
+            let curStat = $(this).attr('data-bs-stat');
+            let aesClass = '';
+            if (curStat == null || curStat == "null") {
+              aesClass = 'bg-success fw-bold';
+              $('#stat_aes-' + curProc).removeClass('bg-danger');
+              $('#stat_aes-' + curProc).addClass(aesClass);
+            } else if (curStat == '0') {
+              aesClass = 'bg-success fw-bold';
+              $('#stat_aes-' + curProc).removeClass('bg-danger');
+              $('#stat_aes-' + curProc).addClass(aesClass);
+            } else {
+              aesClass = 'bg-danger fw-bold';
+              $('#stat_aes-' + curProc).removeClass('bg-success');
+              $('#stat_aes-' + curProc).addClass(aesClass);
+            }
             curAesavg += Number($('#stat_aes-' + curProc).val());
           });
 
@@ -1134,6 +1197,21 @@
         $('[id^=stat_fun-]').each(function (e){
           e.preventDefault;
           let curProc = $(this).attr('data-bs-proc_dc');
+          let curStat = $(this).attr('data-bs-stat');
+          let funClass = '';
+          if (curStat == null || curStat == "null") {
+            funClass = 'bg-success fw-bold';
+            $('#stat_fun-' + curProc).removeClass('bg-danger');
+            $('#stat_fun-' + curProc).addClass(funClass);
+          } else if (curStat == '0') {
+            funClass = 'bg-success fw-bold';
+            $('#stat_fun-' + curProc).removeClass('bg-danger');
+            $('#stat_fun-' + curProc).addClass(funClass);
+          } else {
+            funClass = 'bg-danger fw-bold';
+            $('#stat_fun-' + curProc).removeClass('bg-success');
+            $('#stat_fun-' + curProc).addClass(funClass);
+          }
           curFunavg += Number($('#stat_fun-' + curProc).val());
         });
 
@@ -1158,6 +1236,21 @@
         $('[id^=stat_dim-]').each(function (e){
           e.preventDefault;
           let curProc = $(this).attr('data-bs-proc_dc');
+          let curStat = $(this).attr('data-bs-stat');
+          let dimClass = '';
+          if (curStat == null || curStat == "null") {
+            dimClass = 'bg-success fw-bold';
+            $('#stat_dim-' + curProc).removeClass('bg-danger');
+            $('#stat_dim-' + curProc).addClass(dimClass);
+          } else if (curStat == '0') {
+            dimClass = 'bg-success fw-bold';
+            $('#stat_dim-' + curProc).removeClass('bg-danger');
+            $('#stat_dim-' + curProc).addClass(dimClass);
+          } else {
+            dimClass = 'bg-danger fw-bold';
+            $('#stat_dim-' + curProc).removeClass('bg-success');
+            $('#stat_dim-' + curProc).addClass(dimClass);
+          }
           curDimavg += Number($('#stat_dim-' + curProc).val());
         });
 
@@ -1386,6 +1479,21 @@
           countDataSim();
           let urlPar = '';
           let curProc = $(this).attr('data-bs-proc_dc');
+          let curStat = $(this).attr('data-bs-stat');
+          let aesClass = '';
+          if ($('#stat_aes-' + curProc).val() == null || $('#stat_aes-' + curProc).val() == "null") {
+            aesClass = 'bg-success fw-bold';
+            $('#stat_aes-' + curProc).removeClass('bg-danger');
+            $('#stat_aes-' + curProc).addClass(aesClass);
+          } else if ($('#stat_aes-' + curProc).val() == '0') {
+            aesClass = 'bg-success fw-bold';
+            $('#stat_aes-' + curProc).removeClass('bg-danger');
+            $('#stat_aes-' + curProc).addClass(aesClass);
+          } else {
+            aesClass = 'bg-danger fw-bold';
+            $('#stat_aes-' + curProc).removeClass('bg-success');
+            $('#stat_aes-' + curProc).addClass(aesClass);
+          }
           urlPar = new URLSearchParams({
             rflag: 'AES',
             rIdProc: curProc,
@@ -1418,6 +1526,21 @@
           countDataSim();
           let urlPar = '';
           let curProc = $(this).attr('data-bs-proc_dc');
+          let curStat = $(this).attr('data-bs-stat');
+          let funClass = '';
+          if ($('#stat_fun-' + curProc).val() == null || $('#stat_fun-' + curProc).val() == "null") {
+            funClass = 'bg-success fw-bold';
+            $('#stat_fun-' + curProc).removeClass('bg-danger');
+            $('#stat_fun-' + curProc).addClass(funClass);
+          } else if ($('#stat_fun-' + curProc).val() == '0') {
+            funClass = 'bg-success fw-bold';
+            $('#stat_fun-' + curProc).removeClass('bg-danger');
+            $('#stat_fun-' + curProc).addClass(funClass);
+          } else {
+            funClass = 'bg-danger fw-bold';
+            $('#stat_fun-' + curProc).removeClass('bg-success');
+            $('#stat_fun-' + curProc).addClass(funClass);
+          }
           urlPar = new URLSearchParams({
             rflag: 'FUN',
             rIdProc: curProc,
@@ -1529,6 +1652,20 @@
           countDataSim();
           let urlPar = '';
           let curProc = $(this).attr('data-bs-proc_dc');
+          let dimClass = '';
+          if ($('#stat_dim-' + curProc).val() == null || $('#stat_dim-' + curProc).val() == "null") {
+            dimClass = 'bg-success fw-bold';
+            $('#stat_dim-' + curProc).removeClass('bg-danger');
+            $('#stat_dim-' + curProc).addClass(dimClass);
+          } else if ($('#stat_dim-' + curProc).val() == '0') {
+            dimClass = 'bg-success fw-bold';
+            $('#stat_dim-' + curProc).removeClass('bg-danger');
+            $('#stat_dim-' + curProc).addClass(dimClass);
+          } else {
+            dimClass = 'bg-danger fw-bold';
+            $('#stat_dim-' + curProc).removeClass('bg-success');
+            $('#stat_dim-' + curProc).addClass(dimClass);
+          }
           urlPar = new URLSearchParams({
             rflag: 'DMS',
             rIdProc: curProc,
@@ -1923,7 +2060,7 @@
                 </td>
               </tr>
               <tr class="align-middle text-start table-light">
-                <td class="table-primary">Part / Style</td>
+                <td class="table-primary">Part / Style Desc</td>
                 <td class="table-primary" style="width:20px">:</td>
                 <td>
                   <select name="part-add" id="part-add" class="form-select" autocomplete="on">

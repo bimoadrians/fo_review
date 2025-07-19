@@ -112,6 +112,19 @@
    LEFT JOIN toy_part b on a.partx = b.PART_NUM
    LEFT JOIN line c on a.linex = c.LINE_CODE;
    
+   SELECT IFNULL(COUNT(*),0) rec_count
+   FROM fo_review_h
+   WHERE rev_date='2025-07-17' 
+   AND rev_line='08'
+   AND rev_group='A'
+   AND rev_part='11033-48035'
+   AND rev_stage='PP'
+   AND rev_by='Bimo';
+   
+   SELECT IFNULL(COUNT(*),0) pis_count
+   FROM toy_part_pis
+   WHERE part_num='11033-48035';
+   
    INSERT INTO `fo_review_dc_dim` (`rev_id`, `rev_proc_id`, `rev_1`, `rev_2`, `rev_3`, `rev_4`, `rev_5`, `rev_dim_stat`, `note_desc`, `note_dim`, `note_stre`, `fc_poi`, `fc_desc`, `fc_size`, `fc_allow`, `fc_stre`,
 	`add_date`, `add_id`) 
    SELECT '$idx' aidx, toy_part_id procx, '' rev_1, '' rev_2, '' rev_3, '' rev_4, '' rev_5, '0' c_stat, note_desc ndesc, note_dim ndim, note_stre nstre, fc_poi fcpoi, fc_desc fcdesc, fc_size fcsize, fc_allow fcallow,

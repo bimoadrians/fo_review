@@ -5,7 +5,8 @@
 	   FROM toy_part_pis a
 	  ) sa
 	LEFT JOIN toy_part sc ON sa.partx = sc.PART_NUM
-	WHERE 1=1;
+	WHERE 1=1
+	ORDER BY idx ASC, partdx ASC;
 	
 	SELECT a.toy_part_id idx, a.part_num partx, a.note_desc ndesc, a.note_dim ndim, a.note_stre nstre, a.fc_poi fcpoi, a.fc_desc fcdesc, a.fc_size fcsize,
 	a.fc_allow fcallow, a.fc_stre fcstre
@@ -21,3 +22,15 @@
 	SELECT IFNULL(COUNT(*),0) style_count
 	FROM toy_part_pis
 	WHERE part_num = '11033-88735';
+	
+  SELECT IFNULL(COUNT(*),0) rec_count 
+  FROM toy_part_pis
+  WHERE part_num='11027-78339' 
+  AND note_desc='-'
+  AND note_dim='-'
+  AND note_stre='-'
+  AND fc_poi='-'
+  AND fc_desc='-'
+  AND fc_size='-'
+  AND fc_allow='-'
+  AND fc_stre='-';
